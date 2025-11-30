@@ -12,6 +12,7 @@ navbar-links:
 # Logo
 avatar: "/assets/img/hamahem_logo.png"
 round-avatar: false
+footer-logo: "/assets/img/epfl_logo.svg"
 
 # Colors
 page-col: "#FFFFFF"
