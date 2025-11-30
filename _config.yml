@@ -4,7 +4,6 @@ description: "A Data Story"
 author: Hamahem
 url: "https://hamahem.github.io"
 baseurl: ""
-remove-ads: true
 
 # Navigation
 navbar-links:
