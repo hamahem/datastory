@@ -17,17 +17,39 @@ footer-logo: "/assets/img/epfl_logo.svg"
 url-pretty: "hamahem.github.io"
 
 # Colors
-page-col: "#FFFFFF"
-text-col: "#404040"
-link-col: "#008AFF"
-hover-col: "#0085A1"
-navbar-col: "#EAEAEA"
-navbar-text-col: "#404040"
-navbar-border-col: "#DDDDDD"
-footer-col: "#EAEAEA"
-footer-text-col: "#777777"
-footer-link-col: "#404040"
-footer-hover-col: "#0085A1"
+# page-col: "#FFFFFF"
+# text-col: "#404040"
+# link-col: "#008AFF"
+# hover-col: "#0085A1"
+# navbar-col: "#EAEAEA"
+# navbar-text-col: "#404040"
+# navbar-border-col: "#DDDDDD"
+# footer-col: "#EAEAEA"
+# footer-text-col: "#777777"
+# footer-link-col: "#404040"
+# footer-hover-col: "#0085A1"
+
+page-col: "#0F1115"
+
+# Text: Pale Dust/Off-White (Readable but aged)
+text-col: "#E0E0E0"
+
+# Links: Muted Gold (The "Treasure" or "Dynasty" you are finding)
+link-col: "#D4AF37"
+
+# Hover: Phosphor Green (The "Digital Scanner" active state)
+hover-col: "#4AF626"
+
+# Navbar: Slightly lighter obsidian for separation
+navbar-col: "#16191F"
+navbar-text-col: "#FFFFFF"
+navbar-border-col: "#333333"
+
+# Footer: Deepest dark
+footer-col: "#0A0B0E"
+footer-text-col: "#888888"
+footer-link-col: "#D4AF37"
+footer-hover-col: "#4AF626"
 
 # Build settings
 markdown: kramdown
