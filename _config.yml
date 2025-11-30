@@ -3,7 +3,7 @@ title: "The Rise and Fall of Market Dynasties"
 description: "A Data Story"
 author: Hamahem
 url: "https://hamahem.github.io"
-baseurl: ""
+baseurl: "/datastory"
 remove-ads: true
 # Navigation
 navbar-links:
