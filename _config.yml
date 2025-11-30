@@ -29,27 +29,28 @@ url-pretty: "hamahem.github.io"
 # footer-link-col: "#404040"
 # footer-hover-col: "#0085A1"
 
-page-col: "#0F1115"
+page-col: "#F4F5F7"
 
-# Text: Pale Dust/Off-White (Readable but aged)
-text-col: "#E0E0E0"
+# Text: Stark Black (Heavy, authoritative)
+text-col: "#121212"
 
-# Links: Muted Gold (The "Treasure" or "Dynasty" you are finding)
-link-col: "#D4AF37"
+# Links: International Orange (The "Alert" / Revolution color)
+link-col: "#FF3300"
 
-# Hover: Phosphor Green (The "Digital Scanner" active state)
-hover-col: "#4AF626"
+# Hover: Steel Blue (The cold corporate machine)
+hover-col: "#2C3E50"
 
-# Navbar: Slightly lighter obsidian for separation
-navbar-col: "#16191F"
-navbar-text-col: "#FFFFFF"
-navbar-border-col: "#333333"
+# Navbar: Raw Concrete
+navbar-col: "#E0E0E0"
+navbar-text-col: "#000000"
+# A heavy, black border is essential for Brutalism
+navbar-border-col: "#000000"
 
-# Footer: Deepest dark
-footer-col: "#0A0B0E"
-footer-text-col: "#888888"
-footer-link-col: "#D4AF37"
-footer-hover-col: "#4AF626"
+# Footer: Inverted (Heavy base)
+footer-col: "#121212"
+footer-text-col: "#CCCCCC"
+footer-link-col: "#FF3300"
+footer-hover-col: "#FFFFFF"
 
 # Build settings
 markdown: kramdown
