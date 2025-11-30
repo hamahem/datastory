@@ -29,28 +29,17 @@ url-pretty: "hamahem.github.io"
 # footer-link-col: "#404040"
 # footer-hover-col: "#0085A1"
 
-page-col: "#F4F5F7"
-
-# Text: Stark Black (Heavy, authoritative)
-text-col: "#121212"
-
-# Links: International Orange (The "Alert" / Revolution color)
-link-col: "#FF3300"
-
-# Hover: Steel Blue (The cold corporate machine)
-hover-col: "#2C3E50"
-
-# Navbar: Raw Concrete
-navbar-col: "#E0E0E0"
-navbar-text-col: "#000000"
-# A heavy, black border is essential for Brutalism
-navbar-border-col: "#000000"
-
-# Footer: Inverted (Heavy base)
-footer-col: "#121212"
-footer-text-col: "#CCCCCC"
-footer-link-col: "#FF3300"
-footer-hover-col: "#FFFFFF"
+page-col: "#FAFAF8"
+text-col: "#1A1A1A"
+link-col: "#CB6843"
+hover-col: "#B87333"
+navbar-col: "#2F4858"
+navbar-text-col: "#FAFAF8"
+navbar-border-col: "#1A1A1A"
+footer-col: "#2F4858"
+footer-text-col: "#FAFAF8"
+footer-link-col: "#CB6843"
+footer-hover-col: "#B87333"
 
 # Build settings
 markdown: kramdown

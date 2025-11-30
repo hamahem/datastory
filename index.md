@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "The Rise and Fall of Market Dynasties"
+title: "Market Dynasties"
 subtitle: "A Data Story"
 ---
 
