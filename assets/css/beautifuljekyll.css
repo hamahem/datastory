@@ -88,8 +88,8 @@ blockquote {
   color: var(--text-col);
   font-size: 1.125rem;
   line-height: 1.6;
-  border-top-right-radius: 0.3125rem;
-  border-bottom-right-radius: 0.3125rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 blockquote p:first-child {
   margin-top: 0;
