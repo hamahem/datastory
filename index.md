@@ -13,3 +13,13 @@ subtitle: "A Data Story"
 > **Do stock markets form dynasties, and if so, can we trace their rise, reign, and eventual decline?**
 
 <p style="text-align: justify;">By clustering decades of NASDAQ history into shared patterns of growth and decay, we seek to uncover the hidden lineages of market power. From identifying each dynasty’s Golden Age to tracking the shifting balance of leadership within them, this project ventures beneath surface-level trends to reveal the ancient forces still shaping modern finance. Beneath the noise of prices and time, the echoes of forgotten empires may still guide the future.</p>
+
+### **The Royal Hamahem Family**
+
+--
+
+## **The Imperial Archives**
+
+Let us explore the records that remain.
+
+--
