@@ -81,13 +81,15 @@ a:focus {
 }
 blockquote {
   background-color: #E8EDF2;
-  border-left: 4px solid #2F4858;
+  border-left: 8px solid #2F4858;
   padding: 1.5rem 2rem;
   margin: 2rem 0;
   font-style: normal;
   color: var(--text-col);
   font-size: 1.125rem;
   line-height: 1.6;
+  border-top-right-radius: 0.3125rem;
+  border-bottom-right-radius: 0.3125rem;
 }
 blockquote p:first-child {
   margin-top: 0;
