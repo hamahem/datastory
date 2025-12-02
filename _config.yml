@@ -17,17 +17,17 @@ footer-logo: "/assets/img/epfl_logo.svg"
 url-pretty: "hamahem.github.io"
 
 # Colors
-page-col: "#FFFFFF"
-text-col: "#404040"
+page-col: "#F8FAFC"
+text-col: "#1B202B"
 link-col: "#008AFF"
 hover-col: "#0085A1"
-navbar-col: "#EAEAEA"
-navbar-text-col: "#404040"
-navbar-border-col: "#DDDDDD"
-footer-col: "#EAEAEA"
-footer-text-col: "#777777"
-footer-link-col: "#404040"
-footer-hover-col: "#0085A1"
+navbar-col: "#1B202B"
+navbar-text-col: "#F8FAFC"
+navbar-border-col: "#1B202B"
+footer-col: "#1B202B"
+footer-text-col: "#F8FAFC"
+footer-link-col: "#008AFF"
+footer-hover-col: "#008AFF"
 
 # Build settings
 markdown: kramdown
