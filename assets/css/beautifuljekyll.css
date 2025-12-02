@@ -80,11 +80,20 @@ a:focus {
   color: var(--hover-col);
 }
 blockquote {
-  color: var(--mid-col);
-  font-style: italic;
+  background-color: #E8EDF2;
+  border-left: 4px solid #2F4858;
+  padding: 1.5rem 2rem;
+  margin: 2rem 0;
+  font-style: normal;
+  color: var(--text-col);
+  font-size: 1.125rem;
+  line-height: 1.6;
 }
 blockquote p:first-child {
   margin-top: 0;
+}
+blockquote p:last-child {
+  margin-bottom: 0;
 }
 .jumbotron {
   background: #EEE;
