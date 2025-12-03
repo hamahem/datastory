@@ -13,9 +13,9 @@ subtitle: "A Data Story"
 %}
 
 <div class="laurel-title">
-  <img src="/assets/img/laurel_L.png" alt="Left laurel">
+  <img src="datastory/assets/img/laurel_L.png" alt="Left laurel">
   <h1><strong>Introduction</strong></h1>
-  <img src="/assets/img/laurel_R.png" alt="Right laurel">
+  <img src="datastory/assets/img/laurel_R.png" alt="Right laurel">
 </div>
 
 <p style="text-align: justify;">As it’s often said, markets have short memories. Fortunes are made, empires rise, and just as quietly they fall into obscurity. On the NASDAQ, thousands of companies have walked this familiar path, yet the grand patterns that bind their stories together often remain hidden beneath daily price movements and quarterly headlines. We celebrate today’s tech titans, but what of the giants that once ruled the exchange and have since faded from memory?</p>
@@ -27,17 +27,17 @@ subtitle: "A Data Story"
 <p style="text-align: justify;">By clustering decades of NASDAQ history into shared patterns of growth and decay, we seek to uncover the hidden lineages of market power. From identifying each dynasty’s Golden Age to tracking the shifting balance of leadership within them, this project ventures beneath surface-level trends to reveal the ancient forces still shaping modern finance. Beneath the noise of prices and time, the echoes of forgotten empires may still guide the future.</p>
 
 <div class="laurel-title small">
-  <img src="/assets/img/laurel_L.png" alt="Left laurel">
+  <img src="datastory/assets/img/laurel_L.png" alt="Left laurel">
   <h3><strong>The Royal Hamahem Family</strong></h3>
-  <img src="/assets/img/laurel_R.png" alt="Right laurel">
+  <img src="datastory/assets/img/laurel_R.png" alt="Right laurel">
 </div>
 
 --
 
 <div class="laurel-title">
-  <img src="/assets/img/laurel_L.png" alt="Left laurel">
+  <img src="datastory/assets/img/laurel_L.png" alt="Left laurel">
   <h2><strong>The Imperial Archives</strong></h2>
-  <img src="/assets/img/laurel_R.png" alt="Right laurel">
+  <img src="datastory/assets/img/laurel_R.png" alt="Right laurel">
 </div>
 
 Let us explore the records that remain.
