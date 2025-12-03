@@ -1,0 +1,243 @@
+<style>
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin: 2rem 0;
+  }
+
+  @media (min-width: 768px) {
+    .team-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .team-grid {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.75rem;
+    }
+  }
+
+  .team-member {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+  }
+
+  /* Mascot (first item) */
+  .team-member.mascot img {
+    width: 100%;
+    margin-top: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+      drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    object-fit: contain;
+  }
+
+  .team-member.mascot h5 {
+    font-weight: 600;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  /* Regular team members */
+  .team-member.member {
+    margin-top: 2.5rem;
+  }
+
+  .team-member.member:nth-child(3) {
+    margin-top: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .team-member.member:nth-child(3) {
+      margin-top: 2.5rem;
+    }
+  }
+
+  .team-member.member .member-photo-wrapper {
+    width: 100%;
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+
+  .team-member.member:nth-child(even) .member-photo-wrapper:hover {
+    transform: rotate(-5deg) scale(1.05);
+  }
+
+  .team-member.member:nth-child(odd) .member-photo-wrapper:hover {
+    transform: rotate(5deg) scale(1.05);
+  }
+
+  .team-member.member .member-crown {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Crown positioning variations */
+  .team-member.member:nth-child(2) .member-crown {
+    top: -48%;
+    left: 35%;
+    transform: scaleX(-1);
+  }
+
+  .team-member.member:nth-child(3) .member-crown {
+    top: -46%;
+    left: 44%;
+    transform: rotate(14deg);
+  }
+
+  .team-member.member:nth-child(4) .member-crown {
+    top: -48%;
+    left: 14%;
+    width: 65%;
+    transform: scaleX(-1) rotate(-30deg);
+  }
+
+  .team-member.member:nth-child(5) .member-crown {
+    top: -37%;
+    left: 18%;
+    width: 45%;
+    transform: rotate(8deg);
+  }
+
+  .team-member.member:nth-child(6) .member-crown {
+    top: -34%;
+    left: 23%;
+    width: 50%;
+    transform: scaleX(-1) rotate(-30deg);
+  }
+
+  .team-member.member .member-photo {
+    width: 100%;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+      drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    object-fit: contain;
+    aspect-ratio: 1 / 1;
+    border-radius: 0.75rem;
+    margin-bottom: 0.5rem;
+    background-color: #f0f0f0;
+  }
+
+  .team-member.member h5 {
+    font-weight: 600;
+    text-align: center;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .team-member.member h6 {
+    text-align: center;
+    font-style: italic;
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+  }
+</style>
+
+<div class="team-grid">
+  <!-- Mascot -->
+  <div class="team-member mascot">
+    <img
+      src="{{ '/assets/img/hamahem_crest.webp' | relative_url }}"
+      alt="Hamahem Crest"
+    />
+    <h5>Hamahem</h5>
+  </div>
+
+  <!-- Team Member 1 -->
+  <div class="team-member member">
+    <div class="member-photo-wrapper">
+      <img
+        src="{{ '/assets/img/laurel_L.png' | relative_url }}"
+        alt="crown"
+        class="member-crown"
+      />
+      <img
+        src="https://via.placeholder.com/300x300.png?text=Member+1"
+        alt="Member 1"
+        class="member-photo"
+      />
+    </div>
+    <h5>Member Name 1</h5>
+    <h6>Master in Data Science</h6>
+  </div>
+
+  <!-- Team Member 2 -->
+  <div class="team-member member">
+    <div class="member-photo-wrapper">
+      <img
+        src="{{ '/assets/img/laurel_L.png' | relative_url }}"
+        alt="crown"
+        class="member-crown"
+      />
+      <img
+        src="https://via.placeholder.com/300x300.png?text=Member+2"
+        alt="Member 2"
+        class="member-photo"
+      />
+    </div>
+    <h5>Member Name 2</h5>
+    <!-- <h6>Master in Data Science</h6> -->
+  </div>
+
+  <!-- Team Member 3 -->
+  <div class="team-member member">
+    <div class="member-photo-wrapper">
+      <img
+        src="{{ '/assets/img/laurel_L.png' | relative_url }}"
+        alt="crown"
+        class="member-crown"
+      />
+      <img
+        src="https://via.placeholder.com/300x300.png?text=Member+3"
+        alt="Member 3"
+        class="member-photo"
+      />
+    </div>
+    <h5>Member Name 3</h5>
+    <!-- <h6>Master in Energy</h6> -->
+  </div>
+
+  <!-- Team Member 4 -->
+  <div class="team-member member">
+    <div class="member-photo-wrapper">
+      <img
+        src="{{ '/assets/img/laurel_L.png' | relative_url }}"
+        alt="crown"
+        class="member-crown"
+      />
+      <img
+        src="https://via.placeholder.com/300x300.png?text=Member+4"
+        alt="Member 4"
+        class="member-photo"
+      />
+    </div>
+    <h5>Member Name 4</h5>
+    <!-- <h6>Master in Energy</h6> -->
+  </div>
+
+  <!-- Team Member 5 -->
+  <div class="team-member member">
+    <div class="member-photo-wrapper">
+      <img
+        src="{{ '/assets/img/laurel_L.png' | relative_url }}"
+        alt="crown"
+        class="member-crown"
+      />
+      <img
+        src="https://via.placeholder.com/300x300.png?text=Member+5"
+        alt="Member 5"
+        class="member-photo"
+      />
+    </div>
+    <h5>Member Name 5</h5>
+    <!-- <h6>Master in Digital Humanities</h6> -->
+  </div>
+</div>

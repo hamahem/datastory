@@ -28,6 +28,8 @@ subtitle: "A Data Story"
   <img src="{{ '/assets/img/laurel_R.png' | relative_url }}" alt="Right laurel">
 </div>
 
+{% include team_members.html %}
+
 --
 
 ## **The Imperial Archives**
