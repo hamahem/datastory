@@ -30,8 +30,6 @@ subtitle: "A Data Story"
 
 {% include team_members.html %}
 
---
-
 ## **The Imperial Archives**
 
 Let us explore the records that remain.
