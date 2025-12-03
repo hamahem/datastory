@@ -26,13 +26,13 @@ subtitle: "A Data Story"
 
 <p style="text-align: justify;">By clustering decades of NASDAQ history into shared patterns of growth and decay, we seek to uncover the hidden lineages of market power. From identifying each dynasty’s Golden Age to tracking the shifting balance of leadership within them, this project ventures beneath surface-level trends to reveal the ancient forces still shaping modern finance. Beneath the noise of prices and time, the echoes of forgotten empires may still guide the future.</p>
 
-<div class="laurel-title small">
+<div class="laurel-title small center">
   <img src="{{ '/assets/img/laurel_L.png' | relative_url }}" alt="Left laurel">
   <h3><strong>The Royal Hamahem Family</strong></h3>
   <img src="{{ '/assets/img/laurel_R.png' | relative_url }}" alt="Right laurel">
 </div>
 
---
+---
 
 <div class="laurel-title">
   <img src="{{ '/assets/img/laurel_L.png' | relative_url }}" alt="Left laurel">
@@ -42,4 +42,4 @@ subtitle: "A Data Story"
 
 Let us explore the records that remain.
 
---
+---

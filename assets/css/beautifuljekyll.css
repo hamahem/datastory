@@ -1141,7 +1141,7 @@ pre {
 .laurel-title {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1.5rem;
   margin: 2rem 0;
 }
@@ -1151,6 +1151,16 @@ pre {
 .laurel-title h3 {
   margin: 0;
   flex-shrink: 1;
+}
+
+/* Center alignment option */
+.laurel-title.center {
+  justify-content: center;
+}
+
+.laurel-title.center h1,
+.laurel-title.center h2,
+.laurel-title.center h3 {
   text-align: center;
 }
 
