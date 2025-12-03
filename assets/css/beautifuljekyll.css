@@ -1135,3 +1135,54 @@ pre {
     display: inline-block;
   }
 }
+
+/* --- Laurel-decorated titles --- */
+
+.laurel-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.laurel-title h1,
+.laurel-title h2,
+.laurel-title h3 {
+  margin: 0;
+  flex-shrink: 1;
+  text-align: center;
+}
+
+.laurel-title img {
+  height: 2.5rem;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.laurel-title.large img {
+  height: 3.5rem;
+}
+
+.laurel-title.small img {
+  height: 1.8rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .laurel-title {
+    gap: 1rem;
+  }
+
+  .laurel-title img {
+    height: 2rem;
+  }
+
+  .laurel-title.large img {
+    height: 2.8rem;
+  }
+
+  .laurel-title.small img {
+    height: 1.5rem;
+  }
+}
