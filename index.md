@@ -35,3 +35,7 @@ subtitle: "A Data Story"
 Let us explore the records that remain.
 
 {% include datasets.html %}
+
+# Book Shelf
+
+{% include book_shelf.html %}
