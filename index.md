@@ -5,7 +5,7 @@ subtitle: "A Data Story"
 ---
 
 {% include cover.html
-  image="/assets/img/cover.webp"
+  image="/assets/img/cover2.webp"
   title="The Rise and Fall of Market Dynasties"
   subtitle="An Archaeological Approach to NASDAQ's Lost Empires"
   team="A project served by the Team Hamahem"
