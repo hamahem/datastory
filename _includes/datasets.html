@@ -1,0 +1,122 @@
+<style>
+  .datasets-section {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin: 2rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .datasets-section {
+      flex-direction: column;
+    }
+  }
+
+  .ledger-video-container {
+    flex: 0 0 45%;
+    position: sticky;
+    top: 2rem;
+  }
+
+  .ledger-animation {
+    width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    .ledger-video-container {
+      position: static;
+      flex: 1 1 100%;
+    }
+  }
+
+  .datasets-content {
+    flex: 1;
+  }
+
+  .dataset-item {
+    margin-bottom: 1.5rem;
+  }
+
+  .dataset-item h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--text-col);
+    font-size: 1.1rem;
+  }
+
+  .dataset-item p {
+    margin: 0.25rem 0;
+    text-align: justify;
+    line-height: 1.6;
+  }
+
+  .dataset-item ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .dataset-item li {
+    margin: 0.25rem 0;
+  }
+</style>
+
+<div class="datasets-section">
+  <div class="ledger-video-container">
+    <video
+      class="ledger-animation"
+      src="{{ '/assets/video/ledger.mp4' | relative_url }}"
+      autoplay
+      loop
+      muted
+      playsinline
+    ></video>
+  </div>
+
+  <div class="datasets-content">
+    <p>
+      The foundation of this analysis is built on multiple datasets spanning
+      over 50 years of NASDAQ history, from which the following ingredients are
+      of interest:
+    </p>
+
+    <div class="dataset-item">
+      <h4>NASDAQ Stock Data</h4>
+      <p>
+        Historical price data for all NASDAQ-traded stocks collected using
+        <code>yfinance</code>, covering the following:
+      </p>
+      <ul>
+        <li>Daily prices and volumes</li>
+        <li>Market capitalizations</li>
+        <li>Stock splits and adjustments</li>
+        <li>Listing and delisting dates</li>
+      </ul>
+      <p>
+        Our processed dataset contains <strong>~10,970 listed stocks</strong>
+        spanning 1972-2024.
+      </p>
+    </div>
+
+    <div class="dataset-item">
+      <h4>Delisted Companies</h4>
+      <p>
+        In addition to active stocks, we also collected delisting information
+        from CRSP (WRDS) for <strong>17,231 delisted companies</strong>,
+        including reasons for exit (bankruptcy, merger, regulatory violations).
+      </p>
+    </div>
+
+    <div class="dataset-item">
+      <h4>Industry Classifications</h4>
+      <p>
+        For our sector analysis, we used GICS classifications from
+        CRSP/Compustat and Yahoo Finance, achieving
+        <strong>96.3% coverage</strong> across
+        <strong>11 sectors and 215 sub-industries</strong>.
+      </p>
+    </div>
+  </div>
+</div>
