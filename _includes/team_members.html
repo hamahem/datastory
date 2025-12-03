@@ -4,11 +4,15 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
     margin: 2rem 0;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   @media (min-width: 768px) {
     .team-grid {
       grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
     }
   }
 
@@ -25,12 +29,21 @@
     flex-direction: column;
     height: 100%;
     position: relative;
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  /* Mascot (first item) */
+  /* Mascot (first item) - vertically centered */
+  .team-member.mascot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .team-member.mascot img {
     width: 100%;
-    margin-top: 1rem;
+    max-width: 150px;
     object-fit: contain;
   }
 
@@ -71,44 +84,44 @@
 
   .team-member.member .member-crown {
     position: absolute;
-    width: 50%;
-    height: 100%;
+    width: 30%;
+    height: auto;
     object-fit: contain;
     z-index: 2;
     pointer-events: none;
   }
 
-  /* Crown positioning variations */
+  /* Crown positioning variations - adjusted for smaller size */
   .team-member.member:nth-child(2) .member-crown {
-    top: -48%;
+    top: -25%;
     left: 35%;
     transform: scaleX(-1);
   }
 
   .team-member.member:nth-child(3) .member-crown {
-    top: -46%;
+    top: -24%;
     left: 44%;
     transform: rotate(14deg);
   }
 
   .team-member.member:nth-child(4) .member-crown {
-    top: -48%;
-    left: 14%;
-    width: 65%;
+    top: -28%;
+    left: 10%;
+    width: 40%;
     transform: scaleX(-1) rotate(-30deg);
   }
 
   .team-member.member:nth-child(5) .member-crown {
-    top: -37%;
+    top: -20%;
     left: 18%;
-    width: 45%;
+    width: 28%;
     transform: rotate(8deg);
   }
 
   .team-member.member:nth-child(6) .member-crown {
-    top: -34%;
+    top: -18%;
     left: 23%;
-    width: 50%;
+    width: 30%;
     transform: scaleX(-1) rotate(-30deg);
   }
 
@@ -116,7 +129,7 @@
     width: 100%;
     filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
       drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
-    object-fit: contain;
+    object-fit: cover;
     aspect-ratio: 1 / 1;
     border-radius: 0.75rem;
     margin-bottom: 0.5rem;
@@ -128,12 +141,13 @@
     text-align: center;
     margin-top: 0.5rem;
     margin-bottom: 0.25rem;
+    font-size: 0.95rem;
   }
 
   .team-member.member h6 {
     text-align: center;
     font-style: italic;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: #666;
     margin: 0;
   }
