@@ -1,0 +1,101 @@
+<div class="cover-hero">
+  <img src="{{ include.image | relative_url }}" alt="{{ include.title }}" class="cover-image">
+  <div class="cover-overlay">
+    <div class="cover-content">
+      <h1 class="cover-title">{{ include.title }}</h1>
+      {% if include.subtitle %}
+      <p class="cover-subtitle">{{ include.subtitle }}</p>
+      {% endif %}
+      {% if include.team %}
+      <p class="cover-team">{{ include.team }}</p>
+      {% endif %}
+      {% if include.authors %}
+      <p class="cover-authors">{{ include.authors }}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.cover-hero {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  min-height: 400px;
+  margin: -20px -15px 40px -15px;
+  overflow: hidden;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.cover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-content {
+  text-align: center;
+  color: white;
+  padding: 2rem;
+  max-width: 900px;
+}
+
+.cover-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+  line-height: 1.2;
+}
+
+.cover-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+  font-weight: 400;
+}
+
+.cover-team {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+}
+
+.cover-authors {
+  font-size: 1rem;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+  opacity: 0.95;
+}
+
+@media (max-width: 768px) {
+  .cover-hero {
+    height: 50vh;
+    min-height: 300px;
+  }
+
+  .cover-title {
+    font-size: 2rem;
+  }
+
+  .cover-subtitle {
+    font-size: 1rem;
+  }
+
+  .cover-team, .cover-authors {
+    font-size: 0.9rem;
+  }
+}
+</style>

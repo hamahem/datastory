@@ -4,6 +4,14 @@ title: "Market Dynasties"
 subtitle: "A Data Story"
 ---
 
+{% include cover.html
+  image="/assets/img/cover.png"
+  title="The Rise and Fall of Market Dynasties"
+  subtitle="An Archaeological Approach to NASDAQ's Lost Empires"
+  team="A project served by the Team Hamahem"
+  authors="Mohamed Sharif • Mohamed Sharif • Mohamed Sharif • Mohamed Sharif"
+%}
+
 # **Introduction**
 
 <p style="text-align: justify;">As it’s often said, markets have short memories. Fortunes are made, empires rise, and just as quietly they fall into obscurity. On the NASDAQ, thousands of companies have walked this familiar path, yet the grand patterns that bind their stories together often remain hidden beneath daily price movements and quarterly headlines. We celebrate today’s tech titans, but what of the giants that once ruled the exchange and have since faded from memory?</p>
