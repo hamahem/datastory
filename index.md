@@ -1,18 +1,24 @@
 ---
 layout: default
-title: "Market Dynasties"
+title: "Hamahem | Market Dynasties"
 subtitle: "A Data Story"
+mathjax: true
 ---
 
 {% include cover.html
   image="/assets/img/cover2.webp"
   title="The Rise and Fall of Market Dynasties"
   subtitle="An Archaeological Approach to NASDAQ's Lost Empires"
-  team="A project served by the Team Hamahem"
-  authors="Mohamed Sharif • Mohamed Sharif • Mohamed Sharif • Mohamed Sharif"
+  team="A Data Story Project by <span class='hl' style='--hl-bg: #D93B3B;'>Team Hamahem</span>"
+  authors="Mohamed Sharif • Rafic Abdallah • Ahmed Nadim • Bastien Gaussent • Léo Brückl"
 %}
 
-# **Introduction**
+<!-- # **Introduction** -->
+
+<div class="laurel-title medium">
+  <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
+  <h1><strong>Introduction</strong></h1>
+</div>
 
 <p style="text-align: justify;">As it’s often said, markets have short memories. Fortunes are made, empires rise, and just as quietly they fall into obscurity. On the NASDAQ, thousands of companies have walked this familiar path, yet the grand patterns that bind their stories together often remain hidden beneath daily price movements and quarterly headlines. We celebrate today’s tech titans, but what of the giants that once ruled the exchange and have since faded from memory?</p>
 
@@ -30,8 +36,37 @@ subtitle: "A Data Story"
 
 {% include team_members.html %}
 
-## **The Imperial Archives**
+### **The Imperial Archives**
 
 Let us explore the records that remain.
 
 {% include datasets.html %}
+
+## **The Codex of Methods**
+
+This codex records the tools and procedures through which raw market data is transformed into structure, patterns, and dynasties. <span class="hl" style="--hl-bg: #56bce4;">Click on the books</span> to learn more.
+
+{% include bookshelf.html %}
+
+<div class="laurel-title medium">
+  <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
+  <h1><strong>Market Dynasties</strong></h1>
+</div>
+<!-- 
+<video src="{{ '/assets/video/Section.mp4' | relative_url }}" autoplay loop muted playsinline style="width: 70%; height: auto; display: block; margin: 0 auto;"></video>  -->
+
+<!-- <p style="text-align: justify;">Market dynasties are not just about power and success. They are also about ruin and extinction. This section explores the ruins and extinctions of market dynasties.</p> -->
+
+<div class="laurel-title medium">
+  <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
+  <h1><strong>Power & Succession</strong></h1>
+</div>
+
+<!-- <p style="text-align: justify;">Power and succession are the key to market dynasties. This section explores the power and succession of market dynasties.</p> -->
+
+<div class="laurel-title medium">
+  <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
+  <h1><strong>Ruins & Extinctions</strong></h1>
+</div>
+
+<!-- <p style="text-align: justify;">Ruins and extinctions are the inevitable fate of market dynasties. This section explores the ruins and extinctions of market dynasties.</p> -->

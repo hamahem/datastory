@@ -7,6 +7,7 @@ layout: null
 :root {
   /* config file CSS variables */
   --page-col: {{ site.page-col | default: "#FFFFFF" }};
+  --modal-col: {{ site.modal-col | default: "#FFFFFF" }};
   --text-col: {{ site.text-col | default: "#404040" }};
   --link-col: {{ site.link-col | default: "#008AFF" }};
   --hover-col: {{ site.hover-col | default: "#0085A1" }};
@@ -32,7 +33,7 @@ html {
 
 body {
   font-family: var(--body-font);
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: var(--text-col);
   position: relative;
   background-color: var(--page-col);
@@ -47,6 +48,22 @@ body {
 }
 body > main {
   flex: 1;
+}
+
+/* Hide scrollbars globally */
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 p {
   line-height: 1.5;
@@ -1142,7 +1159,7 @@ pre {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 1.5rem;
+  gap: 0.5rem;
   margin: 2rem 0;
 }
 
@@ -1195,4 +1212,156 @@ pre {
   .laurel-title.small img {
     height: 1.5rem;
   }
+}
+
+/* --- Custom Margin Adjustments --- */
+
+.container-md {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+@media (max-width: 768px) {
+  .container-md {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container-md {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* --- Book Modal Styles --- */
+
+/* Modal sizing - use more screen space */
+.modal-xl {
+  max-width: 95%;
+  margin: 1rem auto;
+}
+
+@media (min-width: 992px) {
+  .modal-xl {
+    max-width: 90%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .modal-xl {
+    max-width: 90%;
+  }
+}
+
+/* Modal overlay */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-backdrop.show {
+  opacity: 1;
+}
+
+/* Modal content styling */
+.modal .modal-content {
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal .modal-header {
+  background: var(--modal-col);
+  border-bottom: none;
+  padding: 3rem 3rem 0 3rem;
+  position: relative;
+}
+
+.modal .modal-title {
+  font-family: var(--header-font);
+  font-weight: 700;
+  color: var(--text-col);
+  margin: 0;
+  font-size: 1.75rem;
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+}
+
+.modal .modal-body {
+  padding: 1.5rem 8rem; /* TODO: i am not sure about the padding, maybe 8rem is too much */
+  max-height: 85vh;
+  overflow-y: auto;
+  background-color: var(--modal-col);
+}
+
+/* Hide scrollbar for modal body */
+.modal .modal-body::-webkit-scrollbar {
+  display: none;
+}
+
+.modal .modal-body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 767px) {
+  .modal .modal-header {
+    padding: 2rem 2rem 0 2rem;
+  }
+
+  .modal .modal-body {
+    padding: 2rem 2rem;
+    max-height: 80vh;
+  }
+}
+
+/* Accessibility improvements */
+.modal .close {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-col);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
+
+.modal .close:hover,
+.modal .close:focus {
+  opacity: 1;
+  outline: none;
+}
+
+/* Modal footer - hidden */
+.modal .modal-footer {
+  display: none;
+}
+
+
+.hl {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap; /* keep the highlight on a single line */
+  background: none;
+  color: inherit;
+  z-index: 0;
+}
+
+.hl::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -0.15em;
+  right: -0.1em;
+  bottom: 0.1em;
+  height: 0.6em;
+  background: var(--hl-bg, #FCC75B);
+  border-radius: 2px;
+  transform: skewX(-14deg);
+  transform-origin: left bottom; 
 }
