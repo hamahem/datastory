@@ -72,7 +72,7 @@ To address these questions, we analyze how many dynasties are active at any give
 
 At the widest scale, we begin by observing the market year by year through a dynastic lens. For each year, firms are grouped into dynasties, and each dynasty is represented as a circle whose size reflects its total market capitalization. The color of each circle corresponds to the dynasty’s primary sector, allowing economic scale and sectoral identity to be read simultaneously. This representation treats each year as a snapshot of the market’s internal structure, offering an immediate sense of how power is distributed at any given moment.
 
-<!-- INSERT JSON FILE: dynasty_data_circle_packing.json -->
+<!-- INSERT HTML FILE: dynasty_data_circle_packing.html -->
 
 Viewed in this way, the market rarely appears uniform. Most years are composed of multiple dynasties of varying sizes, coexisting within the same historical moment. The relative balance between these dynasties shifts over time: in some years, one dynasty occupies a noticeably larger share of the space, while in others, power is more evenly distributed.
 
@@ -92,7 +92,7 @@ Market share plays a central role, reflecting the proportion of total market cap
 
 By combining these elements, dominance is defined not as a single metric but as a balance between scale, coherence, maturity, and structural reach. At the decadal level, this allows us to observe how often different dynasties attain such a position of prominence over time, without assuming that dominance must be constant or absolute.
 
-<!-- INSERT JSON FILE: dynasty_reign_by_decade.json -->
+<!-- INSERT HTML FILE: dynasty_reign_by_decade.html -->
 
 The resulting representation emphasizes that decades are not governed by uninterrupted continuity. Leadership changes hands within the same period, and dominance, when it emerges, tends to be partial rather than absolute. This reinforces the idea that market history is composed of overlapping regimes rather than clean successions.
 
@@ -104,15 +104,13 @@ Finally, we examine dynasties at the decadal scale through the lens of average m
 
 Importantly, this view does not privilege any single form of influence. Instead, it reveals that economic magnitude varies independently of other structural characteristics, and that no single dimension fully captures a dynasty’s role within the broader landscape.
 
-<!-- INSERT JSON FILE: dynasty_decade_market_cap.json -->
+<!-- INSERT Html FILE: dynasty_decade_market_cap.html -->
 
 ---
 
-## Synthesis
-
 Taken together, these perspectives establish the purpose of this opening section. By stepping back from individual trajectories and short-term fluctuations, the market reveals itself as a structured historical landscape. Dynasties coexist, expand, contract, and overlap, producing patterns that only become visible at distance.
 
-This large-scale view sets the stage for the deeper analysis that follows, where we move from observing the terrain to tracing how it shifts over time.
+This large-scale view sets the stage for the deeper analysis that follows, where we move from observing the terrain to tracing how it shifts over time. However, a panorama reveals structure, but not motion. Seen from above, the market appears composed of distinct dynasties occupying different stretches of time. Yet this static view conceals the forces that reshaped the landscape. To understand history, we must observe not only who ruled, but how rule changed hands.
 
 <div class="laurel-title medium">
   <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
