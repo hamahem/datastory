@@ -95,9 +95,7 @@ To disentangle influence from size, we finally examine dynasties at the decadal 
 
 This view highlights the diversity of dynastic profiles: some dynasties grow to substantial size, others remain more modest, and several coexist at comparable scales. Importantly, economic magnitude varies independently of other dimensions of influence, suggesting that no single metric fully captures a dynasty’s role within the broader landscape.
 
-<!-- INSERT HTML FILE: dynasty_decade_market_cap.html -->
-
-[PLOT HERE]
+{% include radar_embed_theme.html %}
 
 Taken together, these perspectives form a continuous progression rather than isolated observations. By starting with yearly configurations, extending to decadal prominence, and finally isolating economic scale, the market gradually reveals itself as a structured historical landscape.
 

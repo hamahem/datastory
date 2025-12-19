@@ -1,0 +1,253 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+<script src="assets/data/market_cap_data.js"></script>
+
+<div id="radar-viz-wrapper">
+  <style>
+    /* Scoped wrapper */
+    #radar-viz-wrapper {
+      font-family: inherit;
+      width: 100%;
+      padding: 0;
+      background: transparent;
+      box-sizing: border-box;
+    }
+
+    #radar-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    #radar-viz-wrapper #charts-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    #radar-viz-wrapper .decade-card {
+      display: flex;
+      flex-direction: column;
+      color: #1b202b;
+    }
+
+    #radar-viz-wrapper .decade-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1b202b;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    #radar-viz-wrapper .decade-subtitle {
+      font-size: 0.85rem;
+      color: #1b202b;
+      opacity: 0.7;
+      text-align: center;
+    }
+
+    #radar-viz-wrapper .chart-container {
+      width: 100%;
+      height: 350px; /* Slightly compacted from 400px */
+    }
+
+    /* Mobile Stack */
+    @media (max-width: 768px) {
+      #radar-viz-wrapper #charts-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div id="charts-container"></div>
+</div>
+
+<script>
+  // Prefix 'rad_' to avoid global conflict
+  let rad_decadeData =
+    typeof market_cap_data !== "undefined" ? market_cap_data : null;
+  const rad_charts = {};
+
+  // Color palette for tooltips
+  const rad_dynastyColors = {
+    0: "#5470c6",
+    1: "#91cc75",
+    2: "#fac858",
+    3: "#ee6666",
+    4: "#73c0de",
+    5: "#3ba272",
+    6: "#fc8452",
+    7: "#9a60b4",
+    8: "#ea7ccc",
+    9: "#d4ec59",
+    10: "#c23531",
+    11: "#2f4554",
+    12: "#61a0a8",
+    13: "#d48265",
+    14: "#91c7ae",
+  };
+
+  function rad_truncateSector(sector, maxLen = 12) {
+    if (!sector) return "Unknown";
+    if (sector.length > maxLen) {
+      return sector.substring(0, maxLen - 2) + "..";
+    }
+    return sector;
+  }
+
+  function rad_createAllCharts() {
+    if (!rad_decadeData) {
+      console.error("Radar data not loaded.");
+      return;
+    }
+
+    const container = document.querySelector(
+      "#radar-viz-wrapper #charts-container"
+    );
+    if (!container) return;
+
+    // Sort decades chronologically
+    const decades = Object.keys(rad_decadeData).sort((a, b) => {
+      return rad_decadeData[a].start_year - rad_decadeData[b].start_year;
+    });
+
+    decades.forEach((decade) => {
+      const data = rad_decadeData[decade];
+      const dynasties = data.dynasties;
+
+      // Create card
+      const card = document.createElement("div");
+      card.className = "decade-card";
+
+      const chartId = `rad-chart-${decade.replace(/[^a-zA-Z0-9]/g, "_")}`;
+
+      // Top dynasty info
+      let topInfo = "";
+      if (dynasties.length > 0) {
+        // Assuming sorted by avg_market_cap descending in data, or just taking first
+        topInfo = `Top: D${dynasties[0].dynasty_id} ($${dynasties[0].avg_market_cap_bn}B avg)`;
+      }
+
+      card.innerHTML = `
+                    <div class="decade-title">${decade}</div>
+                    <div class="decade-subtitle">${data.period} | ${data.num_years} years | ${topInfo}</div>
+                    <div class="chart-container" id="${chartId}"></div>
+                `;
+
+      container.appendChild(card);
+
+      // Initialize chart
+      const chartDom = document.getElementById(chartId);
+      const chart = echarts.init(chartDom);
+      rad_charts[decade] = chart;
+
+      // Build radar indicators
+      const indicators = dynasties.map((d) => ({
+        name: `D${d.dynasty_id}\n(${rad_truncateSector(d.primary_sector)})`,
+        max: data.max_market_cap_bn,
+      }));
+
+      // Build radar values
+      const values = dynasties.map((d) => d.avg_market_cap_bn);
+
+      // Series styling using THEME Link Color
+      const seriesData = {
+        value: values,
+        name: `${decade} Market Cap`,
+        itemStyle: {
+          color: "#66101F", // Theme Accent
+        },
+        areaStyle: {
+          color: "rgba(102, 16, 31, 0.25)", // Theme Accent Transparent
+        },
+        lineStyle: {
+          width: 2,
+          color: "#66101F",
+        },
+        symbol: "circle",
+        symbolSize: 6,
+      };
+
+      const option = {
+        tooltip: {
+          trigger: "item",
+          backgroundColor: "#FFFFFF",
+          borderColor: "#E2E8F0",
+          textStyle: { color: "#1B202B" },
+          formatter: function (params) {
+            let html = `<b>${params.name}</b><br/>`;
+            params.value.forEach((val, idx) => {
+              const dynasty = dynasties[idx];
+              html += `<span style="color:${
+                rad_dynastyColors[dynasty.dynasty_id] || "#333"
+              }">●</span> `;
+              html += `D${dynasty.dynasty_id}: <b>$${val}B</b> (${dynasty.primary_sector})<br/>`;
+            });
+            return html;
+          },
+        },
+        radar: {
+          shape: "polygon",
+          center: ["50%", "55%"],
+          radius: "65%",
+          startAngle: 90,
+          splitNumber: 4,
+          axisName: {
+            color: "#1B202B",
+            fontSize: 10,
+            fontWeight: "bold",
+            padding: [3, 5],
+          },
+          splitArea: {
+            areaStyle: {
+              color: ["rgba(102, 16, 31, 0.02)", "rgba(102, 16, 31, 0.06)"],
+              shadowColor: "rgba(0, 0, 0, 0.05)",
+              shadowBlur: 5,
+            },
+          },
+          axisLine: {
+            lineStyle: {
+              color: "rgba(102, 16, 31, 0.3)",
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: "rgba(102, 16, 31, 0.2)",
+            },
+          },
+          indicator: indicators,
+        },
+        series: [
+          {
+            name: "Market Cap",
+            type: "radar",
+            data: [seriesData],
+            emphasis: {
+              lineStyle: { width: 3 },
+              areaStyle: { color: "rgba(102, 16, 31, 0.5)" },
+            },
+          },
+        ],
+      };
+      chart.setOption(option);
+    });
+  }
+
+  // Init Logic
+  if (rad_decadeData) {
+    rad_createAllCharts();
+  } else {
+    setTimeout(() => {
+      rad_decadeData =
+        typeof market_cap_data !== "undefined" ? market_cap_data : null;
+      rad_createAllCharts();
+    }, 500);
+  }
+
+  // Responsive Resize
+  const rad_observer = new ResizeObserver(() => {
+    Object.values(rad_charts).forEach((chart) => chart.resize());
+  });
+
+  const rad_wrapper = document.getElementById("radar-viz-wrapper");
+  if (rad_wrapper) rad_observer.observe(rad_wrapper);
+</script>

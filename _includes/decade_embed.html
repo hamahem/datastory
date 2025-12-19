@@ -1,144 +1,155 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 
+<script src="assets/data/decade_dominance_data.js"></script>
+
 <div id="decade-viz-wrapper">
   <style>
+    /* Scoped wrapper to prevent global site conflicts */
     #decade-viz-wrapper {
-      /* Map Colors */
-      --dec-bg: #f8fafc;
-      --dec-card-bg: #ffffff;
-      --dec-text: #1b202b;
-      --dec-accent: #008aff;
-      --dec-border: #e2e8f0;
-
+      font-family: inherit; /* Use website font */
       width: 100%;
-      font-family: inherit; /* Use Jekyll Font */
-      color: var(--dec-text);
-      background: var(--dec-bg);
-      padding: 10px 0;
+      padding: 0;
+      background: transparent;
+      box-sizing: border-box;
     }
 
-    /* Grid Layout */
-    #decade-viz-wrapper #dec-grid {
+    #decade-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    #decade-viz-wrapper #charts-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
-      width: 100%;
+      margin-top: 20px;
     }
 
-    /* Card Styling */
     #decade-viz-wrapper .decade-card {
-      background: var(--dec-card-bg);
-      border: 1px solid var(--dec-border);
       border-radius: 8px;
       padding: 15px;
       display: flex;
       flex-direction: column;
-      /* Subtle shadow for depth */
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      color: #1b202b;
     }
 
-    /* Typography */
     #decade-viz-wrapper .decade-title {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      color: var(--dec-text);
+      color: #1b202b;
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
 
     #decade-viz-wrapper .decade-subtitle {
       font-size: 0.85rem;
-      color: #64748b; /* Muted text */
+      color: #1b202b; /* Slightly lighter text usually, but using theme text col */
+      opacity: 0.7;
       text-align: center;
       margin-bottom: 12px;
-      border-bottom: 1px solid var(--dec-border);
       padding-bottom: 8px;
     }
 
-    /* Chart Area */
-    #decade-viz-wrapper .chart-content {
+    #decade-viz-wrapper .chart-wrapper {
       display: flex;
       flex-direction: row;
-      align-items: center;
     }
 
-    #decade-viz-wrapper .chart-box {
+    #decade-viz-wrapper .chart-container {
       flex: 1;
-      height: 250px; /* Fixed height for consistency */
-      min-width: 0; /* Flexbox overflow fix */
+      height: 300px; /* Slightly compacted */
     }
 
-    /* Legend Styling */
-    #decade-viz-wrapper .legend-box {
-      width: 140px;
-      padding-left: 10px;
-      font-size: 0.75rem;
+    #decade-viz-wrapper .legend-section {
+      width: 160px;
+      padding: 10px 0 10px 10px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    #decade-viz-wrapper .legend-header {
+    #decade-viz-wrapper .legend-title {
       font-weight: bold;
+      font-size: 0.75rem;
+      color: #1b202b;
       margin-bottom: 8px;
-      color: var(--dec-accent);
       text-transform: uppercase;
-      font-size: 0.7rem;
       letter-spacing: 0.5px;
     }
 
-    #decade-viz-wrapper .legend-row {
+    #decade-viz-wrapper .legend-item {
       display: flex;
       align-items: center;
-      margin-bottom: 5px;
-      color: var(--dec-text);
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      color: #1b202b;
     }
 
-    #decade-viz-wrapper .legend-dot {
+    #decade-viz-wrapper .legend-color {
       width: 10px;
       height: 10px;
       border-radius: 2px;
-      margin-right: 6px;
+      margin-right: 8px;
       flex-shrink: 0;
     }
 
-    #decade-viz-wrapper .legend-txt {
+    #decade-viz-wrapper .legend-text {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Mobile Responsiveness */
+    #decade-viz-wrapper .non-dominant-section {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    #decade-viz-wrapper .non-dominant-title {
+      font-size: 0.7rem;
+      color: #1b202b;
+      opacity: 0.6;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    #decade-viz-wrapper .non-dominant-item {
+      display: flex;
+      align-items: center;
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+      color: #1b202b;
+      opacity: 0.8;
+    }
+
+    /* Mobile Stack */
     @media (max-width: 768px) {
-      #decade-viz-wrapper #dec-grid {
-        grid-template-columns: 1fr; /* Stack vertically on mobile */
+      #decade-viz-wrapper #charts-container {
+        grid-template-columns: 1fr;
       }
-      #decade-viz-wrapper .chart-content {
+      #decade-viz-wrapper .chart-wrapper {
         flex-direction: column;
       }
-      #decade-viz-wrapper .legend-box {
+      #decade-viz-wrapper .legend-section {
         width: 100%;
-        padding-left: 0;
-        padding-top: 10px;
         flex-direction: row;
         flex-wrap: wrap;
         gap: 10px;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 10px;
       }
     }
   </style>
 
-  <div id="dec-grid"></div>
+  <div id="charts-container"></div>
 </div>
 
-<script src="assets/data/decade_dominance_data.js"></script>
-
 <script>
-  // Prefix variables to avoid global conflict (dec_)
-  let dec_db = typeof decade_data !== "undefined" ? decade_data : null;
-  const dec_charts = {}; // Store chart instances
+  // Use a unique prefix 'dec_' to avoid conflicts
+  let dec_decadeData = typeof decade_data !== "undefined" ? decade_data : null;
+  const dec_charts = {};
 
-  // Custom Palette
-  const dec_colors = {
+  // Color palette for dynasties
+  const dec_dynastyColors = {
     0: "#5470c6",
     1: "#91cc75",
     2: "#fac858",
@@ -156,109 +167,160 @@
     14: "#91c7ae",
   };
 
-  function dec_truncate(str, max = 15) {
-    if (!str) return "Unknown";
-    return str.length > max ? str.substring(0, max - 2) + ".." : str;
+  // Helper: Truncate Sector
+  function dec_truncateSector(sector, maxLen = 15) {
+    if (!sector) return "Unknown";
+    if (sector.length > maxLen) {
+      return sector.substring(0, maxLen - 2) + "..";
+    }
+    return sector;
   }
 
-  function dec_init() {
-    if (!dec_db) {
-      console.error("Decade Data not loaded.");
+  // Main Chart Creation Function
+  function dec_createAllCharts() {
+    if (!dec_decadeData) {
+      console.error("Data not loaded yet.");
       return;
     }
 
-    const container = document.querySelector("#decade-viz-wrapper #dec-grid");
-    if (!container) return;
-    container.innerHTML = ""; // Clear previous if any
-
-    // Sort keys by start year
-    const decades = Object.keys(dec_db).sort(
-      (a, b) => dec_db[a].start_year - dec_db[b].start_year
+    const container = document.querySelector(
+      "#decade-viz-wrapper #charts-container"
     );
+    if (!container) return;
 
-    decades.forEach((key) => {
-      const data = dec_db[key];
-      const cleanKey = key.replace(/[^a-zA-Z0-9]/g, "_");
+    // Sort decades chronologically by start year
+    const decades = Object.keys(dec_decadeData).sort((a, b) => {
+      return dec_decadeData[a].start_year - dec_decadeData[b].start_year;
+    });
 
-      // --- HTML GENERATION ---
+    decades.forEach((decade) => {
+      const data = dec_decadeData[decade];
+
+      // Create card
       const card = document.createElement("div");
       card.className = "decade-card";
+      card.id = `card-${decade}`;
 
-      // Filter Dynasties
-      const dominant = data.dynasties.filter((d) => d.years_dominant > 0);
+      // Separate dominant and non-dominant dynasties
+      const dominantDynasties = data.dynasties.filter(
+        (d) => d.years_dominant > 0
+      );
+      const nonDominantDynasties = data.dynasties.filter(
+        (d) => d.years_dominant === 0
+      );
 
-      // Generate Legend HTML
-      let legendHTML = dominant
+      // Build dominant legend HTML
+      let dominantLegendHTML = dominantDynasties
         .map(
           (d) => `
-                    <div class="legend-row">
-                        <div class="legend-dot" style="background: ${
-                          dec_colors[d.dynasty_id] || "#ccc"
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: ${
+                          dec_dynastyColors[d.dynasty_id] || "#ccc"
                         };"></div>
-                        <div class="legend-txt" title="D${d.dynasty_id} - ${
+                        <div class="legend-text" title="D${d.dynasty_id} - ${
             d.primary_sector
           }">
-                            D${d.dynasty_id} (${d.dominance_percentage}%)
+                            D${d.dynasty_id} - <strong>${
+            d.dominance_percentage
+          }%</strong>
                         </div>
                     </div>
                 `
         )
         .join("");
 
+      // Build non-dominant legend HTML
+      let nonDominantLegendHTML = "";
+      if (nonDominantDynasties.length > 0) {
+        const items = nonDominantDynasties
+          .map(
+            (d) => `
+                        <div class="non-dominant-item">
+                            <div class="legend-color" style="background: ${
+                              dec_dynastyColors[d.dynasty_id] || "#ccc"
+                            }; opacity: 0.6;"></div>
+                            <div class="legend-text">D${d.dynasty_id}</div>
+                        </div>
+                    `
+          )
+          .join("");
+        nonDominantLegendHTML = `
+                        <div class="non-dominant-section">
+                            <div class="non-dominant-title">Also Active</div>
+                            ${items}
+                        </div>
+                    `;
+      }
+
+      // Top dynasty info
+      let topInfo = "";
+      if (data.top_dynasty) {
+        topInfo = `Top: D${data.top_dynasty.dynasty_id} (${data.top_dynasty.dominance_percentage}%)`;
+      }
+
+      const chartId = `chart-${decade.replace(/[^a-zA-Z0-9]/g, "_")}`;
+
       card.innerHTML = `
-                    <div class="decade-title">${key}</div>
-                    <div class="decade-subtitle">${data.period}</div>
-                    <div class="chart-content">
-                        <div class="chart-box" id="dec-chart-${cleanKey}"></div>
-                        <div class="legend-box">
-                            <div class="legend-header">Leaders</div>
-                            ${legendHTML}
+                    <div class="decade-title">${decade}</div>
+                    <div class="decade-subtitle">${data.period} | ${topInfo}</div>
+                    <div class="chart-wrapper">
+                        <div class="chart-container" id="${chartId}"></div>
+                        <div class="legend-section">
+                            <div class="legend-title">Dominant Dynasties</div>
+                            ${dominantLegendHTML}
+                            ${nonDominantLegendHTML}
                         </div>
                     </div>
                 `;
 
       container.appendChild(card);
 
-      // --- ECHARTS INITIALIZATION ---
-      const chartDom = document.getElementById(`dec-chart-${cleanKey}`);
+      // Initialize chart
+      const chartDom = document.getElementById(chartId);
       const chart = echarts.init(chartDom);
-      dec_charts[cleanKey] = chart;
+      dec_charts[decade] = chart;
 
-      // Prepare Data
-      const pieData = dominant.map((d) => ({
+      // Prepare pie data
+      const pieData = dominantDynasties.map((d) => ({
         value: d.dominance_percentage,
         name: `D${d.dynasty_id}`,
-        itemStyle: { color: dec_colors[d.dynasty_id] || "#ccc" },
-        // Custom data for tooltip
-        info: d,
+        itemStyle: {
+          color: dec_dynastyColors[d.dynasty_id] || "#ccc",
+        },
+        dynasty_id: d.dynasty_id,
+        years_dominant: d.years_dominant,
+        total_years: data.total_years_analyzed,
+        sector: d.primary_sector,
+        market_cap: d.total_market_cap_bn,
+        avg_dominance: d.avg_dominance_score,
+        years_active: d.years_active_in_decade,
       }));
 
       const option = {
         tooltip: {
           trigger: "item",
           backgroundColor: "#FFFFFF",
-          borderColor: "#e2e8f0",
+          borderColor: "#E2E8F0",
           textStyle: { color: "#1B202B" },
           formatter: function (params) {
-            const d = params.data.info;
-            return `<div style="font-size:12px; line-height:1.4;">
-                                <strong>Dynasty ${d.dynasty_id}</strong><br/>
-                                <span style="color:#008AFF">${
-                                  d.primary_sector
-                                }</span><br/>
-                                Dominance: <b>${
-                                  d.dominance_percentage
-                                }%</b><br/>
-                                Market Cap: $${d.total_market_cap_bn.toFixed(
-                                  1
-                                )}B
-                            </div>`;
+            const d = params.data;
+            return `<div style="font-family:inherit;">
+                                   <b>Dynasty ${d.dynasty_id}</b><br/>
+                                   <span style="color:#008AFF">${
+                                     d.sector
+                                   }</span><br/>
+                                   <b>Dominance:</b> ${d.value.toFixed(1)}%<br/>
+                                   <b>Avg Score:</b> ${d.avg_dominance.toFixed(
+                                     3
+                                   )}
+                                   </div>`;
           },
         },
         series: [
           {
+            name: "Dominance",
             type: "pie",
-            radius: ["30%", "70%"],
+            radius: ["35%", "70%"],
             center: ["50%", "50%"],
             avoidLabelOverlap: true,
             itemStyle: {
@@ -269,14 +331,24 @@
             label: {
               show: true,
               position: "inside",
-              formatter: "{d}%", // Show only percentage inside
+              formatter: function (params) {
+                return `${params.percent.toFixed(0)}%`;
+              },
               fontSize: 10,
+              fontWeight: "bold",
               color: "#fff",
               textBorderColor: "transparent",
             },
             emphasis: {
-              label: { show: true, fontSize: 12, fontWeight: "bold" },
-              itemStyle: { shadowBlur: 10, shadowColor: "rgba(0,0,0,0.2)" },
+              label: {
+                show: true,
+                fontSize: 12,
+                fontWeight: "bold",
+              },
+              itemStyle: {
+                shadowBlur: 10,
+                shadowColor: "rgba(0, 0, 0, 0.1)",
+              },
             },
             data: pieData,
           },
@@ -287,16 +359,22 @@
     });
   }
 
-  // --- RESIZE OBSERVER (Robust Resizing) ---
-  // Waits for container to change size, then resizes all charts
+  // Initialize immediately
+  if (dec_decadeData) {
+    dec_createAllCharts();
+  } else {
+    // Retry once if loaded async
+    setTimeout(() => {
+      dec_decadeData = typeof decade_data !== "undefined" ? decade_data : null;
+      dec_createAllCharts();
+    }, 500);
+  }
+
+  // Handle resize with ResizeObserver for better responsiveness
   const dec_observer = new ResizeObserver(() => {
-    Object.values(dec_charts).forEach((c) => c.resize());
+    Object.values(dec_charts).forEach((chart) => chart.resize());
   });
 
-  // Initialize
-  setTimeout(() => {
-    dec_init();
-    const wrapper = document.getElementById("decade-viz-wrapper");
-    if (wrapper) dec_observer.observe(wrapper);
-  }, 200);
+  const dec_wrapper = document.getElementById("decade-viz-wrapper");
+  if (dec_wrapper) dec_observer.observe(dec_wrapper);
 </script>
