@@ -1,0 +1,445 @@
+<script src="assets/data/status_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div id="status-viz-wrapper">
+  <style>
+    #status-viz-wrapper {
+      /* --- DESIGN TOKENS --- */
+      --st-bg: #f8fafc; /* White background for the table look */
+      --st-text-main: #1b202b;
+      --st-text-muted: #1b202b;
+      --st-border: #e2e8f0;
+      --st-radius: 12px;
+
+      --st-success: #10b981;
+      --st-danger: #ef4444;
+      --st-blue: #3b82f6;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--st-text-main);
+    }
+
+    #status-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* --- MAIN CONTAINER (Table Look) --- */
+    #status-viz-wrapper .main-frame {
+      border: 1px solid var(--st-border);
+      border-radius: var(--st-radius);
+      background-color: var(--st-bg);
+      overflow: hidden; /* Clips children to radius */
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* --- HEADER LAYOUT --- */
+    #status-viz-wrapper .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--st-border);
+      background: #fcfcfc; /* Very subtle contrast for header */
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    /* 1. Title Area */
+    #status-viz-wrapper .title-group {
+      display: flex;
+      flex-direction: column;
+    }
+    #status-viz-wrapper .title-group h2 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--st-text-main);
+    }
+    #status-viz-wrapper .title-group span {
+      font-size: 11px;
+      color: var(--st-text-muted);
+    }
+
+    /* 2. Compact Stats Area (Center) */
+    #status-viz-wrapper .header-stats {
+      display: flex;
+      gap: 20px;
+      background: #fff;
+      padding: 6px 12px;
+      border: 1px solid var(--st-border);
+      border-radius: 6px;
+    }
+
+    #status-viz-wrapper .h-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--st-text-main);
+    }
+
+    #status-viz-wrapper .h-stat span.label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--st-text-muted);
+      margin-right: 2px;
+      font-weight: 600;
+    }
+
+    /* Dots */
+    #status-viz-wrapper .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    #status-viz-wrapper .dot-alive {
+      background-color: var(--st-success);
+    }
+    #status-viz-wrapper .dot-born {
+      background-color: var(--st-blue);
+    }
+    #status-viz-wrapper .dot-died {
+      background-color: var(--st-danger);
+    }
+
+    /* 3. Year Select (Right) */
+    #status-viz-wrapper .custom-select-wrapper {
+      position: relative;
+      width: 130px;
+      user-select: none;
+      z-index: 50;
+    }
+
+    #status-viz-wrapper .custom-select-trigger {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--st-text-main);
+      background: #fff;
+      border: 1px solid var(--st-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #status-viz-wrapper .custom-select-trigger:hover {
+      border-color: #d1d5db;
+    }
+
+    #status-viz-wrapper .custom-options {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--st-border);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-height: 200px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-5px);
+      transition: all 0.2s ease;
+    }
+
+    #status-viz-wrapper .custom-select-wrapper.open .custom-options {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    #status-viz-wrapper .custom-option {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--st-text-main);
+      cursor: pointer;
+    }
+    #status-viz-wrapper .custom-option:hover {
+      background-color: #f9fafb;
+    }
+    #status-viz-wrapper .custom-option.selected {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+
+    /* --- CONTENT AREA --- */
+    #status-viz-wrapper #dynamic-cards-area {
+      padding: 24px;
+      min-height: 300px;
+    }
+
+    #status-viz-wrapper .section-header {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--st-text-muted);
+      margin-top: 25px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    #status-viz-wrapper .section-header:first-child {
+      margin-top: 0;
+    }
+
+    #status-viz-wrapper .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    /* --- MINIMALIST CARD --- */
+    #status-viz-wrapper .mini-card {
+      background: #fff;
+      border: 1px solid var(--st-border);
+      border-radius: 8px; /* Slightly more rounded */
+      padding: 14px;
+      transition: transform 0.15s ease, border-color 0.15s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    #status-viz-wrapper .mini-card:hover {
+      border-color: #9ca3af;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Header Row inside card */
+    #status-viz-wrapper .mc-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #status-viz-wrapper .mc-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--st-text-main);
+    }
+
+    #status-viz-wrapper .mc-sector {
+      font-size: 11px;
+      color: var(--st-text-muted);
+      line-height: 1.3;
+    }
+
+    #status-viz-wrapper .mc-meta {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px dashed #f3f4f6;
+    }
+
+    #status-viz-wrapper .empty-msg {
+      font-size: 13px;
+      color: var(--st-text-muted);
+      font-style: italic;
+      padding: 10px 0;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 600px) {
+      #status-viz-wrapper .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      #status-viz-wrapper .header-stats {
+        width: 100%;
+        justify-content: space-between;
+      }
+      #status-viz-wrapper .title-group {
+        width: 100%;
+      }
+      #status-viz-wrapper .custom-select-wrapper {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <div class="main-frame">
+    <div class="top-bar">
+      <div class="title-group">
+        <h2>Dynasty Status</h2>
+      </div>
+
+      <div class="header-stats">
+        <div class="h-stat">
+          <span class="dot dot-alive"></span>
+          <span class="label">Active:</span>
+          <span id="count-alive">0</span>
+        </div>
+        <div class="h-stat">
+          <span class="dot dot-born"></span>
+          <span class="label">New:</span>
+          <span id="count-born">0</span>
+        </div>
+        <div class="h-stat">
+          <span class="dot dot-died"></span>
+          <span class="label">Fallen:</span>
+          <span id="count-died">0</span>
+        </div>
+      </div>
+
+      <div class="custom-select-wrapper" id="custom-year-select">
+        <div class="custom-select-trigger" onclick="st_toggleSelect()">
+          <span id="year-display-text">Select Year</span>
+          <i
+            class="fa-solid fa-chevron-down"
+            style="font-size: 10px; color: #6b7280"
+          ></i>
+        </div>
+        <div class="custom-options" id="year-options-list"></div>
+      </div>
+    </div>
+
+    <div id="dynamic-cards-area"></div>
+  </div>
+</div>
+
+<script>
+  let st_data = typeof status_data !== "undefined" ? status_data : null;
+  let st_currentYear = null;
+
+  // --- INIT ---
+  function st_init() {
+    if (!st_data) {
+      setTimeout(() => {
+        st_data = typeof status_data !== "undefined" ? status_data : null;
+        st_init();
+      }, 200);
+      return;
+    }
+
+    const years = st_data.years;
+    const listContainer = document.getElementById("year-options-list");
+
+    years.forEach((year) => {
+      const item = document.createElement("div");
+      item.className = "custom-option";
+      item.textContent = year;
+      item.onclick = () => st_selectYear(year);
+      listContainer.appendChild(item);
+    });
+
+    if (years.length > 0) st_selectYear(years[0]);
+
+    window.addEventListener("click", function (e) {
+      const select = document.getElementById("custom-year-select");
+      if (!select.contains(e.target)) select.classList.remove("open");
+    });
+  }
+
+  // --- LOGIC ---
+  function st_toggleSelect() {
+    document.getElementById("custom-year-select").classList.toggle("open");
+  }
+
+  function st_selectYear(year) {
+    st_currentYear = parseInt(year);
+    document.getElementById("year-display-text").textContent = year;
+    document.getElementById("custom-year-select").classList.remove("open");
+
+    const options = document.querySelectorAll(".custom-option");
+    options.forEach((opt) => {
+      if (parseInt(opt.textContent) === year) opt.classList.add("selected");
+      else opt.classList.remove("selected");
+    });
+
+    st_renderUI();
+  }
+
+  function st_renderUI() {
+    if (!st_data || !st_currentYear) return;
+    const yearData = st_data.data[st_currentYear];
+    if (!yearData) return;
+
+    document.getElementById("count-alive").innerText = yearData.alive_count;
+    document.getElementById("count-born").innerText = yearData.born_count;
+    document.getElementById("count-died").innerText = yearData.died_count;
+
+    const container = document.getElementById("dynamic-cards-area");
+    let html = "";
+
+    // BORN
+    if (yearData.born.length > 0) {
+      html += `<div class="section-header" style="color:var(--st-blue)">New Arrivals</div>`;
+      html += `<div class="cards-container">`;
+      yearData.born.forEach(
+        (d) => (html += st_cardHtml(d, "born", `Members: ${d.total_members}`))
+      );
+      html += `</div>`;
+    }
+
+    // DIED
+    if (yearData.died.length > 0) {
+      html += `<div class="section-header" style="color:var(--st-danger)">Fallen Empires</div>`;
+      html += `<div class="cards-container">`;
+      yearData.died.forEach(
+        (d) => (html += st_cardHtml(d, "died", `Lived: ${d.age} years`))
+      );
+      html += `</div>`;
+    }
+
+    // ALIVE
+    html += `<div class="section-header" style="color:var(--st-success)">Active Dynasties</div>`;
+    html += `<div class="cards-container">`;
+    if (yearData.alive.length > 0) {
+      yearData.alive.forEach(
+        (d) => (html += st_cardHtml(d, "alive", `Age: ${d.age} years`))
+      );
+    } else {
+      html += `<div class="empty-msg">No active dynasties.</div>`;
+    }
+    html += `</div>`;
+
+    container.innerHTML = html;
+  }
+
+  function st_cardHtml(d, type, metaText) {
+    const sector =
+      d.sector && d.sector.length > 22
+        ? d.sector.substring(0, 20) + ".."
+        : d.sector;
+
+    // Dot color logic
+    let dotClass = "dot-alive";
+    if (type === "born") dotClass = "dot-born";
+    if (type === "died") dotClass = "dot-died";
+
+    return `
+                <div class="mini-card">
+                    <div class="mc-header">
+                        <span class="dot ${dotClass}"></span>
+                        <div class="mc-title">Dynasty ${d.dynasty_id}</div>
+                    </div>
+                    <div class="mc-sector">${sector}</div>
+                    <div class="mc-meta">${metaText}</div>
+                </div>
+            `;
+  }
+
+  st_init();
+</script>

@@ -1,0 +1,263 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+<script src="assets/data/lifespan_data.js"></script>
+
+<div id="lifespan-viz-wrapper">
+  <style>
+    /* Scoped wrapper */
+    #lifespan-viz-wrapper {
+      font-family: inherit;
+      width: 100%;
+      padding: 0;
+      background: transparent;
+      box-sizing: border-box;
+    }
+
+    #lifespan-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    #lifespan-viz-wrapper #chart-container {
+      padding: 0;
+      color: #1b202b;
+    }
+
+    #lifespan-viz-wrapper #main {
+      height: 600px;
+      width: 100%;
+    }
+
+    #lifespan-viz-wrapper #sector-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    #lifespan-viz-wrapper .legend-item {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: #1b202b;
+      opacity: 0.9;
+    }
+
+    #lifespan-viz-wrapper .legend-color {
+      width: 16px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 6px;
+    }
+
+    @media (max-width: 768px) {
+      #lifespan-viz-wrapper #main {
+        height: 500px;
+      }
+    }
+  </style>
+
+  <div id="chart-container">
+    <div id="main"></div>
+    <div id="sector-legend"></div>
+  </div>
+</div>
+
+<script>
+  // Prefix 'life_' to avoid global conflict
+  let life_data = typeof lifespan_data !== "undefined" ? lifespan_data : null;
+  let life_chart = null;
+
+  function life_createChart() {
+    if (!life_data) {
+      console.error("Lifespan data not loaded.");
+      return;
+    }
+
+    const container = document.querySelector("#lifespan-viz-wrapper #main");
+    if (!container) return;
+
+    life_chart = echarts.init(container);
+
+    const dynasties = life_data.dynasties;
+    const metadata = life_data.metadata;
+
+    // Y-axis categories
+    const yCategories = dynasties.map((d) => `D${d.dynasty_id}`);
+
+    // Flatten segments for custom series
+    const allSegments = [];
+    dynasties.forEach((dynasty, dynastyIdx) => {
+      dynasty.segments.forEach((segment) => {
+        allSegments.push({
+          dynastyIdx: dynastyIdx,
+          dynastyId: dynasty.dynasty_id,
+          dynastyName: dynasty.dynasty_name,
+          sector: segment.sector,
+          color: segment.color,
+          start: segment.start_year,
+          end: segment.end_year,
+          duration: segment.end_year - segment.start_year + 1,
+        });
+      });
+    });
+
+    const option = {
+      grid: {
+        left: 80,
+        right: 30,
+        top: 30,
+        bottom: 50,
+        containLabel: true,
+      },
+      tooltip: {
+        trigger: "item",
+        backgroundColor: "#FFFFFF",
+        borderColor: "#E2E8F0",
+        textStyle: { color: "#1B202B" },
+        formatter: function (params) {
+          const seg = params.data;
+          return `<div style="font-family:inherit;">
+                               <b>${seg.dynastyName}</b><br/>
+                               <span style="color:${seg.color}">●</span> ${seg.sector}<br/>
+                               Period: <b>${seg.start} - ${seg.end}</b><br/>
+                               Duration: ${seg.duration} years
+                               </div>`;
+        },
+      },
+      xAxis: {
+        type: "value",
+        min: metadata.start_year,
+        max: metadata.end_year,
+        axisLabel: {
+          fontSize: 11,
+          color: "#1B202B",
+          formatter: function (value) {
+            return value.toString();
+          },
+        },
+        splitLine: {
+          // Using the clear #CBD5E1 dashed line
+          lineStyle: { color: "#CBD5E1", type: "dashed" },
+        },
+        axisLine: {
+          lineStyle: { color: "#E2E8F0" },
+        },
+      },
+      yAxis: {
+        type: "category",
+        data: yCategories,
+        inverse: true,
+        axisLabel: {
+          fontSize: 12,
+          fontWeight: "bold",
+          color: "#1B202B",
+        },
+        axisLine: {
+          lineStyle: { color: "#E2E8F0" },
+        },
+        splitLine: {
+          show: false,
+        },
+      },
+      series: [
+        {
+          type: "custom",
+          renderItem: function (params, api) {
+            const seg = allSegments[params.dataIndex];
+            const dynastyIdx = seg.dynastyIdx;
+
+            const start = api.coord([seg.start, dynastyIdx]);
+            // +1 to cover the full end year visually
+            const end = api.coord([seg.end + 1, dynastyIdx]);
+
+            // Bar height 60% of category width
+            const height = api.size([0, 1])[1] * 0.6;
+
+            return {
+              type: "rect",
+              shape: {
+                x: start[0],
+                y: start[1] - height / 2,
+                width: end[0] - start[0],
+                height: height,
+              },
+              style: {
+                fill: seg.color,
+                stroke: "#FFFFFF", // White stroke separates segments
+                lineWidth: 1,
+                opacity: 0.8,
+              },
+              emphasis: {
+                style: {
+                  stroke: "#1B202B",
+                  lineWidth: 1,
+                },
+              },
+            };
+          },
+          data: allSegments,
+          encode: {
+            x: [0, 1],
+            y: 2,
+          },
+        },
+      ],
+    };
+
+    life_chart.setOption(option);
+  }
+
+  function life_createLegend() {
+    if (!life_data) return;
+
+    const legendContainer = document.querySelector(
+      "#lifespan-viz-wrapper #sector-legend"
+    );
+    if (!legendContainer) return;
+
+    const sectorColors = life_data.sector_colors;
+
+    // Get unique sectors
+    const usedSectors = new Set();
+    life_data.dynasties.forEach((d) => {
+      d.segments.forEach((seg) => {
+        usedSectors.add(seg.sector);
+      });
+    });
+
+    let html =
+      '<span style="font-weight: 700; color: #1B202B; margin-right: 10px; font-size: 12px;">Sectors:</span>';
+    for (const [sector, color] of Object.entries(sectorColors)) {
+      if (usedSectors.has(sector)) {
+        html += `
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: ${color};"></div>
+                            <span>${sector}</span>
+                        </div>
+                    `;
+      }
+    }
+
+    legendContainer.innerHTML = html;
+  }
+
+  // Init Logic
+  if (life_data) {
+    life_createChart();
+    life_createLegend();
+  } else {
+    setTimeout(() => {
+      life_data = typeof lifespan_data !== "undefined" ? lifespan_data : null;
+      life_createChart();
+      life_createLegend();
+    }, 500);
+  }
+
+  // Responsive Resize
+  const life_observer = new ResizeObserver(() => {
+    if (life_chart) life_chart.resize();
+  });
+
+  const life_wrapper = document.getElementById("lifespan-viz-wrapper");
+  if (life_wrapper) life_observer.observe(life_wrapper);
+</script>

@@ -85,7 +85,11 @@ At the decadal level, this definition allows us to observe how often different d
 
 <!-- INSERT HTML FILE: dynasty_reign_by_decade.html -->
 
-{% include decade_embed.html %}
+{% include lifespan_embed_theme.html %}
+
+A finer view of the market is provided by the status table.
+
+{% include status_table.html %}
 
 Seen through this lens, decades are not governed by uninterrupted continuity. Leadership shifts within the same period, and dominance, when it emerges, tends to be partial rather than absolute. This reinforces the idea that market history unfolds through overlapping regimes rather than clean successions.
 
@@ -107,6 +111,12 @@ Dynasties coexist, expand, contract, and overlap, producing patterns that only b
 </div>
 <!-- 
 <video src="{{ '/assets/video/Section.mp4' | relative_url }}" autoplay loop muted playsinline style="width: 70%; height: auto; display: block; margin: 0 auto;"></video>  -->
+
+{% include decade_embed.html %}
+
+some text to write here to explain the next section
+
+{% include yearly_embed_theme.html %}
 
 <div class="laurel-title medium">
   <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
