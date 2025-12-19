@@ -1,0 +1,272 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+<script src="assets/data/yearly_dominance_data.js"></script>
+
+<div id="yearly-viz-wrapper">
+  <style>
+    /* Scoped wrapper */
+    #yearly-viz-wrapper {
+      font-family: inherit;
+      width: 100%;
+      padding: 0;
+      background: transparent;
+      box-sizing: border-box;
+    }
+
+    #yearly-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    #yearly-viz-wrapper #chart-container {
+      color: #1b202b;
+    }
+
+    #yearly-viz-wrapper #main {
+      height: 500px;
+      width: 100%;
+    }
+
+    #yearly-viz-wrapper #sector-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    #yearly-viz-wrapper .legend-item {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: #1b202b;
+      opacity: 0.8;
+    }
+
+    #yearly-viz-wrapper .legend-color {
+      width: 16px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 6px;
+    }
+
+    @media (max-width: 768px) {
+      #yearly-viz-wrapper #main {
+        height: 350px;
+      }
+    }
+  </style>
+
+  <div id="chart-container">
+    <div id="main"></div>
+    <div id="sector-legend"></div>
+  </div>
+</div>
+
+<script>
+  // Prefix 'yr_' to avoid global conflict
+  let yr_data =
+    typeof yearly_dominance_data !== "undefined" ? yearly_dominance_data : null;
+  let yr_chart = null;
+
+  function yr_createChart() {
+    if (!yr_data) {
+      console.error("Yearly data not loaded.");
+      return;
+    }
+
+    const container = document.querySelector("#yearly-viz-wrapper #main");
+    if (!container) return;
+
+    yr_chart = echarts.init(container);
+
+    const years = yr_data.years;
+    const dataPoints = yr_data.data;
+    const sectorColors = yr_data.sector_colors;
+
+    // Build visual map pieces for multi-colored line
+    const pieces = [];
+    dataPoints.forEach((d, idx) => {
+      if (idx < dataPoints.length - 1) {
+        pieces.push({
+          gte: idx,
+          lt: idx + 1,
+          color: sectorColors[d.primary_sector] || "#cccccc",
+        });
+      }
+    });
+    // Handle last point
+    if (dataPoints.length > 0) {
+      const lastIdx = dataPoints.length - 1;
+      pieces.push({
+        gte: lastIdx,
+        lte: lastIdx,
+        color: sectorColors[dataPoints[lastIdx].primary_sector] || "#cccccc",
+      });
+    }
+
+    const option = {
+      grid: {
+        left: 60,
+        right: 30,
+        top: 40,
+        bottom: 40,
+        containLabel: true,
+      },
+      tooltip: {
+        trigger: "axis",
+        backgroundColor: "#FFFFFF",
+        borderColor: "#E2E8F0",
+        textStyle: { color: "#1B202B" },
+        formatter: function (params) {
+          const p = params[0];
+          const d = dataPoints[p.dataIndex];
+          return `<div style="font-family:inherit;">
+                               <b>${d.year}</b><br/>
+                               <span style="color:${
+                                 sectorColors[d.primary_sector] || "#333"
+                               }">●</span> 
+                               <b>Dynasty ${d.dominant_dynasty_id}</b><br/>
+                               <span style="font-size:12px; opacity:0.8">${
+                                 d.primary_sector
+                               }</span><br/>
+                               Dominance: <b>${d.dominance_score.toFixed(
+                                 4
+                               )}</b><br/>
+                               Market Cap: $${d.total_market_cap_bn}B
+                               </div>`;
+        },
+      },
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: years,
+        axisLabel: {
+          fontSize: 11,
+          color: "#1B202B",
+          interval: "auto",
+        },
+        axisLine: {
+          lineStyle: { color: "#E2E8F0" },
+        },
+      },
+      yAxis: {
+        type: "value",
+        name: "Dominance Score",
+        nameLocation: "middle",
+        nameGap: 40,
+        nameTextStyle: {
+          fontSize: 13,
+          fontWeight: "bold",
+          color: "#1B202B",
+        },
+        min: 0,
+        max: function (value) {
+          return Math.ceil(value.max * 10) / 10;
+        },
+        splitLine: {
+          lineStyle: { color: "#CBD5E1", type: "dashed" },
+        },
+        axisLabel: {
+          color: "#1B202B",
+        },
+      },
+      visualMap: {
+        show: false,
+        dimension: 0,
+        pieces: pieces,
+      },
+      series: [
+        {
+          name: "Dominance Score",
+          type: "line",
+          data: dataPoints.map((d) => d.dominance_score),
+          smooth: true,
+          symbol: "circle",
+          symbolSize: 8,
+          lineStyle: {
+            width: 3,
+          },
+          areaStyle: {
+            opacity: 0.35, // Subtle area fill
+          },
+          label: {
+            show: true,
+            position: "top",
+            formatter: function (params) {
+              // Only show label if score is high enough to avoid clutter, or logic based on index
+              // For now showing all as per original, but user can tweak
+              return dataPoints[params.dataIndex].dynasty_name;
+            },
+            fontSize: 10,
+            fontWeight: "bold",
+            color: "#1B202B",
+            backgroundColor: "rgba(255,255,255,0.9)",
+            padding: [3, 4],
+            borderRadius: 3,
+            distance: 8,
+          },
+          emphasis: {
+            focus: "series",
+            itemStyle: {
+              borderColor: "#1B202B",
+              borderWidth: 2,
+            },
+          },
+        },
+      ],
+    };
+
+    yr_chart.setOption(option);
+  }
+
+  function yr_createLegend() {
+    if (!yr_data) return;
+
+    const legendContainer = document.querySelector(
+      "#yearly-viz-wrapper #sector-legend"
+    );
+    if (!legendContainer) return;
+
+    const sectorColors = yr_data.sector_colors;
+
+    // Get unique sectors used in data
+    const usedSectors = new Set(yr_data.data.map((d) => d.primary_sector));
+
+    let html =
+      '<span style="font-weight: 700; color: #1B202B; margin-right: 10px; font-size: 12px;">Sectors:</span>';
+    for (const [sector, color] of Object.entries(sectorColors)) {
+      if (usedSectors.has(sector)) {
+        html += `
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: ${color};"></div>
+                            <span>${sector}</span>
+                        </div>
+                    `;
+      }
+    }
+
+    legendContainer.innerHTML = html;
+  }
+
+  // Init Logic
+  if (yr_data) {
+    yr_createChart();
+    yr_createLegend();
+  } else {
+    setTimeout(() => {
+      yr_data =
+        typeof yearly_dominance_data !== "undefined"
+          ? yearly_dominance_data
+          : null;
+      yr_createChart();
+      yr_createLegend();
+    }, 500);
+  }
+
+  // Responsive Resize
+  const yr_observer = new ResizeObserver(() => {
+    if (yr_chart) yr_chart.resize();
+  });
+
+  const yr_wrapper = document.getElementById("yearly-viz-wrapper");
+  if (yr_wrapper) yr_observer.observe(yr_wrapper);
+</script>
