@@ -143,5 +143,3 @@ You are given a fixed budget of <span class="hl" style="--hl-bg: #D93B3B;">**$15
 Each stock has a cost. Selecting one reduces the capital available to the others. Concentrating your budget on a few dominant players may deliver strength, while spreading it more evenly may offer stability. The constraints are intentional, they mirror the limits under which every historical dynasty was formed.
 
 To begin, search the archive to find stocks and add them to your selection. Once chosen, drag and drop each stock into the portfolio grid to define your dynasty. You may rearrange or replace holdings at any time, as long as you remain within the budget and select exactly ten stocks.
-
-<!-- {% include stock_game.html %} -->
