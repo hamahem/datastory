@@ -1,69 +1,65 @@
-# Clustering & Dynasty Detection
+# The Clustering Records
 
 <video src="{{ '/assets/video/Section.mp4' | relative_url }}" autoplay loop muted playsinline style="width: 70%; height: auto; display: block; margin: 0 auto;"></video>
 
-## Methodology Overview
+In this book, we move beyond individual companies and search for structure. By comparing patterns of growth, decline, and survival across time, we reconstruct lineages, groups of firms shaped by similar economic forces. This book is devoted to explaining how such patterns are identified. It presents the theoretical framework and mathematical tools used to compare tickers across time, and to reconstruct dynasties from opaque records.
 
-Using advanced clustering techniques, we identified distinct patterns of market behavior that define our "dynasties" - groups of companies that rise and fall together across market cycles.
+## The Clustering Recipe
 
-## Clustering Algorithm Selection
+### The Technique
 
-### K-Means Clustering
+The technique of time-series clustering in the unsupervised scenario (no labels at disposition) is our main tool. Regression explains relationships under assumed models; classification assigns predefined categories. Neither is suited to uncovering structures that are not known in advance. Clustering time-series, by contrast, allows patterns to emerge from the records themselves. It does not impose dynasties onto history; it tests whether history contains them.
 
-We employed k-means clustering with the following parameters:
+### Feature Extraction
 
-- **Number of clusters**: Determined via elbow method and silhouette analysis
-- **Distance metric**: Euclidean distance on normalized features
-- **Initialization**: K-means++ for robust centroid selection
+The principle of the method is to extract from each cumulative log-return time series a vector of descriptive statistics capturing its distributional, temporal, and structural properties; clustering is then performed in this derived feature space. The library TSfresh contains a built-in function to extract $\approx 800$ features per time series to which we add statistical elements (mean, max, q25, q75..) and multiple financial features of which:
 
-### Feature Selection
+- _$\beta$ Value:_
 
-Key features used for clustering:
+  Stock returns are highly correlated with overall market movements (systematic risk). For each stock, we estimate its sensitivity to the market (e.g., the S&P 500 represented by SPY) using the market model:
 
-1. **Price momentum** (30-day, 90-day, 180-day)
-2. **Volatility patterns**
-3. **Trading volume characteristics**
-4. **Market cap trajectory**
-5. **Sector correlation coefficients**
+  $$r_{i,t} = \alpha_i + \beta_i \, r_{m,t} + \varepsilon_{i,t}$$
 
-## Dynasty Identification
+  where:
 
-### Temporal Analysis
+  - $r_{i,t}$ = return of stock i at time t,
+  - $r_{m,t}$ = market (SPY) return at time t,
+  - $\alpha_i$ = intercept term,
+  - $\varepsilon_{i,t}$ = idiosyncratic (residual) return.
 
-We analyzed cluster membership over rolling time windows to identify:
+  The slope $\beta_i$ measures how much the stock moves with the market and is given by:
 
-- **Stable dynasties**: Clusters maintaining core membership >5 years
-- **Emerging dynasties**: New patterns forming in recent data
-- **Declining dynasties**: Historical clusters losing cohesion
+  $$\beta_i = \frac{\operatorname{Cov}(r_i, r_m)}{\operatorname{Var}(r_m)}$$
 
-### Statistical Validation
+- _Sharpe Ratio:_
 
-Each dynasty was validated using:
+  The Sharpe ratio measures the risk-adjusted performance of a stock by comparing its expected excess return to its volatility. It is defined as
 
-- **Silhouette scores** (>0.6 threshold)
-- **Inter-cluster distance** (maximization)
-- **Intra-cluster cohesion** (minimization)
+  $$\mathrm{Sharpe_i} = \frac{\mathbb{E}[r_i - r_f]}{\sigma(r_i - r_f)}$$
 
-## Key Findings
+  where:
 
-Our analysis revealed **7 major dynasties** spanning the 40-year period:
+  - $r_i$ = return of stock i
+  - $r_f$ = the risk-free rate, which is assumed to be 0
+  - $\sigma(\cdot)$ = the standard deviation of returns
 
-1. **The Tech Pioneers** (1985-2000)
-2. **The Dot-com Survivors** (2000-2008)
-3. **The Financial Giants** (1990-2008)
-4. **The FAANG Empire** (2010-2020)
-5. **The Cloud Titans** (2015-present)
-6. **The Biotech Innovators** (2012-present)
-7. **The Clean Energy Wave** (2018-present)
+  A higher Sharpe ratio indicates better compensation for the risk taken.
 
-## Visualization
+The extraction algorithm is deliberately exhaustive: rather than presupposing which characteristics matter, it allows a wide range of potential patterns to be represented before dimensionality reduction with the UMAP algorithm.
 
-Dynasty evolution can be visualized through:
+### Clustering and Evaluation
 
-- Temporal heatmaps showing cluster strength
-- Network graphs revealing inter-dynasty relationships
-- Time-series plots tracking dynasty dominance
+After much testing, historians will find that the K-Means algorithm will be the most suitable to obtain the desired results. K-Means is one of the most widely used clustering algorithms. It partitions the dataset into k clusters by minimizing the within-cluster sum of squared distances. This result is found, choosing between the different clustering algorithms, by finding the maximum value of the heuristic:
 
-## Interpretation
+$$h = \text{Sil} - 0.5 \cdot\text{DB}$$
 
-These dynasties represent more than statistical patterns - they reflect fundamental shifts in technology, consumer behavior, and economic conditions that shaped NASDAQ over four decades.
+where:
+
+- ⁠Sil = the silhouette score of the clustering assesses the cohesion and separation of the datapoints within each cluster and to neighbouring ones.
+- ⁠DB = the Davies-Boulding score of the clustering assesses the distance between clusters and assesses their separation.
+
+This heuristic favors compact, well-separated clusters while penalizing artificial fragmentation, reflecting the historical objective of identifying coherent lineages rather than extremely distinct separations.
+
+## Reference
+
+[1] _Enes, J., Expósito, R. R., Fuentes, J., López Cacheiro, J., & Touriño, J._ (2023). <a href="https://doi.org/10.1016/j.inffus.2022.12.017">A pipeline architecture for feature-based unsupervised clustering using multivariate time series from HPC jobs</a>
