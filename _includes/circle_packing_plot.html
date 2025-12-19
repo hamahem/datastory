@@ -1,0 +1,491 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-hierarchy@3.1.2/dist/d3-hierarchy.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div id="dynasty-viz-wrapper">
+  <style>
+    /* Scope all styles to this wrapper to prevent leaking into Jekyll site */
+    #dynasty-viz-wrapper {
+      /* Map Jekyll Colors to Local Variables */
+      --viz-bg: #f8fafc;
+      --viz-text: #1b202b;
+      --viz-accent: #008aff;
+      --viz-hover: #e6c47a;
+      --viz-ui-bg: #ffffff;
+
+      /* Layout configuration */
+      position: relative;
+      width: 100%;
+      height: 750px; /* Fixed height for the embed */
+      background: var(--viz-bg);
+      color: var(--viz-text);
+      font-family: inherit; /* Inherit font from your Jekyll theme */
+      overflow: hidden;
+    }
+
+    /* --- Main Layout --- */
+    #dynasty-viz-wrapper #main-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #dynasty-viz-wrapper #main {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* --- Static Header Year Display --- */
+    #dynasty-viz-wrapper #year-display {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--viz-text);
+      opacity: 0.15; /* Subtle watermark effect */
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* --- Floating Controls Container --- */
+    #dynasty-viz-wrapper #timeline-container {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* --- Floating Buttons --- */
+    #dynasty-viz-wrapper .control-btn {
+      border: 1px solid #eee;
+      background: var(--viz-ui-bg);
+      cursor: pointer;
+      color: var(--viz-text);
+      font-size: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px; /* Softer edges */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.2s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    #dynasty-viz-wrapper .control-btn:hover {
+      color: var(--viz-accent);
+      border-color: var(--viz-accent);
+      transform: translateY(-2px);
+    }
+
+    #dynasty-viz-wrapper #play-btn {
+      width: 44px;
+      height: 44px;
+      background: var(--viz-accent);
+      color: white;
+      border: none;
+    }
+
+    #dynasty-viz-wrapper #play-btn:hover {
+      background: var(--viz-hover);
+      color: var(--viz-text);
+    }
+
+    #dynasty-viz-wrapper #play-btn.playing {
+      background: #e74c3c; /* Keep red for stop action */
+      color: white;
+    }
+
+    /* --- Slider Wrapper --- */
+    #dynasty-viz-wrapper .slider-wrapper {
+      height: 200px;
+      width: 40px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Range Input */
+    #dynasty-viz-wrapper input[type="range"] {
+      -webkit-appearance: none;
+      width: 4px;
+      height: 100%;
+      background: transparent;
+      cursor: pointer;
+      writing-mode: vertical-lr;
+      margin: 0;
+      z-index: 2;
+    }
+
+    #dynasty-viz-wrapper input[type="range"]::-webkit-slider-runnable-track {
+      width: 4px;
+      height: 100%;
+      cursor: pointer;
+      background: #cbd5e0;
+      border-radius: 2px;
+      border: none;
+    }
+
+    #dynasty-viz-wrapper input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: var(--viz-ui-bg);
+      border: 2px solid var(--viz-accent);
+      cursor: pointer;
+      margin-left: -6px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: transform 0.1s;
+    }
+
+    /* --- Floating Label --- */
+    #dynasty-viz-wrapper #thumb-label {
+      position: absolute;
+      left: -50px;
+      top: 0;
+      background: var(--viz-text);
+      color: var(--viz-ui-bg);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      pointer-events: none;
+      transition: top 0.1s linear;
+      white-space: nowrap;
+    }
+
+    #dynasty-viz-wrapper #thumb-label::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -6px;
+      transform: translateY(-50%);
+      border-width: 4px;
+      border-style: solid;
+      border-color: transparent transparent transparent var(--viz-text);
+    }
+
+    /* Tooltip Styling */
+    .tooltip-custom {
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--viz-text);
+    }
+  </style>
+
+  <div id="main-container">
+    <div id="year-display">1980</div>
+    <div id="main"></div>
+
+    <div id="timeline-container">
+      <button
+        id="reset-btn"
+        class="control-btn"
+        onclick="viz_resetZoom()"
+        title="Reset Zoom"
+      >
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+
+      <div style="height: 5px"></div>
+
+      <button
+        class="control-btn"
+        onclick="viz_changeYear(-1)"
+        title="Previous Year"
+      >
+        <i class="fa-solid fa-chevron-up"></i>
+      </button>
+
+      <div class="slider-wrapper">
+        <div id="thumb-label">1980</div>
+        <input
+          type="range"
+          id="yearSlider"
+          min="1980"
+          max="2024"
+          value="1980"
+          step="1"
+          oninput="viz_updateYear(this.value)"
+        />
+      </div>
+
+      <button class="control-btn" onclick="viz_changeYear(1)" title="Next Year">
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+
+      <div style="height: 5px"></div>
+
+      <button
+        id="play-btn"
+        class="control-btn"
+        onclick="viz_togglePlay()"
+        title="Play Animation"
+      >
+        <i class="fa-solid fa-play" style="padding-left: 2px"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/data/circle_packing_data.js"></script>
+
+<script>
+  // Use an IIFE or unique prefixing to avoid global variable collisions in Jekyll
+
+  let viz_db = typeof packing_data !== "undefined" ? packing_data : {};
+  const VIZ_START_YEAR = 1980;
+  const VIZ_END_YEAR = 2024;
+  let viz_currentYear = VIZ_START_YEAR;
+
+  // Target the element inside the wrapper specifically
+  let viz_chartDom = document.querySelector("#dynasty-viz-wrapper #main");
+  let myChart = echarts.init(viz_chartDom);
+
+  let viz_playInterval = null;
+  let viz_isPlaying = false;
+
+  if (Object.keys(viz_db).length > 0) {
+    viz_updateYear(VIZ_START_YEAR);
+  } else {
+    console.error("Data not loaded. Check JS path.");
+  }
+
+  // --- Layout Logic (Unchanged but scoped vars) ---
+  function viz_calculateLayout(rootNode) {
+    const width = myChart.getWidth();
+    const height = myChart.getHeight();
+
+    const root = d3
+      .hierarchy(rootNode)
+      .sum((d) => d.value || 1)
+      .sort((a, b) => b.value - a.value);
+
+    d3
+      .pack()
+      .size([width - 40, height - 40])
+      .padding(3)(root);
+
+    return root.descendants().map((node) => ({
+      id: node.data.id,
+      name: node.data.name,
+      value: node.value,
+      depth: node.depth,
+      x: node.x,
+      y: node.y,
+      r: node.r,
+      sector: node.data.sector,
+      color: node.data.color,
+      isLeaf: !node.children,
+    }));
+  }
+
+  function viz_renderItem(params, api) {
+    const node = api.value(0);
+    if (!node) return;
+
+    let label = "";
+    if (node.depth === 1) label = node.name;
+    else if (node.isLeaf && node.r > 12) label = node.name;
+
+    // Use CSS var for default text color if needed, else hex
+    return {
+      type: "circle",
+      shape: { cx: node.x, cy: node.y, r: node.r },
+      transition: ["shape", "style"],
+      textContent: {
+        type: "text",
+        style: {
+          text: label,
+          fontFamily: "inherit", // Inherit Jekyll font
+          width: node.r * 1.5,
+          overflow: "truncate",
+          fontSize: node.depth === 1 ? 14 : Math.max(node.r / 3, 10),
+          fill: node.isLeaf ? "#1B202B" : "#fff",
+          fontWeight: node.depth === 1 ? "bold" : "normal",
+          textAlign: "center",
+        },
+      },
+      textConfig: { position: "inside" },
+      style: {
+        fill: node.color || "#008AFF",
+        stroke: "#fff",
+        lineWidth: node.depth === 0 ? 0 : 1,
+        opacity: node.depth === 0 ? 0 : node.depth === 1 ? 0.9 : 0.8,
+        shadowBlur: node.depth === 1 ? 5 : 0,
+        shadowColor: "rgba(0,0,0,0.1)",
+      },
+      emphasis: {
+        style: {
+          shadowBlur: 15,
+          shadowColor: "rgba(0,0,0,0.2)",
+          lineWidth: 2,
+        },
+      },
+    };
+  }
+
+  function viz_renderChart(targetNodeId) {
+    const yearKey = String(viz_currentYear);
+    const rawData = viz_db[yearKey];
+    if (!rawData) return;
+
+    let targetNode = rawData;
+    if (targetNodeId && targetNodeId !== "root") {
+      const found = rawData.children.find((c) => c.id === targetNodeId);
+      if (found) targetNode = found;
+    }
+
+    const flatData = viz_calculateLayout(targetNode);
+
+    myChart.setOption({
+      tooltip: {
+        padding: 10,
+        backgroundColor: "#FFFFFF",
+        borderColor: "#e2e8f0",
+        borderWidth: 1,
+        textStyle: { color: "#1B202B" },
+        formatter: (params) => {
+          const d = params.data;
+          const v = d.value ? d.value.toLocaleString() : "0";
+          return `<div class="tooltip-custom">
+                                <strong>${d.name}</strong><br/>
+                                <span style="color:#008AFF">${
+                                  d.sector || ""
+                                }</span><br/>
+                                Value: $${v} B
+                                </div>`;
+        },
+      },
+      series: [
+        {
+          type: "custom",
+          renderItem: (params, api) => {
+            const dataItem = flatData[params.dataIndex];
+            return viz_renderItem(params, { ...api, value: () => dataItem });
+          },
+          data: flatData,
+          coordinateSystem: "none",
+          animationDurationUpdate: 500,
+          animationEasingUpdate: "cubicOut",
+        },
+      ],
+    });
+  }
+
+  // --- Interactions ---
+  myChart.on("click", (params) => {
+    const clickedNode = params.data;
+    if (clickedNode.depth === 1 && !clickedNode.isLeaf)
+      viz_renderChart(clickedNode.id);
+  });
+  myChart.getZr().on("click", (event) => {
+    if (!event.target) viz_renderChart("root");
+  });
+
+  // ResizeObserver is better for embedded components than window.resize
+  const resizeObserver = new ResizeObserver((entries) => {
+    myChart.resize();
+    viz_renderChart("root");
+  });
+  resizeObserver.observe(document.querySelector("#dynasty-viz-wrapper"));
+
+  // --- UI Logic with Scoped Selectors ---
+
+  function viz_updateSliderLabel(year) {
+    const wrapper = document.getElementById("dynasty-viz-wrapper");
+    const slider = wrapper.querySelector("#yearSlider");
+    const label = wrapper.querySelector("#thumb-label");
+
+    const min = parseInt(slider.min);
+    const max = parseInt(slider.max);
+    const val = parseInt(year);
+    const percent = (val - min) / (max - min);
+
+    const trackHeight = slider.offsetHeight - 20;
+    const topPos = percent * trackHeight;
+
+    label.style.top = topPos + "px";
+    label.innerText = year;
+  }
+
+  function viz_updateYear(year) {
+    viz_currentYear = parseInt(year);
+    const wrapper = document.getElementById("dynasty-viz-wrapper");
+
+    wrapper.querySelector("#year-display").innerText = viz_currentYear;
+    wrapper.querySelector("#yearSlider").value = viz_currentYear;
+    viz_updateSliderLabel(viz_currentYear);
+    viz_renderChart("root");
+  }
+
+  function viz_changeYear(delta) {
+    let newYear = viz_currentYear + delta;
+    if (newYear > VIZ_END_YEAR) {
+      if (viz_isPlaying) viz_stopPlaying();
+      return;
+    }
+    if (newYear < VIZ_START_YEAR) return;
+    viz_updateYear(newYear);
+  }
+
+  function viz_stopPlaying() {
+    if (viz_playInterval) {
+      clearInterval(viz_playInterval);
+      viz_playInterval = null;
+    }
+    viz_isPlaying = false;
+    const wrapper = document.getElementById("dynasty-viz-wrapper");
+    const btn = wrapper.querySelector("#play-btn");
+    const icon = btn.querySelector("i");
+    btn.classList.remove("playing");
+    icon.classList.remove("fa-pause");
+    icon.classList.add("fa-play");
+  }
+
+  function viz_togglePlay() {
+    const wrapper = document.getElementById("dynasty-viz-wrapper");
+    const btn = wrapper.querySelector("#play-btn");
+    const icon = btn.querySelector("i");
+
+    if (viz_isPlaying) {
+      viz_stopPlaying();
+    } else {
+      viz_isPlaying = true;
+      btn.classList.add("playing");
+      icon.classList.remove("fa-play");
+      icon.classList.add("fa-pause");
+
+      if (viz_currentYear >= VIZ_END_YEAR) {
+        viz_updateYear(VIZ_START_YEAR);
+      }
+
+      viz_playInterval = setInterval(() => {
+        viz_changeYear(1);
+      }, 1000);
+    }
+  }
+
+  function viz_resetZoom() {
+    viz_renderChart("root");
+  }
+
+  // Initial setup delay
+  setTimeout(() => viz_updateSliderLabel(viz_currentYear), 100);
+</script>

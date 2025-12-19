@@ -1,0 +1,302 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+<div id="decade-viz-wrapper">
+  <style>
+    #decade-viz-wrapper {
+      /* Map Colors */
+      --dec-bg: #f8fafc;
+      --dec-card-bg: #ffffff;
+      --dec-text: #1b202b;
+      --dec-accent: #008aff;
+      --dec-border: #e2e8f0;
+
+      width: 100%;
+      font-family: inherit; /* Use Jekyll Font */
+      color: var(--dec-text);
+      background: var(--dec-bg);
+      padding: 10px 0;
+    }
+
+    /* Grid Layout */
+    #decade-viz-wrapper #dec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* Card Styling */
+    #decade-viz-wrapper .decade-card {
+      background: var(--dec-card-bg);
+      border: 1px solid var(--dec-border);
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      /* Subtle shadow for depth */
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Typography */
+    #decade-viz-wrapper .decade-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dec-text);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    #decade-viz-wrapper .decade-subtitle {
+      font-size: 0.85rem;
+      color: #64748b; /* Muted text */
+      text-align: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--dec-border);
+      padding-bottom: 8px;
+    }
+
+    /* Chart Area */
+    #decade-viz-wrapper .chart-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    #decade-viz-wrapper .chart-box {
+      flex: 1;
+      height: 250px; /* Fixed height for consistency */
+      min-width: 0; /* Flexbox overflow fix */
+    }
+
+    /* Legend Styling */
+    #decade-viz-wrapper .legend-box {
+      width: 140px;
+      padding-left: 10px;
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #decade-viz-wrapper .legend-header {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: var(--dec-accent);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+    }
+
+    #decade-viz-wrapper .legend-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      color: var(--dec-text);
+    }
+
+    #decade-viz-wrapper .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 6px;
+      flex-shrink: 0;
+    }
+
+    #decade-viz-wrapper .legend-txt {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      #decade-viz-wrapper #dec-grid {
+        grid-template-columns: 1fr; /* Stack vertically on mobile */
+      }
+      #decade-viz-wrapper .chart-content {
+        flex-direction: column;
+      }
+      #decade-viz-wrapper .legend-box {
+        width: 100%;
+        padding-left: 0;
+        padding-top: 10px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
+  </style>
+
+  <div id="dec-grid"></div>
+</div>
+
+<script src="assets/data/decade_dominance_data.js"></script>
+
+<script>
+  // Prefix variables to avoid global conflict (dec_)
+  let dec_db = typeof decade_data !== "undefined" ? decade_data : null;
+  const dec_charts = {}; // Store chart instances
+
+  // Custom Palette
+  const dec_colors = {
+    0: "#5470c6",
+    1: "#91cc75",
+    2: "#fac858",
+    3: "#ee6666",
+    4: "#73c0de",
+    5: "#3ba272",
+    6: "#fc8452",
+    7: "#9a60b4",
+    8: "#ea7ccc",
+    9: "#d4ec59",
+    10: "#c23531",
+    11: "#2f4554",
+    12: "#61a0a8",
+    13: "#d48265",
+    14: "#91c7ae",
+  };
+
+  function dec_truncate(str, max = 15) {
+    if (!str) return "Unknown";
+    return str.length > max ? str.substring(0, max - 2) + ".." : str;
+  }
+
+  function dec_init() {
+    if (!dec_db) {
+      console.error("Decade Data not loaded.");
+      return;
+    }
+
+    const container = document.querySelector("#decade-viz-wrapper #dec-grid");
+    if (!container) return;
+    container.innerHTML = ""; // Clear previous if any
+
+    // Sort keys by start year
+    const decades = Object.keys(dec_db).sort(
+      (a, b) => dec_db[a].start_year - dec_db[b].start_year
+    );
+
+    decades.forEach((key) => {
+      const data = dec_db[key];
+      const cleanKey = key.replace(/[^a-zA-Z0-9]/g, "_");
+
+      // --- HTML GENERATION ---
+      const card = document.createElement("div");
+      card.className = "decade-card";
+
+      // Filter Dynasties
+      const dominant = data.dynasties.filter((d) => d.years_dominant > 0);
+
+      // Generate Legend HTML
+      let legendHTML = dominant
+        .map(
+          (d) => `
+                    <div class="legend-row">
+                        <div class="legend-dot" style="background: ${
+                          dec_colors[d.dynasty_id] || "#ccc"
+                        };"></div>
+                        <div class="legend-txt" title="D${d.dynasty_id} - ${
+            d.primary_sector
+          }">
+                            D${d.dynasty_id} (${d.dominance_percentage}%)
+                        </div>
+                    </div>
+                `
+        )
+        .join("");
+
+      card.innerHTML = `
+                    <div class="decade-title">${key}</div>
+                    <div class="decade-subtitle">${data.period}</div>
+                    <div class="chart-content">
+                        <div class="chart-box" id="dec-chart-${cleanKey}"></div>
+                        <div class="legend-box">
+                            <div class="legend-header">Leaders</div>
+                            ${legendHTML}
+                        </div>
+                    </div>
+                `;
+
+      container.appendChild(card);
+
+      // --- ECHARTS INITIALIZATION ---
+      const chartDom = document.getElementById(`dec-chart-${cleanKey}`);
+      const chart = echarts.init(chartDom);
+      dec_charts[cleanKey] = chart;
+
+      // Prepare Data
+      const pieData = dominant.map((d) => ({
+        value: d.dominance_percentage,
+        name: `D${d.dynasty_id}`,
+        itemStyle: { color: dec_colors[d.dynasty_id] || "#ccc" },
+        // Custom data for tooltip
+        info: d,
+      }));
+
+      const option = {
+        tooltip: {
+          trigger: "item",
+          backgroundColor: "#FFFFFF",
+          borderColor: "#e2e8f0",
+          textStyle: { color: "#1B202B" },
+          formatter: function (params) {
+            const d = params.data.info;
+            return `<div style="font-size:12px; line-height:1.4;">
+                                <strong>Dynasty ${d.dynasty_id}</strong><br/>
+                                <span style="color:#008AFF">${
+                                  d.primary_sector
+                                }</span><br/>
+                                Dominance: <b>${
+                                  d.dominance_percentage
+                                }%</b><br/>
+                                Market Cap: $${d.total_market_cap_bn.toFixed(
+                                  1
+                                )}B
+                            </div>`;
+          },
+        },
+        series: [
+          {
+            type: "pie",
+            radius: ["30%", "70%"],
+            center: ["50%", "50%"],
+            avoidLabelOverlap: true,
+            itemStyle: {
+              borderRadius: 4,
+              borderColor: "#FFFFFF",
+              borderWidth: 2,
+            },
+            label: {
+              show: true,
+              position: "inside",
+              formatter: "{d}%", // Show only percentage inside
+              fontSize: 10,
+              color: "#fff",
+              textBorderColor: "transparent",
+            },
+            emphasis: {
+              label: { show: true, fontSize: 12, fontWeight: "bold" },
+              itemStyle: { shadowBlur: 10, shadowColor: "rgba(0,0,0,0.2)" },
+            },
+            data: pieData,
+          },
+        ],
+      };
+
+      chart.setOption(option);
+    });
+  }
+
+  // --- RESIZE OBSERVER (Robust Resizing) ---
+  // Waits for container to change size, then resizes all charts
+  const dec_observer = new ResizeObserver(() => {
+    Object.values(dec_charts).forEach((c) => c.resize());
+  });
+
+  // Initialize
+  setTimeout(() => {
+    dec_init();
+    const wrapper = document.getElementById("decade-viz-wrapper");
+    if (wrapper) dec_observer.observe(wrapper);
+  }, 200);
+</script>
