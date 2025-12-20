@@ -1,81 +1,23 @@
-# Results & Insights
+# The Dynasty Chronicles
 
-## Executive Summary
+For each rolling time window, once clusters are identified, history can begin. This book records how NASDAQ dynasties are constructed from rolling clusters. It interprets their evolution as struggles of power, dominance, and disappearance across market history. How clusters are linked together to form a Dynasty Graph, mapping falls, merges, divisions and continuations across the NASDAQ lifetime.
 
-Our archaeological exploration of NASDAQ's market dynasties reveals profound patterns in how market leadership emerges, dominates, and eventually declines across technological and economic eras.
+## The Secret Algorithm
 
-## Major Discoveries
+The algorithm focuses on the tickers contained in each cluster, it looks at the overlap of elements of cluster A at time window $t=n$ and links it or not to elements of time window $t=n+1$. The algorithm, to match the historical outcome of dynasties, decides on one of the following outcome between time windows:
 
-### 1. Dynasty Lifecycles
+•⁠ ⁠*Continuation*: The code uses the Hungarian Algorithm to find for each current time window cluster, the cluster with the most overlap in the next time window. If this overlap is superior to a certain threshold, the dynasty survives: it is the same entity just moved forward in time and with actualized members.
 
-Each identified dynasty follows a predictable lifecycle:
+•⁠ ⁠*Merges*: If two or more clusters from the past contribute a significant percentage of their tickers to a single new cluster, the algorithm marks it as a merge. Dynasties can thus lose their individuality, absorbed into a larger power, their former identities preserved only as ancestral lines within a new dominant entity.
 
-- **Emergence Phase** (2-3 years): Gradual cluster formation
-- **Golden Age** (5-8 years): Peak market influence and stability
-- **Maturity Phase** (3-5 years): Maintained presence with declining dominance
-- **Decline** (2-4 years): Fragmentation and absorption into new dynasties
+•⁠ ⁠*Splits*: If one large cluster from the past breaks apart into two distinct groups in the next window, we obtain a division, a split. Dynasties can fracture when internal unity no longer holds.
 
-### 2. Leadership Concentration
+•⁠ ⁠*Fall*: If a cluster has no significant overlap with anything in the next window, it is marked as a "fall"—the dynasty has vanished from the record. No successor claims its legacy; it disappears as abruptly as it emerged, leaving only a gap in the historical ledger.
 
-Market leadership is surprisingly concentrated:
+•⁠ ⁠*Rise*: If a new cluster appears that has no "ancestors" from the previous window, it is marked as a new rising dynasty. A new power enters history.
 
-- Top 3 dynasties control **65-75%** of NASDAQ market cap at any given time
-- **Single dynasty dominance** rare - most eras feature 2-3 co-dominant groups
-- Leadership transitions typically take **3-4 years** to complete
+{% include growth_chart.html %}
 
-### 3. Technological Catalysts
+## Reference
 
-Every dynasty shift correlates with major technological disruptions:
-
-| Dynasty | Catalyst | Peak Years |
-|---------|----------|------------|
-| Tech Pioneers | Personal computing revolution | 1985-1995 |
-| Dot-com Survivors | Internet commercialization | 2000-2008 |
-| FAANG Empire | Mobile + social media | 2012-2020 |
-| Cloud Titans | Cloud computing adoption | 2015-2024 |
-
-### 4. Predictive Indicators
-
-Early signs of dynasty emergence include:
-
-- Sustained 24-month outperformance vs. index
-- Cross-sector adoption of common technology
-- Venture capital concentration in related sectors
-- Regulatory discussions around new technologies
-
-## Implications for Investors
-
-### Strategic Insights
-
-1. **Dynasty transitions** offer significant opportunity but require patience
-2. **Diversification across dynasties** reduces portfolio risk
-3. **Early dynasty detection** can yield 10-year alpha opportunities
-
-### Risk Considerations
-
-- Dynasty decline is often **sudden and severe**
-- Regulatory intervention accelerates dynasty fragmentation
-- Technology obsolescence creates permanent value destruction
-
-## Limitations of This Study
-
-- **Survivorship bias**: Analysis excludes delisted companies
-- **Hindsight clarity**: Pattern recognition easier retrospectively
-- **Market structure changes**: NASDAQ's evolution affects comparability
-
-## Future Research Directions
-
-Potential extensions of this work:
-
-- Global exchange comparison (NYSE, LSE, TSE)
-- Micro-dynasty analysis within sectors
-- Real-time dynasty tracking algorithms
-- Machine learning for dynasty transition prediction
-
-## Conclusion
-
-Markets do form dynasties, and understanding their patterns provides valuable context for navigating future market evolution. While specific companies rise and fall, the underlying patterns of technological disruption and market leadership persist across generations.
-
-> "Those who cannot remember the past are condemned to repeat it" - George Santayana
-
-By studying NASDAQ's lost empires, we gain perspective on today's titans and insight into tomorrow's rulers.
+[1] _Arratia, A. & Cabaña, A._ (2011). <a href="https://arxiv.org/pdf/1111.3127">Tracing the temporal evolution of clusters in a financial stock market</a>.

@@ -1,0 +1,213 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+<script src="assets/data/dynasty_growth_data.js"></script>
+
+<div id="growth-viz-wrapper">
+  <style>
+    /* Scoped wrapper */
+    #growth-viz-wrapper {
+      font-family: inherit;
+      width: 100%;
+      padding: 0;
+      background: transparent;
+      box-sizing: border-box;
+    }
+
+    #growth-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    #growth-viz-wrapper #chart-container {
+      color: #1b202b;
+    }
+
+    #growth-viz-wrapper #main {
+      height: 500px; /* Reduced from 100vh for embedding */
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      #growth-viz-wrapper #main {
+        height: 400px;
+      }
+    }
+  </style>
+
+  <div id="chart-container">
+    <div id="main"></div>
+  </div>
+</div>
+
+<script>
+  // Prefix 'gro_' to avoid global conflict
+  let gro_data = typeof growth_data !== "undefined" ? growth_data : null;
+  let gro_chart = null;
+
+  function gro_createChart() {
+    if (!gro_data) {
+      console.error("Growth data not loaded.");
+      return;
+    }
+
+    const container = document.querySelector("#growth-viz-wrapper #main");
+    if (!container) return;
+
+    gro_chart = echarts.init(container);
+
+    const years_list = gro_data.years;
+    const dynasties = gro_data.series;
+
+    // Build ECharts series format
+    const series_data = [];
+    const legend_data = [];
+
+    dynasties.forEach((dynasty) => {
+      const statusIcon = dynasty.active ? "✓" : "†";
+      const legendName = `${dynasty.name} ${statusIcon} (${dynasty.total_members})`;
+
+      series_data.push({
+        name: legendName,
+        type: "line",
+        stack: "Total",
+        areaStyle: {
+          opacity: 0.7, // slightly visible areas
+        },
+        emphasis: {
+          focus: "series",
+          areaStyle: {
+            opacity: 0.9,
+          },
+        },
+        data: dynasty.data,
+        itemStyle: { color: dynasty.color },
+        lineStyle: { width: 2 },
+        smooth: false,
+        symbol: "none", // Cleaner look for stacked area
+      });
+      legend_data.push(legendName);
+    });
+
+    const option = {
+      // Title removed as usually handled by Markdown in Jekyll
+      tooltip: {
+        trigger: "axis",
+        backgroundColor: "#FFFFFF",
+        borderColor: "#E2E8F0",
+        textStyle: { color: "#1B202B" },
+        axisPointer: {
+          type: "cross",
+          label: {
+            backgroundColor: "#66101F",
+          },
+        },
+        formatter: function (params) {
+          const year = params[0].axisValue;
+          let result = `<div style="font-family:inherit;"><b>${year}</b><br/>`;
+          let total = 0;
+
+          // Sort by value descending
+          const sortedParams = [...params].sort((a, b) => b.value - a.value);
+
+          sortedParams.forEach((item) => {
+            if (item.value > 0) {
+              result += `<span style="color:${item.color}">●</span> ${item.seriesName}: <b>${item.value}</b><br/>`;
+              total += item.value;
+            }
+          });
+
+          result += `<hr style="margin: 5px 0; border:0; border-top:1px solid #ddd"/>Total Unique: <b>${total}</b> stocks</div>`;
+          return result;
+        },
+      },
+      legend: {
+        data: legend_data,
+        top: 0,
+        type: "scroll",
+        orient: "horizontal",
+        pageButtonPosition: "end",
+        textStyle: {
+          fontSize: 11,
+          color: "#1B202B",
+        },
+        pageIconColor: "#66101F",
+        pageTextStyle: { color: "#1B202B" },
+      },
+      grid: {
+        left: "3%",
+        right: "4%",
+        bottom: "3%",
+        top: 60, // Space for legend
+        containLabel: true,
+      },
+      xAxis: [
+        {
+          type: "category",
+          boundaryGap: false,
+          data: years_list,
+          axisLabel: {
+            fontSize: 11,
+            color: "#1B202B",
+            interval: "auto",
+          },
+          axisLine: {
+            lineStyle: { color: "#E2E8F0" },
+          },
+          splitLine: {
+            show: true,
+            // Using the clear #CBD5E1 dashed line
+            lineStyle: {
+              color: "#CBD5E1",
+              type: "dashed",
+              opacity: 0.5,
+            },
+          },
+        },
+      ],
+      yAxis: [
+        {
+          type: "value",
+          name: "Count",
+          nameLocation: "middle",
+          nameGap: 40,
+          nameTextStyle: {
+            fontSize: 12,
+            color: "#1B202B",
+            fontWeight: "bold",
+          },
+          axisLabel: {
+            fontSize: 11,
+            color: "#1B202B",
+          },
+          splitLine: {
+            lineStyle: {
+              color: "#CBD5E1",
+              type: "dashed",
+              opacity: 0.5,
+            },
+          },
+        },
+      ],
+      series: series_data,
+    };
+
+    gro_chart.setOption(option);
+  }
+
+  // Init Logic
+  if (gro_data) {
+    gro_createChart();
+  } else {
+    setTimeout(() => {
+      gro_data = typeof growth_data !== "undefined" ? growth_data : null;
+      gro_createChart();
+    }, 500);
+  }
+
+  // Responsive Resize
+  const gro_observer = new ResizeObserver(() => {
+    if (gro_chart) gro_chart.resize();
+  });
+
+  const gro_wrapper = document.getElementById("growth-viz-wrapper");
+  if (gro_wrapper) gro_observer.observe(gro_wrapper);
+</script>

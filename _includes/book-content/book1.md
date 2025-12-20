@@ -1,78 +1,52 @@
-# Data Collection & Preprocessing
+# The Financial Ledger
 
-## Overview
+Historians do not begin with stories. They begin with ledgers. This book gathers what has survived of the NASDAQ’s long history: prices, market capitalizations, sector classifications, and the names of companies that have vanished from the exchange. These records are incomplete, imperfect, and often misleading — yet they are all that remain. This ledger describes the data used in this study. It specifies the records collected, their scope, and their limitations.
 
-This section details the comprehensive methodology employed in gathering and preprocessing the NASDAQ market data that forms the foundation of our dynasty analysis.
+## The Dataset
 
-## Primary Data Sources
+Scrapping the internet for lost clues, leads us to the yfinance library. It yields all the historical price data for all NASDAQ-traded symbols. However, the record is incomplete, tickers which have been delisted in the past have been erased, deleted from the record as if they had never existed.
 
-### NASDAQ Historical Data
+The CRSP (Center for Research in Security Prices) database restores this missing past. It documents 17,231 delisted NASDAQ companies, together with their delisting dates and causes—bankruptcy, merger, regulatory failure, and other forms of institutional exit—allowing decline and disappearance to be studied directly.
 
-- **Source**: Official NASDAQ historical archives
-- **Time Period**: 1985-2024 (40 years of market history)
-- **Frequency**: Daily closing prices and trading volumes
-- **Coverage**: 8,000+ companies tracked over the period
+To situate these firms within a broader economic structure, we obtain industrial classifications through the CRSP–Compustat Merged (CCM) dataset, which provides the GICS sector and sub-industry hierarchy necessary for dynasty analysis.
 
-### Key Metrics Collected
+A ticker's power is captured through market capitalization, computed from CRSP monthly data as price multiplied by shares outstanding. It enables the evolution of a firm’s economic weight to be tracked over time.
 
-1. **Price Data**
+## Financial Terms
 
-   - Opening price
-   - Closing price
-   - High/Low values
-   - Adjusted close (for splits and dividends)
+The financial world hides itself under its opaque jargon, seeking to puzzle the wanderer. Galvanized archeologists, learn these concepts: unpronounceable names and hard mathematics. This knowledge will not deceive.
 
-2. **Volume Metrics**
+**Cumulative Log-Return**:
 
-   - Daily trading volume
-   - Volume-weighted average price (VWAP)
-   - Turnover ratios
-
-3. **Market Capitalization**
-   - Daily market cap calculations
-   - Sector classifications
-   - Industry categorizations
-
-## Data Preprocessing Pipeline
-
-### Step 1: Data Cleaning
-
-We removed outliers and handled missing values to ensure data quality:
-
-- Dropped records with missing close prices or volumes
-- Filtered out zero-volume trading days
-- Validated price ranges against historical norms
-
-### Step 2: Normalization
-
-We applied min-max normalization to ensure comparability across different scales:
+The cumulative log-return over the period, capturing the total compounded performance of a ticker:
 
 $$
-x_{\text{norm}} = \frac{x - x_{\text{min}}}{x_{\text{max}} - x_{\text{min}}}
+R_t^{\mathrm{cum}}
+= \sum_{\tau=1}^{t} \ln\!\left(\frac{P_\tau^{(\mathrm{adj})}}{P_{\tau-1}^{(\mathrm{adj})}}\right)
 $$
 
-This transformation maps all values to the range $[0, 1]$, where $x_{\text{min}}$ and $x_{\text{max}}$ represent the minimum and maximum values in the dataset.
+where:
 
-> "Normalization ensures that companies of vastly different sizes can be meaningfully compared within the same analytical framework."
+- $P_t^{(\mathrm{adj})}$ is the adjusted closing price at time $t$,
+- $P_0^{(\mathrm{adj})}$ is the adjusted closing price at the initial time,
+- $r_\tau$ denotes the log-return at time $\tau$.
 
-### Step 3: Feature Engineering
+This value is more pertinent than the closing price. Prices are not stationnary, the mean and variance change as the stock grows: it is difficult to compare across different time periods or different stocks because of the scale. The Log-Return normalizes the data and smoothen out the comparaison. However, this Log-Return is an extremely noisely signal, better suited for clustering is taken as a cumulative sum.
 
-Generated derived features including:
+**Volatility**:
 
-- **Moving averages** (7-day, 30-day, 90-day): $MA_n = \frac{1}{n}\sum_{i=0}^{n-1} p_{t-i}$
-- **Volatility measures** (standard deviation of returns): $\sigma = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(r_i - \bar{r})^2}$
-- **Momentum indicators**
-- **Relative strength indexes**
+The standard deviation of returns, capturing risk/uncertainty
 
-## Quality Assurance
+$$
+\sigma = \sqrt{\frac{1}{N - 1} \sum_{t=1}^{N} \left(r_t - \bar{r}\right)^2}
+$$
 
-Our quality assurance process included:
+where:
 
-- Cross-validation with multiple data sources
-- Statistical outlier detection
-- Temporal consistency checks
-- Expert domain validation
+- $r_t$ is the log return at time \( t \),
+- $\bar{r}$ is the mean log return over the window,
+- $N$ is the number of observations in the window.
 
-## Next Steps
+## Reference
 
-With clean, normalized data in hand, we proceed to the clustering analysis described in the next book.
+[1] **Asset Mathematics:** Campbell, J. Y., Lo, A. W., & MacKinlay, A. C. (1997). _The Econometrics of Financial Markets_. Princeton University Press.
