@@ -34,7 +34,7 @@ const listing_status_data = {
         "delisted_count": 171,
         "listed_pct": 46.4,
         "delisted_pct": 53.6,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -75,7 +75,7 @@ const listing_status_data = {
         "delisted_count": 171,
         "listed_pct": 46.4,
         "delisted_pct": 53.6,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -128,7 +128,7 @@ const listing_status_data = {
         "delisted_count": 171,
         "listed_pct": 46.4,
         "delisted_pct": 53.6,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -169,7 +169,7 @@ const listing_status_data = {
         "delisted_count": 405,
         "listed_pct": 44.4,
         "delisted_pct": 55.6,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -222,7 +222,7 @@ const listing_status_data = {
         "delisted_count": 390,
         "listed_pct": 45.4,
         "delisted_pct": 54.6,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -275,7 +275,7 @@ const listing_status_data = {
         "delisted_count": 533,
         "listed_pct": 42.8,
         "delisted_pct": 57.2,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -316,7 +316,7 @@ const listing_status_data = {
         "delisted_count": 405,
         "listed_pct": 49.1,
         "delisted_pct": 50.9,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -357,7 +357,7 @@ const listing_status_data = {
         "delisted_count": 457,
         "listed_pct": 47.1,
         "delisted_pct": 52.9,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -398,7 +398,7 @@ const listing_status_data = {
         "delisted_count": 427,
         "listed_pct": 48.7,
         "delisted_pct": 51.3,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -439,7 +439,7 @@ const listing_status_data = {
         "delisted_count": 562,
         "listed_pct": 48.1,
         "delisted_pct": 51.9,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -480,7 +480,7 @@ const listing_status_data = {
         "delisted_count": 494,
         "listed_pct": 48.8,
         "delisted_pct": 51.2,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -521,7 +521,7 @@ const listing_status_data = {
         "delisted_count": 309,
         "listed_pct": 43.1,
         "delisted_pct": 56.9,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -562,7 +562,7 @@ const listing_status_data = {
         "delisted_count": 337,
         "listed_pct": 39.7,
         "delisted_pct": 60.3,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -603,7 +603,7 @@ const listing_status_data = {
         "delisted_count": 512,
         "listed_pct": 30.2,
         "delisted_pct": 69.8,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -644,7 +644,7 @@ const listing_status_data = {
         "delisted_count": 401,
         "listed_pct": 30.0,
         "delisted_pct": 70.0,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -685,7 +685,7 @@ const listing_status_data = {
         "delisted_count": 472,
         "listed_pct": 37.7,
         "delisted_pct": 62.3,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -726,7 +726,7 @@ const listing_status_data = {
         "delisted_count": 514,
         "listed_pct": 46.5,
         "delisted_pct": 53.5,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -767,7 +767,7 @@ const listing_status_data = {
         "delisted_count": 411,
         "listed_pct": 50.3,
         "delisted_pct": 49.7,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -820,7 +820,7 @@ const listing_status_data = {
         "delisted_count": 826,
         "listed_pct": 54.1,
         "delisted_pct": 45.9,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -873,7 +873,7 @@ const listing_status_data = {
         "delisted_count": 493,
         "listed_pct": 59.5,
         "delisted_pct": 40.5,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -914,7 +914,7 @@ const listing_status_data = {
         "delisted_count": 696,
         "listed_pct": 47.0,
         "delisted_pct": 53.0,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -955,7 +955,7 @@ const listing_status_data = {
         "delisted_count": 643,
         "listed_pct": 48.1,
         "delisted_pct": 51.9,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334
@@ -1008,7 +1008,7 @@ const listing_status_data = {
         "delisted_count": 459,
         "listed_pct": 55.5,
         "delisted_pct": 44.5,
-        "primary_sector": "Consumer Staples",
+        "primary_sector": "Financials",
         "total_unique_members": 4884,
         "total_listed": 1550,
         "total_delisted": 3334

@@ -179,7 +179,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Industrials",
-      "total_mc": 38.85431453172348,
+      "total_mc": 38.85431453172349,
       "sectors": [
         {
           "name": "Industrials",
@@ -778,7 +778,7 @@ const nightingale_data = {
       "dynasty_id": 3,
       "name": "Dynasty 3",
       "primary_sector": "Energy",
-      "total_mc": 100.59260198936667,
+      "total_mc": 100.59260198936668,
       "sectors": [
         {
           "name": "Energy",
@@ -947,7 +947,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Information Technology",
-      "total_mc": 367.94118047098215,
+      "total_mc": 367.9411804709821,
       "sectors": [
         {
           "name": "Information Technology",
@@ -1208,7 +1208,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Energy",
-      "total_mc": 10.215430307765153,
+      "total_mc": 10.215430307765152,
       "sectors": [
         {
           "name": "Energy",
@@ -1269,7 +1269,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Information Technology",
-      "total_mc": 442.455386587401,
+      "total_mc": 442.45538658740105,
       "sectors": [
         {
           "name": "Information Technology",
@@ -1356,7 +1356,7 @@ const nightingale_data = {
       "dynasty_id": 3,
       "name": "Dynasty 3",
       "primary_sector": "Energy",
-      "total_mc": 104.39139832552083,
+      "total_mc": 104.39139832552081,
       "sectors": [
         {
           "name": "Energy",
@@ -1443,7 +1443,7 @@ const nightingale_data = {
       "dynasty_id": 4,
       "name": "Dynasty 4",
       "primary_sector": "Energy",
-      "total_mc": 70.59852059783415,
+      "total_mc": 70.59852059783417,
       "sectors": [
         {
           "name": "Energy",
@@ -1779,7 +1779,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Utilities",
-      "total_mc": 1.095149657625476,
+      "total_mc": 1.0951496576254762,
       "sectors": [
         {
           "name": "Utilities",
@@ -1927,7 +1927,7 @@ const nightingale_data = {
       "dynasty_id": 4,
       "name": "Dynasty 4",
       "primary_sector": "Information Technology",
-      "total_mc": 172.2331557065547,
+      "total_mc": 172.23315570655473,
       "sectors": [
         {
           "name": "Information Technology",
@@ -2169,7 +2169,7 @@ const nightingale_data = {
       "dynasty_id": 4,
       "name": "Dynasty 4",
       "primary_sector": "Information Technology",
-      "total_mc": 190.8354576276042,
+      "total_mc": 190.83545762760414,
       "sectors": [
         {
           "name": "Information Technology",
@@ -2418,7 +2418,7 @@ const nightingale_data = {
       "dynasty_id": 4,
       "name": "Dynasty 4",
       "primary_sector": "Information Technology",
-      "total_mc": 192.94103864741575,
+      "total_mc": 192.9410386474158,
       "sectors": [
         {
           "name": "Information Technology",
@@ -2505,7 +2505,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Information Technology",
-      "total_mc": 10.608852557171167,
+      "total_mc": 10.608852557171165,
       "sectors": [
         {
           "name": "Information Technology",
@@ -2754,7 +2754,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Utilities",
-      "total_mc": 3.2110876267016675,
+      "total_mc": 3.211087626701667,
       "sectors": [
         {
           "name": "Utilities",
@@ -3010,7 +3010,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Information Technology",
-      "total_mc": 9.023413979329929,
+      "total_mc": 9.023413979329924,
       "sectors": [
         {
           "name": "Information Technology",
@@ -3099,7 +3099,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Consumer Staples",
-      "total_mc": 789.1696146586809,
+      "total_mc": 789.1696146586808,
       "sectors": [
         {
           "name": "Consumer Staples",
@@ -3273,7 +3273,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Consumer Discretionary",
-      "total_mc": 40.15320788210084,
+      "total_mc": 40.15320788210083,
       "sectors": [
         {
           "name": "Consumer Discretionary",
@@ -3362,7 +3362,7 @@ const nightingale_data = {
       "dynasty_id": 4,
       "name": "Dynasty 4",
       "primary_sector": "Industrials",
-      "total_mc": 985.8197516614583,
+      "total_mc": 985.8197516614584,
       "sectors": [
         {
           "name": "Industrials",
@@ -3449,7 +3449,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Consumer Staples",
-      "total_mc": 680.4176001432717,
+      "total_mc": 680.4176001432714,
       "sectors": [
         {
           "name": "Consumer Staples",
@@ -3625,7 +3625,7 @@ const nightingale_data = {
       "dynasty_id": 4,
       "name": "Dynasty 4",
       "primary_sector": "Consumer Staples",
-      "total_mc": 1480.3728921575107,
+      "total_mc": 1480.3728921575112,
       "sectors": [
         {
           "name": "Consumer Staples",
@@ -3792,7 +3792,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Health Care",
-      "total_mc": 157.02620244095644,
+      "total_mc": 157.0262024409564,
       "sectors": [
         {
           "name": "Health Care",
@@ -4055,7 +4055,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Information Technology",
-      "total_mc": 180.46622776562495,
+      "total_mc": 180.46622776562498,
       "sectors": [
         {
           "name": "Information Technology",
@@ -4144,7 +4144,7 @@ const nightingale_data = {
       "dynasty_id": 4,
       "name": "Dynasty 4",
       "primary_sector": "Industrials",
-      "total_mc": 1526.9806925770904,
+      "total_mc": 1526.9806925770908,
       "sectors": [
         {
           "name": "Industrials",
@@ -4231,7 +4231,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Information Technology",
-      "total_mc": 870.7820870701763,
+      "total_mc": 870.7820870701764,
       "sectors": [
         {
           "name": "Information Technology",
@@ -4400,7 +4400,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Information Technology",
-      "total_mc": 2364.820917552733,
+      "total_mc": 2364.8209175527336,
       "sectors": [
         {
           "name": "Information Technology",
@@ -4663,7 +4663,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Information Technology",
-      "total_mc": 3103.8332055628453,
+      "total_mc": 3103.8332055628457,
       "sectors": [
         {
           "name": "Information Technology",
@@ -4750,7 +4750,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 2448.0352419473547,
+      "total_mc": 2448.035241947355,
       "sectors": [
         {
           "name": "Information Technology",
@@ -4837,7 +4837,7 @@ const nightingale_data = {
       "dynasty_id": 4,
       "name": "Dynasty 4",
       "primary_sector": "Industrials",
-      "total_mc": 1387.5715068830846,
+      "total_mc": 1387.5715068830843,
       "sectors": [
         {
           "name": "Industrials",
@@ -5013,7 +5013,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Financials",
-      "total_mc": 5608.681484718557,
+      "total_mc": 5608.681484718559,
       "sectors": [
         {
           "name": "Financials",
@@ -5100,7 +5100,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 3466.5766475119763,
+      "total_mc": 3466.5766475119767,
       "sectors": [
         {
           "name": "Information Technology",
@@ -5443,7 +5443,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Energy",
-      "total_mc": 2218.746400731016,
+      "total_mc": 2218.746400731017,
       "sectors": [
         {
           "name": "Energy",
@@ -5530,7 +5530,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Consumer Staples",
-      "total_mc": 307.1747320428065,
+      "total_mc": 307.17473204280645,
       "sectors": [
         {
           "name": "Consumer Staples",
@@ -5706,7 +5706,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Consumer Staples",
-      "total_mc": 993.4397690144484,
+      "total_mc": 993.439769014448,
       "sectors": [
         {
           "name": "Consumer Staples",
@@ -5875,7 +5875,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Financials",
-      "total_mc": 5088.111095555303,
+      "total_mc": 5088.111095555304,
       "sectors": [
         {
           "name": "Financials",
@@ -6049,7 +6049,7 @@ const nightingale_data = {
       "dynasty_id": 6,
       "name": "Dynasty 6",
       "primary_sector": "Consumer Staples",
-      "total_mc": 2949.501166240135,
+      "total_mc": 2949.5011662401344,
       "sectors": [
         {
           "name": "Consumer Staples",
@@ -6136,7 +6136,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Consumer Discretionary",
-      "total_mc": 63.90256729614888,
+      "total_mc": 63.90256729614889,
       "sectors": [
         {
           "name": "Consumer Discretionary",
@@ -6218,7 +6218,7 @@ const nightingale_data = {
       "dynasty_id": 2,
       "name": "Dynasty 2",
       "primary_sector": "Financials",
-      "total_mc": 4568.805028187792,
+      "total_mc": 4568.805028187791,
       "sectors": [
         {
           "name": "Financials",
@@ -6479,7 +6479,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Information Technology",
-      "total_mc": 821.4521486793165,
+      "total_mc": 821.4521486793163,
       "sectors": [
         {
           "name": "Information Technology",
@@ -6568,7 +6568,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Information Technology",
-      "total_mc": 4155.15091884359,
+      "total_mc": 4155.150918843591,
       "sectors": [
         {
           "name": "Information Technology",
@@ -6742,7 +6742,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Consumer Discretionary",
-      "total_mc": 646.6742932569708,
+      "total_mc": 646.6742932569709,
       "sectors": [
         {
           "name": "Consumer Discretionary",
@@ -6831,7 +6831,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Information Technology",
-      "total_mc": 4978.960730912951,
+      "total_mc": 4978.9607309129515,
       "sectors": [
         {
           "name": "Information Technology",
@@ -7005,7 +7005,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Consumer Discretionary",
-      "total_mc": 808.8524166749854,
+      "total_mc": 808.8524166749856,
       "sectors": [
         {
           "name": "Consumer Discretionary",
@@ -7094,7 +7094,7 @@ const nightingale_data = {
       "dynasty_id": 6,
       "name": "Dynasty 6",
       "primary_sector": "Financials",
-      "total_mc": 7149.011695561825,
+      "total_mc": 7149.011695561823,
       "sectors": [
         {
           "name": "Financials",
@@ -7181,7 +7181,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Energy",
-      "total_mc": 2418.517688317411,
+      "total_mc": 2418.5176883174113,
       "sectors": [
         {
           "name": "Energy",
@@ -7444,7 +7444,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Energy",
-      "total_mc": 4442.905279260833,
+      "total_mc": 4442.905279260834,
       "sectors": [
         {
           "name": "Energy",
@@ -7531,7 +7531,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Health Care",
-      "total_mc": 1276.5518392178872,
+      "total_mc": 1276.551839217887,
       "sectors": [
         {
           "name": "Health Care",
@@ -7620,7 +7620,7 @@ const nightingale_data = {
       "dynasty_id": 6,
       "name": "Dynasty 6",
       "primary_sector": "Financials",
-      "total_mc": 6211.346738566999,
+      "total_mc": 6211.346738567,
       "sectors": [
         {
           "name": "Financials",
@@ -7794,7 +7794,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Financials",
-      "total_mc": 2199.8990573613933,
+      "total_mc": 2199.899057361394,
       "sectors": [
         {
           "name": "Financials",
@@ -7883,7 +7883,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Energy",
-      "total_mc": 6991.329761433879,
+      "total_mc": 6991.329761433878,
       "sectors": [
         {
           "name": "Energy",
@@ -8313,7 +8313,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Financials",
-      "total_mc": 240.28189953077572,
+      "total_mc": 240.2818995307757,
       "sectors": [
         {
           "name": "Financials",
@@ -8402,7 +8402,7 @@ const nightingale_data = {
       "dynasty_id": 6,
       "name": "Dynasty 6",
       "primary_sector": "Financials",
-      "total_mc": 7574.50838286338,
+      "total_mc": 7574.508382863378,
       "sectors": [
         {
           "name": "Financials",
@@ -8489,7 +8489,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 2806.6200272666492,
+      "total_mc": 2806.620027266649,
       "sectors": [
         {
           "name": "Information Technology",
@@ -8665,7 +8665,7 @@ const nightingale_data = {
       "dynasty_id": 6,
       "name": "Dynasty 6",
       "primary_sector": "Energy",
-      "total_mc": 8746.76428689236,
+      "total_mc": 8746.764286892356,
       "sectors": [
         {
           "name": "Energy",
@@ -8839,7 +8839,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 2440.2745918581422,
+      "total_mc": 2440.274591858142,
       "sectors": [
         {
           "name": "Information Technology",
@@ -9102,7 +9102,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Financials",
-      "total_mc": 835.2223659788223,
+      "total_mc": 835.2223659788224,
       "sectors": [
         {
           "name": "Financials",
@@ -9191,7 +9191,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Health Care",
-      "total_mc": 8600.10700062711,
+      "total_mc": 8600.107000627111,
       "sectors": [
         {
           "name": "Health Care",
@@ -9278,7 +9278,7 @@ const nightingale_data = {
       "dynasty_id": 6,
       "name": "Dynasty 6",
       "primary_sector": "Financials",
-      "total_mc": 7913.453008259964,
+      "total_mc": 7913.453008259966,
       "sectors": [
         {
           "name": "Financials",
@@ -9454,7 +9454,7 @@ const nightingale_data = {
       "dynasty_id": 6,
       "name": "Dynasty 6",
       "primary_sector": "Information Technology",
-      "total_mc": 10951.606173429142,
+      "total_mc": 10951.606173429143,
       "sectors": [
         {
           "name": "Information Technology",
@@ -9628,7 +9628,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Energy",
-      "total_mc": 1231.9837460292767,
+      "total_mc": 1231.9837460292765,
       "sectors": [
         {
           "name": "Energy",
@@ -9717,7 +9717,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Health Care",
-      "total_mc": 10805.689919202223,
+      "total_mc": 10805.689919202225,
       "sectors": [
         {
           "name": "Health Care",
@@ -9891,7 +9891,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Energy",
-      "total_mc": 2566.0748980740473,
+      "total_mc": 2566.0748980740477,
       "sectors": [
         {
           "name": "Energy",
@@ -9980,7 +9980,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Financials",
-      "total_mc": 15148.69332410594,
+      "total_mc": 15148.693324105941,
       "sectors": [
         {
           "name": "Financials",
@@ -10067,7 +10067,7 @@ const nightingale_data = {
       "dynasty_id": 6,
       "name": "Dynasty 6",
       "primary_sector": "Energy",
-      "total_mc": 6025.454807264357,
+      "total_mc": 6025.4548072643565,
       "sectors": [
         {
           "name": "Energy",
@@ -10154,7 +10154,7 @@ const nightingale_data = {
       "dynasty_id": 7,
       "name": "Dynasty 7",
       "primary_sector": "Financials",
-      "total_mc": 5545.512373615289,
+      "total_mc": 5545.512373615288,
       "sectors": [
         {
           "name": "Financials",
@@ -10241,7 +10241,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Consumer Discretionary",
-      "total_mc": 906.680234844719,
+      "total_mc": 906.6802348447192,
       "sectors": [
         {
           "name": "Consumer Discretionary",
@@ -10330,7 +10330,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 15895.19090583578,
+      "total_mc": 15895.190905835781,
       "sectors": [
         {
           "name": "Information Technology",
@@ -10504,7 +10504,7 @@ const nightingale_data = {
       "dynasty_id": 7,
       "name": "Dynasty 7",
       "primary_sector": "Financials",
-      "total_mc": 6091.97489646709,
+      "total_mc": 6091.974896467091,
       "sectors": [
         {
           "name": "Financials",
@@ -10680,7 +10680,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 22319.409458656148,
+      "total_mc": 22319.40945865615,
       "sectors": [
         {
           "name": "Information Technology",
@@ -10854,7 +10854,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Health Care",
-      "total_mc": 1406.4593138353964,
+      "total_mc": 1406.4593138353962,
       "sectors": [
         {
           "name": "Health Care",
@@ -10943,7 +10943,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 25887.715616287896,
+      "total_mc": 25887.715616287904,
       "sectors": [
         {
           "name": "Information Technology",
@@ -11030,7 +11030,7 @@ const nightingale_data = {
       "dynasty_id": 7,
       "name": "Dynasty 7",
       "primary_sector": "Financials",
-      "total_mc": 5141.495999716391,
+      "total_mc": 5141.4959997163905,
       "sectors": [
         {
           "name": "Financials",
@@ -11117,7 +11117,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Energy",
-      "total_mc": 551.6617153514693,
+      "total_mc": 551.6617153514694,
       "sectors": [
         {
           "name": "Energy",
@@ -11206,7 +11206,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 22877.070625828983,
+      "total_mc": 22877.070625828976,
       "sectors": [
         {
           "name": "Information Technology",
@@ -11293,7 +11293,7 @@ const nightingale_data = {
       "dynasty_id": 7,
       "name": "Dynasty 7",
       "primary_sector": "Financials",
-      "total_mc": 9545.753589129077,
+      "total_mc": 9545.753589129075,
       "sectors": [
         {
           "name": "Financials",
@@ -11380,7 +11380,7 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Energy",
-      "total_mc": 2372.0721328458003,
+      "total_mc": 2372.0721328458008,
       "sectors": [
         {
           "name": "Energy",
@@ -11469,7 +11469,7 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 26872.283365394604,
+      "total_mc": 26872.2833653946,
       "sectors": [
         {
           "name": "Information Technology",
@@ -11556,7 +11556,7 @@ const nightingale_data = {
       "dynasty_id": 7,
       "name": "Dynasty 7",
       "primary_sector": "Financials",
-      "total_mc": 18381.342765745747,
+      "total_mc": 18381.342765745754,
       "sectors": [
         {
           "name": "Financials",
@@ -11819,7 +11819,7 @@ const nightingale_data = {
       "dynasty_id": 7,
       "name": "Dynasty 7",
       "primary_sector": "Financials",
-      "total_mc": 10857.139268838278,
+      "total_mc": 10857.139268838275,
       "sectors": [
         {
           "name": "Financials",
@@ -11995,53 +11995,53 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 33647.295247420625,
+      "total_mc": 33547.9726063483,
       "sectors": [
         {
           "name": "Information Technology",
-          "value": 9497.29724220165,
+          "value": 9495.43820031415,
           "itemStyle": {
             "color": "#1f77b4"
           }
         },
         {
           "name": "Financials",
-          "value": 4703.4036998245265,
+          "value": 4684.974510695359,
           "itemStyle": {
             "color": "#d62728"
           }
         },
         {
           "name": "Health Care",
-          "value": 4454.024374638354,
+          "value": 4438.9803366450205,
           "itemStyle": {
             "color": "#ff7f0e"
           }
         },
         {
           "name": "Industrials",
-          "value": 3588.755337624411,
+          "value": 3580.3023364288447,
           "itemStyle": {
             "color": "#9467bd"
           }
         },
         {
           "name": "Consumer Staples",
-          "value": 2491.6554224089514,
+          "value": 2491.5391350356176,
           "itemStyle": {
             "color": "#8c564b"
           }
         },
         {
           "name": "Energy",
-          "value": 2438.9187840365894,
+          "value": 2400.8928512466114,
           "itemStyle": {
             "color": "#e377c2"
           }
         },
         {
           "name": "Consumer Discretionary",
-          "value": 2069.642604699925,
+          "value": 2061.6377278930513,
           "itemStyle": {
             "color": "#2ca02c"
           }
@@ -12055,21 +12055,21 @@ const nightingale_data = {
         },
         {
           "name": "Materials",
-          "value": 1014.9289576391033,
+          "value": 1010.0234115208665,
           "itemStyle": {
             "color": "#7f7f7f"
           }
         },
         {
           "name": "Real Estate",
-          "value": 845.0419487130833,
+          "value": 841.05234861475,
           "itemStyle": {
             "color": "#bcbd22"
           }
         },
         {
           "name": "Utilities",
-          "value": 820.6062242689273,
+          "value": 820.1110965889274,
           "itemStyle": {
             "color": "#aec7e8"
           }
@@ -12082,81 +12082,81 @@ const nightingale_data = {
       "dynasty_id": 7,
       "name": "Dynasty 7",
       "primary_sector": "Consumer Discretionary",
-      "total_mc": 12084.343409463489,
+      "total_mc": 11815.69027472486,
       "sectors": [
         {
           "name": "Consumer Discretionary",
-          "value": 2961.831236829687,
+          "value": 2846.591082769128,
           "itemStyle": {
             "color": "#2ca02c"
           }
         },
         {
           "name": "Information Technology",
-          "value": 1857.9541649031066,
+          "value": 1811.771121328973,
           "itemStyle": {
             "color": "#1f77b4"
           }
         },
         {
           "name": "Communication Services",
-          "value": 1747.6963947442243,
+          "value": 1730.7709273650576,
           "itemStyle": {
             "color": "#17becf"
           }
         },
         {
           "name": "Financials",
-          "value": 1494.5251461823666,
+          "value": 1462.3407811286834,
           "itemStyle": {
             "color": "#d62728"
           }
         },
         {
           "name": "Health Care",
-          "value": 1255.3761196962917,
+          "value": 1238.5990639408747,
           "itemStyle": {
             "color": "#ff7f0e"
           }
         },
         {
           "name": "Industrials",
-          "value": 1014.9342699977387,
+          "value": 981.472282736072,
           "itemStyle": {
             "color": "#9467bd"
           }
         },
         {
           "name": "Materials",
-          "value": 506.9660852702841,
+          "value": 505.6046042719508,
           "itemStyle": {
             "color": "#7f7f7f"
           }
         },
         {
           "name": "Consumer Staples",
-          "value": 469.1559395265626,
+          "value": 466.9458538840625,
           "itemStyle": {
             "color": "#8c564b"
           }
         },
         {
           "name": "Real Estate",
-          "value": 429.5620463094083,
+          "value": 429.28555457540824,
           "itemStyle": {
             "color": "#bcbd22"
           }
         },
         {
           "name": "Utilities",
-          "value": 288.52258404125,
+          "value": 285.77623768375,
           "itemStyle": {
             "color": "#aec7e8"
           }
         },
         {
           "name": "Energy",
-          "value": 57.819421962566665,
+          "value": 56.5327650409,
           "itemStyle": {
             "color": "#e377c2"
           }
@@ -12168,82 +12168,82 @@ const nightingale_data = {
     {
       "dynasty_id": 1,
       "name": "Dynasty 1",
-      "primary_sector": "Consumer Discretionary",
-      "total_mc": 1530.5328773852243,
+      "primary_sector": "Health Care",
+      "total_mc": 1224.9784412658344,
       "sectors": [
         {
-          "name": "Consumer Discretionary",
-          "value": 355.0296911120808,
-          "itemStyle": {
-            "color": "#2ca02c"
-          }
-        },
-        {
           "name": "Health Care",
-          "value": 327.0751693310742,
+          "value": 273.42512838244664,
           "itemStyle": {
             "color": "#ff7f0e"
           }
         },
         {
+          "name": "Consumer Discretionary",
+          "value": 272.6684947012557,
+          "itemStyle": {
+            "color": "#2ca02c"
+          }
+        },
+        {
           "name": "Information Technology",
-          "value": 311.2163049292703,
+          "value": 264.13720375335555,
           "itemStyle": {
             "color": "#1f77b4"
           }
         },
         {
           "name": "Communication Services",
-          "value": 203.35937368078578,
+          "value": 172.1448492845733,
           "itemStyle": {
             "color": "#17becf"
           }
         },
         {
           "name": "Financials",
-          "value": 143.51922590045828,
+          "value": 101.89484889993332,
           "itemStyle": {
             "color": "#d62728"
           }
         },
         {
           "name": "Industrials",
-          "value": 104.61323294562666,
+          "value": 64.893444100485,
           "itemStyle": {
             "color": "#9467bd"
           }
         },
         {
           "name": "Materials",
-          "value": 38.12069997705916,
+          "value": 34.60523864004917,
           "itemStyle": {
             "color": "#7f7f7f"
           }
         },
         {
           "name": "Real Estate",
-          "value": 25.344990764966663,
+          "value": 23.596743595766668,
           "itemStyle": {
             "color": "#bcbd22"
           }
         },
         {
           "name": "Consumer Staples",
-          "value": 16.722884759002508,
+          "value": 12.145512255277504,
           "itemStyle": {
             "color": "#8c564b"
           }
         },
         {
           "name": "Utilities",
-          "value": 3.455202653841667,
+          "value": 3.4494485583000003,
           "itemStyle": {
             "color": "#aec7e8"
           }
         },
         {
           "name": "Energy",
-          "value": 2.0761013310583336,
+          "value": 2.017529094391667,
           "itemStyle": {
             "color": "#e377c2"
           }
@@ -12258,81 +12258,81 @@ const nightingale_data = {
       "dynasty_id": 5,
       "name": "Dynasty 5",
       "primary_sector": "Information Technology",
-      "total_mc": 46553.56641775843,
+      "total_mc": 45960.42583307212,
       "sectors": [
         {
           "name": "Information Technology",
-          "value": 14025.269023153302,
+          "value": 13935.910619904642,
           "itemStyle": {
             "color": "#1f77b4"
           }
         },
         {
           "name": "Financials",
-          "value": 6585.016330231563,
+          "value": 6419.127022464009,
           "itemStyle": {
             "color": "#d62728"
           }
         },
         {
           "name": "Consumer Discretionary",
-          "value": 5181.014062528968,
+          "value": 5093.386304747492,
           "itemStyle": {
             "color": "#2ca02c"
           }
         },
         {
           "name": "Health Care",
-          "value": 4416.653898361315,
+          "value": 4356.138614377657,
           "itemStyle": {
             "color": "#ff7f0e"
           }
         },
         {
           "name": "Industrials",
-          "value": 4285.490754574784,
+          "value": 4241.244943792243,
           "itemStyle": {
             "color": "#9467bd"
           }
         },
         {
           "name": "Communication Services",
-          "value": 4007.4898685795,
+          "value": 3996.4467274555,
           "itemStyle": {
             "color": "#17becf"
           }
         },
         {
-          "name": "Energy",
-          "value": 2716.75171906803,
-          "itemStyle": {
-            "color": "#e377c2"
-          }
-        },
-        {
           "name": "Consumer Staples",
-          "value": 2695.284073713879,
+          "value": 2692.1540997213788,
           "itemStyle": {
             "color": "#8c564b"
           }
         },
         {
+          "name": "Energy",
+          "value": 2667.670672191772,
+          "itemStyle": {
+            "color": "#e377c2"
+          }
+        },
+        {
           "name": "Materials",
-          "value": 1178.102908658286,
+          "value": 1167.741019921665,
           "itemStyle": {
             "color": "#7f7f7f"
           }
         },
         {
           "name": "Utilities",
-          "value": 915.4117201021834,
+          "value": 849.6917419966217,
           "itemStyle": {
             "color": "#aec7e8"
           }
         },
         {
           "name": "Real Estate",
-          "value": 547.0820587866327,
+          "value": 540.9140664991327,
           "itemStyle": {
             "color": "#bcbd22"
           }
@@ -12345,81 +12345,81 @@ const nightingale_data = {
       "dynasty_id": 7,
       "name": "Dynasty 7",
       "primary_sector": "Information Technology",
-      "total_mc": 11730.806475261166,
+      "total_mc": 11336.810574095429,
       "sectors": [
         {
           "name": "Information Technology",
-          "value": 2287.0160520326062,
+          "value": 2187.022312628078,
           "itemStyle": {
             "color": "#1f77b4"
           }
         },
         {
           "name": "Health Care",
-          "value": 2142.279965300139,
+          "value": 2103.6816875516806,
           "itemStyle": {
             "color": "#ff7f0e"
           }
         },
         {
           "name": "Financials",
-          "value": 1396.080377988295,
+          "value": 1372.4716881402367,
           "itemStyle": {
             "color": "#d62728"
           }
         },
         {
           "name": "Industrials",
-          "value": 1369.9068850551068,
+          "value": 1324.8448309802734,
           "itemStyle": {
             "color": "#9467bd"
           }
         },
         {
           "name": "Consumer Discretionary",
-          "value": 1273.14708035667,
+          "value": 1143.5058940790589,
           "itemStyle": {
             "color": "#2ca02c"
           }
         },
         {
           "name": "Real Estate",
-          "value": 891.0254406554532,
+          "value": 887.6193651755198,
           "itemStyle": {
             "color": "#bcbd22"
           }
         },
         {
           "name": "Communication Services",
-          "value": 847.5424925306527,
+          "value": 808.2391636210776,
           "itemStyle": {
             "color": "#17becf"
           }
         },
         {
-          "name": "Materials",
-          "value": 575.9465651195386,
-          "itemStyle": {
-            "color": "#7f7f7f"
-          }
-        },
-        {
           "name": "Consumer Staples",
-          "value": 572.4447978102784,
+          "value": 570.4189371421951,
           "itemStyle": {
             "color": "#8c564b"
           }
         },
         {
+          "name": "Materials",
+          "value": 568.0142360973824,
+          "itemStyle": {
+            "color": "#7f7f7f"
+          }
+        },
+        {
           "name": "Utilities",
-          "value": 360.9088651168775,
+          "value": 359.3178648510442,
           "itemStyle": {
             "color": "#aec7e8"
           }
         },
         {
           "name": "Energy",
-          "value": 14.507953295550001,
+          "value": 11.674593828883333,
           "itemStyle": {
             "color": "#e377c2"
           }
@@ -12432,81 +12432,81 @@ const nightingale_data = {
       "dynasty_id": 1,
       "name": "Dynasty 1",
       "primary_sector": "Health Care",
-      "total_mc": 765.1000208702686,
+      "total_mc": 595.7623508140031,
       "sectors": [
         {
           "name": "Health Care",
-          "value": 220.22651236759702,
+          "value": 195.78668361690194,
           "itemStyle": {
             "color": "#ff7f0e"
           }
         },
         {
           "name": "Information Technology",
-          "value": 150.00368823152522,
+          "value": 126.03898787983331,
           "itemStyle": {
             "color": "#1f77b4"
           }
         },
         {
           "name": "Consumer Discretionary",
-          "value": 104.53857458239169,
+          "value": 68.68381930010999,
           "itemStyle": {
             "color": "#2ca02c"
           }
         },
         {
-          "name": "Financials",
-          "value": 71.60815541348344,
-          "itemStyle": {
-            "color": "#d62728"
-          }
-        },
-        {
           "name": "Communication Services",
-          "value": 70.71159186012501,
+          "value": 59.757965338478314,
           "itemStyle": {
             "color": "#17becf"
           }
         },
         {
           "name": "Consumer Staples",
-          "value": 58.23743909591168,
+          "value": 55.43182299526834,
           "itemStyle": {
             "color": "#8c564b"
           }
         },
         {
           "name": "Industrials",
-          "value": 55.672142757070006,
+          "value": 41.26766043926169,
           "itemStyle": {
             "color": "#9467bd"
           }
         },
         {
+          "name": "Financials",
+          "value": 17.411240870883333,
+          "itemStyle": {
+            "color": "#d62728"
+          }
+        },
+        {
           "name": "Real Estate",
-          "value": 17.445606293026668,
+          "value": 16.89279054395167,
           "itemStyle": {
             "color": "#bcbd22"
           }
         },
         {
           "name": "Materials",
-          "value": 11.143232042304447,
+          "value": 10.122352954139444,
           "itemStyle": {
             "color": "#7f7f7f"
           }
         },
         {
           "name": "Energy",
-          "value": 3.2950664519083337,
+          "value": 2.8784814010833335,
           "itemStyle": {
             "color": "#e377c2"
           }
         },
         {
           "name": "Utilities",
-          "value": 2.218011774925,
+          "value": 1.490545474091667,
           "itemStyle": {
             "color": "#aec7e8"
           }

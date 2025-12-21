@@ -1,0 +1,582 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
+<script src="assets/data/dynasty_succession_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div id="mig-viz-wrapper">
+  <style>
+    #mig-viz-wrapper {
+      --mg-bg: #ffffff;
+      --mg-text: #1b202b;
+      --mg-muted: #6b7280;
+      --mg-border: #e2e8f0;
+      --mg-accent: #66101f;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--mg-text);
+    }
+
+    #mig-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* --- MAIN FRAME --- */
+    #mig-viz-wrapper .main-frame {
+      background-color: #f8fafc;
+      overflow: visible;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --- HEADER --- */
+    #mig-viz-wrapper .viz-header {
+      padding: 16px 24px;
+      background: #f8fafc;
+    }
+    #mig-viz-wrapper .title-group h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--mg-text);
+    }
+    #mig-viz-wrapper .title-group span {
+      font-size: 11px;
+      color: var(--mg-muted);
+    }
+
+    /* --- CONTROLS TOOLBAR --- */
+    #mig-viz-wrapper .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      padding: 12px 24px;
+      background: #f8fafc;
+      font-size: 13px;
+      z-index: 20;
+      position: relative;
+    }
+
+    #mig-viz-wrapper .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #mig-viz-wrapper label {
+      font-weight: 600;
+      color: var(--mg-muted);
+    }
+
+    /* Custom Dropdown Styling */
+    #mig-viz-wrapper .custom-select-wrapper {
+      position: relative;
+      width: 100px;
+      user-select: none;
+    }
+    #mig-viz-wrapper .custom-select-trigger {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mg-text);
+      background: #fff;
+      border: 1px solid var(--mg-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #mig-viz-wrapper .custom-select-trigger:hover {
+      border-color: #9ca3af;
+    }
+
+    #mig-viz-wrapper .custom-options {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--mg-border);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-height: 300px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-5px);
+      transition: all 0.2s ease;
+      z-index: 100;
+    }
+    #mig-viz-wrapper .custom-select-wrapper.open .custom-options {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+    #mig-viz-wrapper .custom-option {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--mg-text);
+      cursor: pointer;
+    }
+    #mig-viz-wrapper .custom-option:hover {
+      background-color: #f9fafb;
+    }
+    #mig-viz-wrapper .custom-option.selected {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    #mig-viz-wrapper .custom-option.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #f1f5f9;
+      pointer-events: none;
+    }
+
+    /* --- STATS BAR (Top) --- */
+    #mig-viz-wrapper .stats-bar {
+      padding: 12px 24px;
+      background: #f8fafc;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    #mig-viz-wrapper .stat-item {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    #mig-viz-wrapper .stat-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--mg-text);
+    }
+    #mig-viz-wrapper .stat-lbl {
+      font-size: 11px;
+      color: var(--mg-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* --- CHART AREA --- */
+    #mig-viz-wrapper .chart-section {
+      background: #f8fafc;
+      z-index: 1;
+    }
+    #mig-viz-wrapper #mig-sankeyChart {
+      width: 100%;
+      height: 600px;
+    }
+
+    @media (max-width: 600px) {
+      #mig-viz-wrapper .controls-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #mig-viz-wrapper #mig-sankeyChart {
+        height: 450px;
+      }
+    }
+  </style>
+
+  <div class="main-frame">
+    <div class="controls-bar">
+      <div class="control-group">
+        <label>From Year:</label>
+        <div class="custom-select-wrapper" id="mig-select-start">
+          <div
+            class="custom-select-trigger"
+            onclick="mig_toggle('mig-select-start')"
+          >
+            <span id="display-start">Select</span>
+            <i
+              class="fa-solid fa-chevron-down"
+              style="font-size: 10px; color: #6b7280"
+            ></i>
+          </div>
+          <div class="custom-options" id="options-start"></div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>To Year:</label>
+        <div class="custom-select-wrapper" id="mig-select-end">
+          <div
+            class="custom-select-trigger"
+            onclick="mig_toggle('mig-select-end')"
+          >
+            <span id="display-end">Select</span>
+            <i
+              class="fa-solid fa-chevron-down"
+              style="font-size: 10px; color: #6b7280"
+            ></i>
+          </div>
+          <div class="custom-options" id="options-end"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-bar" id="mig-stats"></div>
+
+    <div class="chart-section">
+      <div id="mig-sankeyChart"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // Scoped State
+    let mg_data = typeof migration_data !== "undefined" ? migration_data : null;
+    let mg_chart = null;
+    let mg_start = 2000;
+    let mg_end = 2024;
+
+    const DYNASTY_COLORS = {
+      0: "#5470c6",
+      1: "#91cc75",
+      2: "#fac858",
+      3: "#ee6666",
+      4: "#73c0de",
+      5: "#3ba272",
+      6: "#fc8452",
+      7: "#9a60b4",
+      8: "#ea7ccc",
+      9: "#d4ec59",
+    };
+
+    function init() {
+      if (!mg_data) {
+        setTimeout(() => {
+          mg_data =
+            typeof migration_data !== "undefined" ? migration_data : null;
+          init();
+        }, 200);
+        return;
+      }
+
+      initControls();
+
+      mg_chart = echarts.init(document.getElementById("mig-sankeyChart"));
+      window.addEventListener("resize", () => mg_chart.resize());
+
+      // Close dropdowns on click outside
+      window.addEventListener("click", (e) => {
+        ["mig-select-start", "mig-select-end"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && !el.contains(e.target)) el.classList.remove("open");
+        });
+      });
+
+      mig_updateChart();
+    }
+
+    function initControls() {
+      const years = Object.keys(mg_data)
+        .map((y) => parseInt(y))
+        .sort((a, b) => a - b);
+      if (years.length === 0) return;
+
+      // Set Defaults
+      mg_start = Math.max(years[0], 2019);
+      mg_end = Math.min(years[years.length - 1], 2024 - 1);
+
+      // Populate Start
+      const startOpts = document.getElementById("options-start");
+      years.forEach((y) => {
+        const div = document.createElement("div");
+        div.className = "custom-option";
+        div.textContent = y;
+        div.dataset.value = y;
+        div.onclick = () => setStartYear(y);
+        startOpts.appendChild(div);
+      });
+
+      // Populate End
+      const endOpts = document.getElementById("options-end");
+      years.forEach((y) => {
+        const div = document.createElement("div");
+        div.className = "custom-option";
+        div.textContent = y;
+        div.dataset.value = y;
+        div.onclick = () => setEndYear(y);
+        endOpts.appendChild(div);
+      });
+
+      updateUIState();
+    }
+
+    // --- Logic: Setters & Constraints ---
+
+    window.mig_toggle = function (id) {
+      // Close others first
+      ["mig-select-start", "mig-select-end"].forEach((eid) => {
+        if (eid !== id) document.getElementById(eid).classList.remove("open");
+      });
+      document.getElementById(id).classList.toggle("open");
+    };
+
+    function setStartYear(val) {
+      mg_start = parseInt(val);
+
+      // Constraint: End cannot be less than Start
+      if (mg_end < mg_start) {
+        mg_end = mg_start; // Push end forward
+      }
+
+      updateUIState();
+      mig_updateChart();
+    }
+
+    function setEndYear(val) {
+      mg_end = parseInt(val);
+      updateUIState();
+      mig_updateChart();
+    }
+
+    function updateUIState() {
+      // 1. Update Display Text
+      document.getElementById("display-start").textContent = mg_start;
+      document.getElementById("display-end").textContent = mg_end;
+
+      // 2. Highlight & Disable
+      // Start Dropdown
+      document
+        .querySelectorAll("#options-start .custom-option")
+        .forEach((opt) => {
+          const val = parseInt(opt.dataset.value);
+          if (val === mg_start) opt.classList.add("selected");
+          else opt.classList.remove("selected");
+        });
+
+      // End Dropdown
+      document
+        .querySelectorAll("#options-end .custom-option")
+        .forEach((opt) => {
+          const val = parseInt(opt.dataset.value);
+
+          // Selection state
+          if (val === mg_end) opt.classList.add("selected");
+          else opt.classList.remove("selected");
+
+          // Disable state (Can't select end year before start year)
+          if (val < mg_start) {
+            opt.classList.add("disabled");
+          } else {
+            opt.classList.remove("disabled");
+          }
+        });
+
+      // Close dropdowns
+      document.getElementById("mig-select-start").classList.remove("open");
+      document.getElementById("mig-select-end").classList.remove("open");
+    }
+
+    // --- Logic: Chart Render ---
+
+    window.mig_updateChart = function () {
+      if (!mg_data || !mg_chart) return;
+      mg_chart.showLoading();
+
+      const nodes = new Map();
+      const links = [];
+      let totalMigs = 0;
+      let totalMC = 0;
+      let edgeCount = 0;
+
+      // Data Gathering Loop
+      for (let y = mg_start; y <= mg_end; y++) {
+        const yStr = y.toString();
+        if (!mg_data[yStr]) continue;
+
+        const yearData = mg_data[yStr];
+        const fromY = yearData.year;
+        const toY = yearData.next_year;
+
+        yearData.edges.forEach((edge) => {
+          // Min Size = 1 (No filter)
+          if (edge.count < 1) return;
+
+          const srcId = `D${edge.from_dynasty}_${fromY + 1}`;
+          const tgtId = `D${edge.to_dynasty}_${toY + 1}`;
+
+          // Register Nodes
+          if (!nodes.has(srcId)) {
+            nodes.set(srcId, {
+              name: srcId,
+              dynasty_id: edge.from_dynasty,
+              year: fromY,
+              itemStyle: { color: DYNASTY_COLORS[edge.from_dynasty % 10] },
+            });
+          }
+          if (!nodes.has(tgtId)) {
+            nodes.set(tgtId, {
+              name: tgtId,
+              dynasty_id: edge.to_dynasty,
+              year: toY,
+              itemStyle: { color: DYNASTY_COLORS[edge.to_dynasty % 10] },
+            });
+          }
+
+          // Create Link
+          links.push({
+            source: srcId,
+            target: tgtId,
+            value: edge.count,
+            // Tooltip Data
+            stocks: edge.stocks || [],
+            top_stocks: edge.top_stocks || [],
+            total_mc: edge.total_mc_bn || 0,
+            from_dy: edge.from_dynasty,
+            to_dy: edge.to_dynasty,
+            from_yr: fromY + 1,
+            to_yr: toY + 1,
+            lineStyle: {
+              color: DYNASTY_COLORS[edge.from_dynasty % 10],
+              opacity: 0.3,
+            },
+          });
+
+          totalMigs += edge.count;
+          totalMC += edge.total_mc_bn || 0;
+          edgeCount++;
+        });
+      }
+
+      const nodesArr = Array.from(nodes.values()).sort((a, b) => {
+        if (a.year !== b.year) return a.year - b.year;
+        return a.dynasty_id - b.dynasty_id;
+      });
+
+      // ECharts Options
+      const option = {
+        tooltip: {
+          trigger: "item",
+          triggerOn: "mousemove",
+          backgroundColor: "rgba(255, 255, 255, 0.98)",
+          borderColor: "#e2e8f0",
+          textStyle: { color: "#1b202b", fontSize: 12 },
+          extraCssText:
+            "box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 320px;",
+          formatter: function (params) {
+            if (params.dataType === "edge") {
+              const d = params.data;
+
+              // Top List HTML
+              let listHtml = "";
+              if (d.top_stocks && d.top_stocks.length > 0) {
+                listHtml = `<div style="margin-top:8px; font-weight:600; font-size:11px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:4px;">TOP MIGRATIONS ($MC)</div>`;
+                d.top_stocks.forEach((s, i) => {
+                  listHtml += `
+                                        <div style="display:flex; justify-content:space-between; font-size:11px; padding:2px 0;">
+                                            <span>${i + 1}. <b>${
+                    s.ticker
+                  }</b></span>
+                                            <span style="color:#5470c6">$${
+                                              s.mc_bn
+                                            }B</span>
+                                        </div>
+                                    `;
+                });
+              } else if (d.stocks.length > 0) {
+                listHtml = `<div style="margin-top:8px; font-size:11px;">${d.stocks
+                  .slice(0, 5)
+                  .join(", ")}...</div>`;
+              }
+
+              return `
+                                <div style="font-weight:600; font-size:14px; color:#1b202b; margin-bottom:4px;">
+                                    Dynasty ${
+                                      d.from_dy
+                                    } <i class="fa-solid fa-arrow-right" style="font-size:10px; color:#999"></i> Dynasty ${
+                d.to_dy
+              }
+                                </div>
+                                <div style="font-size:11px; color:#64748b; margin-bottom:12px;">
+                                    ${d.from_yr} &rarr; ${d.to_yr}
+                                </div>
+
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; text-align:center;">
+                                    <div style="background:#f8fafc; padding:6px; border-radius:4px;">
+                                        <div style="font-weight:700; font-size:16px; color:#333">${
+                                          d.value
+                                        }</div>
+                                        <div style="font-size:9px; color:#666">STOCKS</div>
+                                    </div>
+                                    <div style="background:#f8fafc; padding:6px; border-radius:4px;">
+                                        <div style="font-weight:700; font-size:16px; color:#10b981">$${d.total_mc.toFixed(
+                                          0
+                                        )}B</div>
+                                        <div style="font-size:9px; color:#666">MARKET CAP</div>
+                                    </div>
+                                </div>
+                                ${listHtml}
+                            `;
+            } else {
+              return `<b>Dynasty ${params.data.dynasty_id}</b><br/><span style="font-size:11px; color:#666">Year: ${params.data.year}</span>`;
+            }
+          },
+        },
+        series: [
+          {
+            type: "sankey",
+            layout: "none",
+            emphasis: { focus: "adjacency" },
+            nodeAlign: "left",
+            nodeWidth: 20,
+            nodeGap: 10,
+            draggable: false,
+            label: {
+              show: true,
+              position: "right",
+              fontSize: 10,
+              color: "#333",
+              formatter: (p) => "D" + p.data.dynasty_id,
+            },
+            lineStyle: { curveness: 0.5 },
+            data: nodesArr,
+            links: links,
+          },
+        ],
+      };
+
+      mg_chart.setOption(option, true);
+      mg_chart.hideLoading();
+
+      // Update Stats Top Bar
+      document.getElementById("mig-stats").innerHTML = `
+                <div class="stat-item">
+                    <span class="stat-val">${nodesArr.length}</span>
+                    <span class="stat-lbl">Dynasty Nodes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-val">${totalMigs}</span>
+                    <span class="stat-lbl">Stocks Migrated</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-val" style="color:#10b981">$${totalMC.toFixed(
+                      0
+                    )}B</span>
+                    <span class="stat-lbl">Total Volume</span>
+                </div>
+            `;
+    };
+
+    init();
+  })();
+</script>

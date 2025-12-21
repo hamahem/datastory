@@ -1,0 +1,355 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
+<script src="assets/data/delta_mc_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div id="delta-viz-wrapper">
+  <style>
+    #delta-viz-wrapper {
+      --dm-bg: #f8fafc;
+      --dm-text: #1b202b;
+      --dm-muted: #6b7280;
+      --dm-border: #e2e8f0;
+      --dm-accent: #66101f;
+      --dm-blue: steelblue;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--dm-text);
+      margin: 0;
+      max-width: 100%;
+      padding: 0;
+    }
+
+    #delta-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* --- MAIN FRAME --- */
+    #delta-viz-wrapper .main-frame {
+      background-color: #f8fafc;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    /* --- HEADER --- */
+    #delta-viz-wrapper .viz-header {
+      padding: 16px 24px;
+      background: #f8fafc;
+    }
+    #delta-viz-wrapper .title-group h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dm-text);
+    }
+    #delta-viz-wrapper .title-group span {
+      font-size: 11px;
+      color: var(--dm-muted);
+    }
+
+    /* --- STATS GRID --- */
+    #delta-viz-wrapper .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+    }
+
+    #delta-viz-wrapper .stat-box {
+      background: #f8fafc;
+      padding: 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    #delta-viz-wrapper .stat-val {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dm-text);
+    }
+    #delta-viz-wrapper .stat-lbl {
+      font-size: 11px;
+      color: var(--dm-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+    #delta-viz-wrapper .val-pos {
+      color: #91cc75;
+    }
+    #delta-viz-wrapper .val-neg {
+      color: #ee6666;
+    }
+
+    /* --- CHART AREA --- */
+    #delta-viz-wrapper .chart-section {
+      background: #f8fafc;
+      padding: 20px;
+    }
+    #delta-viz-wrapper #delta-chart {
+      width: 100%;
+      height: 450px;
+    }
+
+    /* --- LEGEND --- */
+    #delta-viz-wrapper .legend-footer {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 12px 24px;
+      background: #f8fafc;
+      flex-wrap: wrap;
+    }
+    #delta-viz-wrapper .l-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--dm-muted);
+    }
+    #delta-viz-wrapper .l-bar {
+      width: 16px;
+      height: 10px;
+      background: var(--dm-blue);
+      opacity: 0.4;
+      border-radius: 2px;
+    }
+    #delta-viz-wrapper .l-line {
+      width: 20px;
+      height: 3px;
+      background: var(--dm-blue);
+      border-radius: 2px;
+    }
+    #delta-viz-wrapper .l-dash {
+      width: 20px;
+      height: 0;
+      border-top: 2px dashed #333;
+    }
+    #delta-viz-wrapper .l-med {
+      width: 20px;
+      height: 3px;
+      background: #ee6666;
+    }
+
+    /* --- INSIGHT BOX --- */
+    #delta-viz-wrapper .insight-panel {
+      background: "#f8fafc";
+      padding: 0;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      #delta-viz-wrapper .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+
+  <div class="main-frame">
+    <div class="stats-grid" id="dm-stats"></div>
+
+    <div class="chart-section">
+      <div id="delta-chart"></div>
+    </div>
+
+    <div class="legend-footer">
+      <div class="l-item">
+        <div class="l-bar"></div>
+        Histogram
+      </div>
+      <div class="l-item">
+        <div class="l-line"></div>
+        KDE Density
+      </div>
+      <div class="l-item">
+        <div class="l-dash"></div>
+        No Change
+      </div>
+      <div class="l-item">
+        <div class="l-med"></div>
+        Median
+      </div>
+    </div>
+
+    <div class="insight-panel" id="dm-insight"></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // Scoped State
+    let dm_data = typeof delta_mc_data !== "undefined" ? delta_mc_data : null;
+    let dm_chart = null;
+
+    function init() {
+      if (!dm_data) {
+        setTimeout(() => {
+          dm_data = typeof delta_mc_data !== "undefined" ? delta_mc_data : null;
+          init();
+        }, 200);
+        return;
+      }
+
+      renderStats();
+      renderChart();
+      window.addEventListener("resize", () => dm_chart && dm_chart.resize());
+    }
+
+    function renderStats() {
+      const s = dm_data.statistics;
+      const sum = dm_data.summary;
+
+      // Stats Grid
+      document.getElementById("dm-stats").innerHTML = `
+                <div class="stat-box">
+                    <span class="stat-val">${sum.total_transitions.toLocaleString()}</span>
+                    <span class="stat-lbl">Transitions</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val val-pos">${
+                      sum.pct_moving_to_larger
+                    }%</span>
+                    <span class="stat-lbl">To Larger Dynasty</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val val-neg">${
+                      sum.pct_moving_to_smaller
+                    }%</span>
+                    <span class="stat-lbl">To Smaller Dynasty</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val">${s.median_all.toFixed(3)}T</span>
+                    <span class="stat-lbl">Median Δ MC</span>
+                </div>
+            `;
+
+      // Insight Panel
+      const direction = s.median_all > 0 ? "larger" : "smaller";
+      const emoji = s.median_all > 0 ? "📈" : "📉";
+      const absVal = Math.abs(s.median_all * 1000).toFixed(1);
+    }
+
+    function renderChart() {
+      const hist = dm_data.histogram;
+      const kde = dm_data.kde;
+      const stats = dm_data.statistics;
+
+      dm_chart = echarts.init(document.getElementById("delta-chart"));
+
+      // Map KDE points
+      const kdePoints = kde.x.map((x, i) => [x, kde.y[i]]);
+
+      const option = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "cross" },
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          textStyle: { color: "#1b202b" },
+          extraCssText: "box-shadow: 0 4px 12px rgba(0,0,0,0.1);",
+          formatter: function (params) {
+            if (!params.length) return "";
+            let html = "";
+            params.forEach((p) => {
+              if (p.seriesName === "Histogram") {
+                const binVal = parseFloat(p.axisValue).toFixed(3);
+                html += `<div style="font-weight:600; margin-bottom:4px;">Δ MC: ${binVal}T</div>`;
+                html += `Density: ${p.data.toFixed(4)}<br/>`;
+              }
+            });
+            return html;
+          },
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "15%",
+          top: "10%",
+          containLabel: true,
+        },
+        xAxis: [
+          {
+            type: "category",
+            data: hist.bin_centers.map((x) => x.toFixed(3)),
+            name: "Δ Market Cap (Trillion USD)",
+            nameLocation: "middle",
+            nameGap: 30,
+            axisLabel: {
+              rotate: 45,
+              interval: "auto",
+              color: "#64748b",
+              fontSize: 10,
+            },
+            axisLine: { lineStyle: { color: "#e2e8f0" } },
+          },
+          {
+            type: "value",
+            min: stats.lower_bound,
+            max: stats.upper_bound,
+            show: false, // Hidden axis for KDE line mapping
+          },
+        ],
+        yAxis: {
+          type: "value",
+          name: "Density",
+          splitLine: { lineStyle: { type: "dashed", color: "#f1f5f9" } },
+          axisLabel: { color: "#64748b" },
+        },
+        series: [
+          {
+            name: "Histogram",
+            type: "bar",
+            data: hist.densities,
+            xAxisIndex: 0,
+            itemStyle: { color: "steelblue", opacity: 0.4 },
+            barMaxWidth: "95%",
+            z: 1,
+          },
+          {
+            name: "KDE",
+            type: "line",
+            data: kdePoints,
+            xAxisIndex: 1, // Uses continuous value axis
+            smooth: true,
+            symbol: "none",
+            lineStyle: { color: "steelblue", width: 2.5 },
+            z: 2,
+          },
+          {
+            name: "Ref Lines",
+            type: "line",
+            xAxisIndex: 1,
+            data: [],
+            markLine: {
+              silent: true,
+              symbol: "none",
+              label: { position: "insideEndTop", formatter: "{b}" },
+              data: [
+                {
+                  xAxis: 0,
+                  lineStyle: { type: "dashed", color: "#333" },
+                  name: "No Change",
+                },
+                {
+                  xAxis: stats.median_all,
+                  lineStyle: { color: "#ee6666", width: 2 },
+                  name: "Median",
+                },
+              ],
+            },
+          },
+        ],
+      };
+
+      dm_chart.setOption(option);
+    }
+
+    init();
+  })();
+</script>

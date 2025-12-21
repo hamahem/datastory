@@ -73,7 +73,7 @@ This codex records the tools and procedures through which raw market data is tra
 
 {% include circle_packing_plot.html %}
 
-<p style="text-align: justify;">Let us observe this dynasty timeline! It appears as that the market powers are rarely uniform. Most years are composed of <strong>at most</strong> four main dynasties of varying sizes, coexisting within the same historical moment. The relative balance between these dynasties shifts over time: in some years, one dynasty occupies a noticeably larger share of the space, while in others, authority is fragmented, shared among a confederation of rival dynasties in the NASDAQ territory. Can you already spot a <strong>dominant dynasty</strong>  which has withstood the tests of time?The shifting colors reveal that dynastic power is tied to sectoral identity, which evolves rather than remaining static. This confirms that the market is shaped by broad, collective forces rather than the isolated actions of individual firms. Annual snapshots are limited by their static nature. While they capture a specific moment in time, they fail to distinguish between long-term stability and fleeting trends.</p>
+<p style="text-align: justify;">Let us observe this dynasty timeline above! It appears as that the market powers are rarely uniform. Most years are composed of <strong>at most</strong> four main dynasties of varying sizes, coexisting within the same historical moment. The relative balance between these dynasties shifts over time: in some years, one dynasty occupies a noticeably larger share of the space, while in others, authority is fragmented, shared among a confederation of rival dynasties in the NASDAQ territory. Can you already spot a <strong>dominant dynasty</strong>  which has withstood the tests of time?The shifting colors reveal that dynastic power is tied to sectoral identity, which evolves rather than remaining static. This confirms that the market is shaped by broad, collective forces rather than the isolated actions of individual firms. Annual snapshots are limited by their static nature. While they capture a specific moment in time, they fail to distinguish between long-term stability and fleeting trends.</p>
 
 {% include lifespan_embed_theme.html %}
 
@@ -81,7 +81,7 @@ A finer view of the market is provided by the status table.
 
 {% include status_table.html %}
 
-<p style="text-align: justify;">What is this? Ah, I see... you have reconfigured the projection into a decadal perspective? Excellent initiative! In aggregating the data to this scale, the chaotic fluctuations of the market recede, revealing the true architectural pillars of the NASDAQ civilization. Observe the timeline above, we can now witness the dynasty which has survived the many hardships of the NASDAQ territory, has evolved in its sectors continuously and has maintained a thread of continuity across every year from the 1980s to the present day: <strong>The D1 DYNASTY (à nommer)</strong>.</p>
+<p style="text-align: justify;">What are these two plots above? Ah, I see... you have reconfigured the projection into a decadal perspective? Excellent initiative! In aggregating the data to this scale, the chaotic fluctuations of the market recede, revealing the true architectural pillars of the NASDAQ civilization. Observe the timeline above, we can now witness the dynasty which has survived the many hardships of the NASDAQ territory, has evolved in its sectors continuously and has maintained a thread of continuity across every year from the 1980s to the present day: <strong>The D1 DYNASTY</strong>.</p>
 
 <p style="text-align: justify;">In contrast, we see the rise and fall of other great houses. <strong>D2 Dynasty</strong> ruled as a formidable power during the early years, only to dissolve after 22 years and cede its place at the turn of the millennium. Following this transition, new powers such as <strong>D5 Dynasty</strong> and the more recent <strong>D7 Dynasty</strong> have emerged, claiming the NASDAQ landscape of the modern era.</p>
 
@@ -126,11 +126,11 @@ A finer view of the market is provided by the status table.
 
 {% include power_shift_table.html %}
 
-<p style="text-align: justify;">This table above decomposes the dominance score to identify exactly which structural factors caused the shift in powe Regime changes are often relative: an outgoing dynasty is frequently overtaken by a faster-rising rival rather than suffering a total collapse.  <strong>(Ahmed et Meumeu, vous pouvez mettre une analyse pour cette table, elle est assez technique)</strong></p>
+<p style="text-align: justify;">This table above decomposes the dominance score to identify exactly which structural factors caused the shift in power regime. Changes are often relative: an outgoing dynasty is frequently overtaken by a faster-rising rival rather than suffering a total collapse.  <strong>(Ahmed et Meumeu, vous pouvez mettre une analyse pour cette table, elle est assez technique)</strong></p>
 
-<p style="text-align: justify;">[TODO NOT REFINED]Yet as these shifts unfold, another pattern emerges. Changes in leadership are frequently accompanied by changes in the market’s primary sector, suggesting that dominance may not erode solely from within a dynasty. Instead, it may reflect a broader reorientation of the market itself—an эпохal shift in what the market values and invests in. Whether power is lost because dynasties fail, or because time moves on to favor something new, is a question we postpone for now.</p>
+<p style="text-align: justify;">Changes in leadership often happen at the same time as changes in the top industry. This suggests that dynasties don't just fall because they fail internally, but because the market itself shifts its focus to value something new. We have mapped these transitions to visualize how power flows continuously from one group to another, rather than simply disappearing.</p>
 
-<p style="text-align: justify;">[TODO NOT REFINED]By identifying the dominant drivers of each transition, we are nevertheless able to construct a structured map of succession—a genealogical trace of how power migrates across dynasties and sectors. This culminates in a chord-like representation of transitions, where the flow of dominance reveals not isolated failures, but a continuous reallocation of influence.</p>
+<p style="text-align: justify;">Changes in leadership often happen at the same time as changes in the top industry. This suggests that dynasties don't just fall because they fail internally, but because the market itself shifts its focus to value something new. We have mapped these transitions to visualize how power flows continuously from one group to another, rather than simply disappearing.</p>
 
 {% include chord_sector_shifts.html %}
 
@@ -155,7 +155,11 @@ A finer view of the market is provided by the status table.
 
 <p style="text-align: justify;">These dynasties change their internal structure constantly. Multiple decisions are being made to keep the dynasty well and alive in the harsh environment of the NASDAQ market. Therefore, who makes these decisions? What is the shape of the hierarchy governing the dynasty? Is the power centralized or distributed?</p>
 
-<p style="text-align: justify;">Luckily, these bookkeeping archives have kept a history of all the most wealthiest firm of the dynasty at a given year. Could they have been the governing emperor? Let's write them down and compare:</p>
+<p style="text-align: justify;">Luckily, these bookkeeping archives have kept a history of the wealth of each firm composing the dynasty at a given year. Which one of them had a ruling power? Surely a bookkeeper has written it somewhere...</p>
+
+<p style="text-align: justify;">Wow! You've found a methodology which stock or stocks govern the dynasty! Let us see it down below
+</p>
+
 {% include compstat.html %}
 
 {% include emperor_tracking.html %}
@@ -164,11 +168,58 @@ A finer view of the market is provided by the status table.
 
 {% include emperor_legitimacy.html %}
 
-<p style="text-align: justify;">Yes! There seems to be a alot of information. Let us go slowly into this emperor legitimacy data. If we observe how all dynasties who have perished, they have all lost regime rank in the year before death. Only exception is the D0 Dynasty dying, perishing with a strong emperor.</p>
+<p style="text-align: justify;">Yes! There seems to be a alot of information. Let us go slowly into this emperor legitimacy data. If we observe how all dynasties who have perished, they seem to have all lost one rank in regime status in the year before death. Only exception is the D0 Dynast perishing with a strong emperor. Therefore, we can say, performance-wise, that these emperors were never true emperors and were unable keep their dynasties alive.</p>
 
 <div class="laurel-title medium">
   <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
-  <h1><strong>Succession and Inheritance</strong></h1>
+  <h1><strong>Dynamics of Migration</strong></h1>
+</div>
+
+<p style="text-align: justify;">Let us now shift our gaze to the common populace of stocks. What is the behaviour of these stocks? Are they loyal to their superiors? Or do they migrate to another more powerful dynasty? After digging even more on the archeological site, it appears these dynasties have kept track of who comes in and who goes out. Let make a graph showing the dynasty as nodes linked by migration edges.</p>
+
+{% include dynasty_migration_sankey.html %}
+
+<p style="text-align: justify;">Woderful! Look at the dynamic of the migration! Many paths cross each other every year and no dynasty is left spared of icoming migration. We can observe in 2022, major stocks like AMZN, TSLA and META, all leave the D7 dynasty for the D5 dynasty. And we've seen previously a dip in wealth for the D7 dynasty at that same year.</p>
+
+<p style="text-align: justify;">Does this migration have a an effect on the power of the dynasty? We must stop looking at static maps and start tracking movement. Dynasties are not isolated islands; firms and wealth constantly flow between them. By analyzing these migrations, we aim to uncover the hidden rules that decide how power is transferred.</p>
+
+<p style="text-align: justify;">Let's start an analysis which proceeds in three steps, each refining the scale at which this transition mechanism operates.</p>
+
+<p style="text-align: justify;"><strong>1.</strong> Do migrating tickers move toward richer dynasties?</p>
+
+<p style="text-align: justify;">Let us think...In a world governed by competition and dominance, one might expect stronger dynasties, those commanding greater market capitalization, to attract firms leaving weaker ones. To test this intuition, let's examine each ticker migration and compute the market cap difference</p>
+
+<p style="text-align: justify;">$$\Delta \text{MC} = \text{MC}_{\text{destination}} - \text{MC}_{\text{origin}}.$$</p>
+
+<p style="text-align: justify;">If migrations were neutral, the distribution of $\Delta \text{MC}$ would be symmetric around zero. A permutation test strongly rejects this null hypothesis, revealing a highly significant upward bias: migrating tickers tend to move toward dynasties richer than the ones they leave.</p>
+
+{% include delta_mc_distribution.html %}
+
+<p style="text-align: justify;">While most migrations involve modest changes in dynasty power, the distribution exhibits a heavier right tail and a positive median. This indicates that a small number of economically large upward transitions play a disproportionate role, steadily transferring market capital toward richer dynasties. Interesting! Power, it seems, does not merely circulate, it drifts upward.</p>
+
+<p style="text-align: justify;"><strong>2.</strong> Is the upward bias confined to specific historical periods?</p>
+
+<p style="text-align: justify;">Having established a global upward bias, we can ask whether this phenomenon is driven by a small number of exceptional moments, such as crises or market upheavals, or whether it reflects a persistent structural mechanism.</p>
+
+<p style="text-align: justify;">To answer this, we aggregate transitions within each rolling window and examine the mean $\Delta \text{MC}$ per period. If power shifts occurred primarily during shocks, we would expect the bias to concentrate in a few windows. Instead, statistical tests reveal no such temporal clustering.</p>
+
+<p style="text-align: justify;">This proves that wealth doesn't just move during crashes or rare disasters. It isn't a series of sudden shocks. Instead, the shift of power is constant it is simply part of how the market works every day.</p>
+
+<p style="text-align: justify;"><strong>3.</strong> Is the upward bias present in most windows, and is it positive on average?</p>
+
+<p style="text-align: justify;">Finally, let's test whether this upward bias is a stable feature of the system. Out of 42 rolling windows with at least one migration, 27 (64.3%) exhibit a positive mean $\Delta \text{MC}$. A sign test confirms that this occurs in a majority of windows, and a permutation test shows that the average window-level bias is significantly positive, on the order of <strong>\$520 billion USD</strong>, even after aggregation.</p>
+
+{% include window_bias.html %}
+
+<p style="text-align: justify;">Importantly, while the sign of the bias remains relatively stable across decades, its _variance increases markedly in recent years_. This reflects the growing presence of extremely large firms, such as AAPL (Apple), NVDA (NVIDIA), or MSFT (Microsoft), whose movements between dynasties produce seismic shifts in economic power. The mechanism itself remains unchanged, but its consequences are amplified by scale.</p>
+
+<p style="text-align: justify;">Taken together, these results reveal a simple but powerful dynamic. Dynasty migrations do not occur through sudden collapses or isolated shocks. Instead, they follow a persistent and asymmetric drift: firms move slightly more often,and far more consequentially,toward richer dynasties. Over time, this steady bias reshapes the balance of power, allowing dominant houses to accumulate economic mass without the need for dramatic conquest.</p>
+
+<p style="text-align: justify;">In the archaeology of the NASDAQ, empires do not fall overnight. They are slowly outgrown.</p>
+
+<div class="laurel-title medium">
+  <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
+  <h1><strong>Conclusion</strong></h1>
 </div>
 
 <div class="laurel-title small center">
@@ -179,8 +230,10 @@ A finer view of the market is provided by the status table.
 
 <p style="text-align: justify;">Observation reveals patterns. Construction reveals understanding.</p>
 
-<p style="text-align: justify;">You are given a fixed budget of <span class="hl" style="--hl-bg: #D93B3B;"><strong>$15.0M</strong></span> and asked to build a dynasty of <strong>10 stocks</strong>. Your objective is simple in form but difficult in execution: allocate your capital across these 10 choices in a way that produces the strongest and most resilient portfolio.</p>
+<p style="text-align: justify;">You are given a fixed budget of <span class="hl" style="--hl-bg: #D93B3B;"><strong>$25.0M</strong></span> and asked to build a dynasty of <strong>8 stocks</strong>. Your objective is simple in form but difficult in execution: allocate your capital across these 8 choices in a way that produces the strongest and most resilient portfolio.</p>
 
 <p style="text-align: justify;">Each stock has a cost. Selecting one reduces the capital available to the others. Concentrating your budget on a few dominant players may deliver strength, while spreading it more evenly may offer stability. The constraints are intentional, they mirror the limits under which every historical dynasty was formed.</p>
 
 <p style="text-align: justify;">To begin, search the archive to find stocks and add them to your selection. Once chosen, drag and drop each stock into the portfolio grid to define your dynasty. You may rearrange or replace holdings at any time, as long as you remain within the budget and select exactly ten stocks.</p>
+
+{% include stock_game.html %}

@@ -175,12 +175,12 @@ const lifespan_data = {
         {
           "sector": "Consumer Discretionary",
           "start_year": 2022,
-          "end_year": 2023,
+          "end_year": 2022,
           "color": "#2ca02c"
         },
         {
           "sector": "Health Care",
-          "start_year": 2024,
+          "start_year": 2023,
           "end_year": 2024,
           "color": "#ff7f0e"
         }

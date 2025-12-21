@@ -1,0 +1,289 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<link
+  rel="stylesheet"
+  href="{{ '/assets/css/stock-game.css' | relative_url }}"
+/>
+
+<style>
+  /* This forces the container to break out of the parent layout's width limits */
+  .game-breakout-container {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    background-color: #f8fafc; /* Match game bg */
+    padding: 0 0;
+    box-sizing: border-box;
+  }
+
+  /* This keeps the content centered inside the breakout */
+  .game-content-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+</style>
+
+<div class="game-breakout-container">
+  <div class="game-content-wrapper">
+    <div class="modal-overlay" id="rulesModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 style="margin: 0">Game Rules</h3>
+          <i class="fas fa-times modal-close" onclick="toggleModal(false)"></i>
+        </div>
+        <div class="rule-group">
+          <div class="rule-title">1. Budget & Pricing</div>
+          <div class="rule-desc">
+            You start with <strong>$25.0M</strong>. Card prices are based on
+            OVR.
+            <table class="price-table">
+              <tr>
+                <th>OVR Score</th>
+                <th>Price</th>
+              </tr>
+              <tr>
+                <td>95 - 99</td>
+                <td>$4.0M</td>
+              </tr>
+              <tr>
+                <td>75 - 94</td>
+                <td>$3.0M</td>
+              </tr>
+              <tr>
+                <td>65 - 74</td>
+                <td>$2.0M</td>
+              </tr>
+              <tr>
+                <td>Below 64</td>
+                <td>$1.0M</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="rule-group">
+          <div class="rule-title">2. Chemistry (+30 Max)</div>
+          <div class="rule-desc">
+            +3 Pts for every 3 stocks from the same <em>Sector</em> or
+            <em>Industry</em>.
+          </div>
+        </div>
+        <div style="text-align: right; margin-top: 20px">
+          <button
+            onclick="toggleModal(false)"
+            style="
+              padding: 8px 16px;
+              background: #008aff;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+            "
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <section class="builder-section">
+      <div class="portfolio-area">
+        <div class="game-hud">
+          <div class="hud-group">
+            <div class="stat-box">
+              <span class="stat-label">Rating</span>
+              <span class="stat-value val-rating"
+                ><i class="fas fa-star"></i>
+                <span id="stat-rating">0</span></span
+              >
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Chemistry</span>
+              <span class="stat-value val-chem"
+                ><i class="fas fa-flask"></i> <span id="stat-chemistry">0</span
+                ><span class="stat-sub">/ 30</span></span
+              >
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Overall</span>
+              <span class="stat-value val-ovr"
+                ><i class="fas fa-trophy"></i>
+                <span id="stat-overall">0</span></span
+              >
+            </div>
+          </div>
+          <div class="stat-box" style="align-items: flex-end">
+            <span class="stat-label">Budget</span>
+            <span class="stat-value val-money" id="stat-budget-text"
+              >$25.0M</span
+            >
+            <span class="stat-sub" id="stat-assets">0 / 8 Assets</span>
+          </div>
+        </div>
+
+        <div class="slots-grid" id="portfolioGrid">
+          <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <!-- <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div> -->
+          <!-- <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div> -->
+          <!-- <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div> -->
+          <!-- <div class="field-pos-wrapper">
+            <div class="slot"><i class="fas fa-plus empty-state-icon"></i></div>
+            <div
+              class="pos-label"
+              data-default="ADD <i class='fas fa-plus'></i>"
+            >
+              ADD <i class="fas fa-plus"></i>
+            </div>
+          </div> -->
+        </div>
+      </div>
+
+      <aside class="builder-sidebar">
+        <div class="search-container">
+          <div class="search-wrapper">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              id="stockSearch"
+              placeholder="Search stock..."
+              autocomplete="off"
+            />
+            <div id="searchDropdown" class="search-dropdown"></div>
+          </div>
+        </div>
+
+        <div class="objectives-container">
+          <div class="obj-header">Objectives</div>
+          <div id="objective-list"></div>
+        </div>
+
+        <div class="bench-header">
+          <span>Staging Bench</span>
+          <span
+            style="font-weight: 400; font-size: 10px; cursor: pointer"
+            onclick="clearBench()"
+            >Clear All</span
+          >
+        </div>
+        <div class="bench-list" id="benchList">
+          <div class="empty-bench-msg">Search to add stocks</div>
+        </div>
+
+        <div class="sidebar-footer">
+          <button class="btn-rules" onclick="toggleModal(true)">
+            <i class="fas fa-book-open"></i> How to Play
+          </button>
+        </div>
+      </aside>
+    </section>
+  </div>
+</div>
+
+<script>
+  window.CARD_IMAGE_BASE_PATH = "{{ '/assets/images/cards/' | relative_url }}";
+</script>
+
+<script src="{{ '/assets/js/stocks_data.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/stock-game.js' | relative_url }}"></script>
