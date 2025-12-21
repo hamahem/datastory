@@ -153,10 +153,18 @@ A finer view of the market is provided by the status table.
   <h1><strong>Internal Regimes</strong></h1>
 </div>
 
-<div class="laurel-title medium">
-  <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
-  <h1><strong>Culture and Identity</strong></h1>
-</div>
+<p style="text-align: justify;">These dynasties change their internal structure constantly. Multiple decisions are being made to keep the dynasty well and alive in the harsh environment of the NASDAQ market. Therefore, who makes these decisions? What is the shape of the hierarchy governing the dynasty? Is the power centralized or distributed?</p>
+
+<p style="text-align: justify;">Luckily, these bookkeeping archives have kept a history of all the most wealthiest firm of the dynasty at a given year. Could they have been the governing emperor? Let's write them down and compare:</p>
+{% include compstat.html %}
+
+{% include emperor_tracking.html %}
+
+<p style="text-align: justify;">Look at how chaotic the history of the dominant stock is for the D1 dynasty. There has been a total of 26 unique dominant stocks a switch occurs every two years it seems. If we fly over all the dynasties which have perished, at the end of their lifetime, a less wealthy dominant stays on top. This raises the question: Who among all of these wealthy stocks truly had governance over their dynasty?</p>
+
+{% include emperor_legitimacy.html %}
+
+<p style="text-align: justify;">Yes! There seems to be a alot of information. Let us go slowly into this emperor legitimacy data. If we observe how all dynasties who have perished, they have all lost regime rank in the year before death. Only exception is the D0 Dynasty dying, perishing with a strong emperor.</p>
 
 <div class="laurel-title medium">
   <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">

@@ -1,0 +1,605 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="assets/data/emperor_legitimacy_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div id="legit-viz-wrapper">
+  <style>
+    #legit-viz-wrapper {
+      /* --- DESIGN TOKENS (Matched to your style) --- */
+      --lg-bg: #f8fafc;
+      --lg-text-main: #1b202b;
+      --lg-text-muted: #64748b;
+      --lg-border: #e2e8f0;
+      --lg-radius: 12px;
+
+      /* Regime Colors */
+      --c-true: #91cc75;
+      --c-strong: #5470c6;
+      --c-contested: #fac858;
+      --c-oligarchy: #ee6666;
+      --c-coord: #9a60b4;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--lg-text-main);
+    }
+
+    #legit-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* --- MAIN FRAME --- */
+    #legit-viz-wrapper .main-frame {
+      border: 1px solid var(--lg-border);
+      border-radius: var(--lg-radius);
+      background-color: var(--lg-bg);
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* --- HEADER --- */
+    #legit-viz-wrapper .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--lg-border);
+      background: #fcfcfc;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    #legit-viz-wrapper .title-group h2 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--lg-text-main);
+    }
+    #legit-viz-wrapper .title-group span {
+      font-size: 11px;
+      color: var(--lg-text-muted);
+    }
+
+    /* Header Stats (Center) */
+    #legit-viz-wrapper .header-stats {
+      display: flex;
+      gap: 16px;
+      background: #fff;
+      padding: 6px 12px;
+      border: 1px solid var(--lg-border);
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    #legit-viz-wrapper .h-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    #legit-viz-wrapper .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Custom Dropdown (Right) */
+    #legit-viz-wrapper .custom-select-wrapper {
+      position: relative;
+      width: 140px;
+      user-select: none;
+      z-index: 50;
+    }
+    #legit-viz-wrapper .custom-select-trigger {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--lg-text-main);
+      background: #fff;
+      border: 1px solid var(--lg-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #legit-viz-wrapper .custom-select-trigger:hover {
+      border-color: #d1d5db;
+    }
+    #legit-viz-wrapper .custom-options {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--lg-border);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-height: 250px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-5px);
+      transition: all 0.2s ease;
+    }
+    #legit-viz-wrapper .custom-select-wrapper.open .custom-options {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+    #legit-viz-wrapper .custom-option {
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    #legit-viz-wrapper .custom-option:hover {
+      background-color: #f9fafb;
+    }
+    #legit-viz-wrapper .custom-option.selected {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+
+    /* --- CHART AREA --- */
+    #legit-viz-wrapper .chart-section {
+      background: #fff;
+      padding: 20px;
+      border-bottom: 1px solid var(--lg-border);
+    }
+    #legit-viz-wrapper #lg-mainChart {
+      width: 100%;
+      height: 350px;
+    }
+    #legit-viz-wrapper .legend-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #f1f5f9;
+    }
+    #legit-viz-wrapper .l-item {
+      font-size: 11px;
+      color: var(--lg-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* --- CARDS GRID --- */
+    #legit-viz-wrapper .grid-area {
+      padding: 24px;
+      background: var(--lg-bg);
+    }
+
+    #legit-viz-wrapper .section-header {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--lg-text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    #legit-viz-wrapper .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    /* Mini Card Styling */
+    #legit-viz-wrapper .mini-card {
+      background: #fff;
+      border: 1px solid var(--lg-border);
+      border-radius: 8px;
+      padding: 14px;
+      transition: transform 0.15s;
+      border-left: 3px solid transparent; /* Colored accent */
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #legit-viz-wrapper .mini-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    #legit-viz-wrapper .mc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #legit-viz-wrapper .mc-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    #legit-viz-wrapper .mc-badge {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    /* Podium inside card */
+    #legit-viz-wrapper .podium-mini {
+      display: flex;
+      gap: 4px;
+      margin: 4px 0;
+    }
+    #legit-viz-wrapper .pm-item {
+      flex: 1;
+      text-align: center;
+      background: #f8fafc;
+      border-radius: 4px;
+      padding: 4px 2px;
+    }
+    #legit-viz-wrapper .pm-rank {
+      font-size: 9px;
+      color: #94a3b8;
+      display: block;
+    }
+    #legit-viz-wrapper .pm-tick {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--lg-text-main);
+    }
+
+    /* Metrics inside card */
+    #legit-viz-wrapper .mc-metrics {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--lg-text-muted);
+      padding-top: 6px;
+      border-top: 1px dashed #f1f5f9;
+    }
+    #legit-viz-wrapper .mc-val {
+      font-weight: 600;
+      color: var(--lg-text-main);
+    }
+
+    /* Progress Bar */
+    #legit-viz-wrapper .mc-bar {
+      height: 4px;
+      width: 100%;
+      background: #f1f5f9;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #legit-viz-wrapper .mc-fill {
+      height: 100%;
+    }
+
+    /* Mobile */
+    @media (max-width: 650px) {
+      #legit-viz-wrapper .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #legit-viz-wrapper .header-stats {
+        width: 100%;
+        overflow-x: auto;
+      }
+      #legit-viz-wrapper .custom-select-wrapper {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <div class="main-frame">
+    <div class="top-bar">
+      <div class="title-group">
+        <h2>Regime Legitimacy</h2>
+        <span>Structure of power & emperor control</span>
+      </div>
+
+      <div class="header-stats">
+        <div class="h-stat">
+          <span class="dot" style="background: var(--c-true)"></span
+          ><span id="lg-count-true">0</span> True
+        </div>
+        <div class="h-stat">
+          <span class="dot" style="background: var(--c-strong)"></span
+          ><span id="lg-count-strong">0</span> Strong
+        </div>
+        <div class="h-stat">
+          <span class="dot" style="background: var(--c-contested)"></span
+          ><span id="lg-count-contested">0</span> Contested
+        </div>
+        <div class="h-stat">
+          <span class="dot" style="background: var(--c-oligarchy)"></span
+          ><span id="lg-count-oligarchy">0</span> Olig.
+        </div>
+      </div>
+
+      <div class="custom-select-wrapper" id="lg-year-select">
+        <div class="custom-select-trigger" onclick="lg_toggleSelect()">
+          <span id="lg-year-display">Select Year</span>
+          <i
+            class="fa-solid fa-chevron-down"
+            style="font-size: 10px; color: #6b7280"
+          ></i>
+        </div>
+        <div class="custom-options" id="lg-year-options"></div>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div id="lg-mainChart"></div>
+      <div class="legend-row">
+        <div class="l-item">
+          <span class="dot" style="background: var(--c-true)"></span> True
+          Emperor
+        </div>
+        <div class="l-item">
+          <span class="dot" style="background: var(--c-strong)"></span> Strong
+          Emperor
+        </div>
+        <div class="l-item">
+          <span class="dot" style="background: var(--c-contested)"></span>
+          Contested
+        </div>
+        <div class="l-item">
+          <span class="dot" style="background: var(--c-oligarchy)"></span>
+          Oligarchy
+        </div>
+        <div class="l-item">
+          <span class="dot" style="background: var(--c-coord)"></span>
+          Coordinated
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-area">
+      <div class="section-header">
+        Dynasty Details (<span id="lg-detail-year">-</span>)
+      </div>
+      <div id="lg-cards-container" class="cards-container"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // State
+    let lg_data = typeof emperor_data !== "undefined" ? emperor_data : null;
+    let lg_chart = null;
+    let lg_currYear = null;
+
+    const LG_COLORS = {
+      TRUE_EMPEROR: "#91cc75",
+      STRONG_EMPEROR: "#5470c6",
+      CONTESTED_THRONE: "#fac858",
+      OLIGARCHY: "#ee6666",
+      COORDINATED_OLIGARCHY: "#9a60b4",
+    };
+    const LG_LABELS = {
+      TRUE_EMPEROR: "True Emp.",
+      STRONG_EMPEROR: "Strong Emp.",
+      CONTESTED_THRONE: "Contested",
+      OLIGARCHY: "Oligarchy",
+      COORDINATED_OLIGARCHY: "Coord. Olig.",
+    };
+    const LG_KEYS = Object.keys(LG_COLORS);
+
+    function init() {
+      if (!lg_data) {
+        setTimeout(() => {
+          lg_data = typeof emperor_data !== "undefined" ? emperor_data : null;
+          init();
+        }, 200);
+        return;
+      }
+
+      const years = Object.keys(lg_data)
+        .map((y) => parseInt(y))
+        .sort((a, b) => a - b);
+
+      // 1. Populate Dropdown
+      const list = document.getElementById("lg-year-options");
+      years.forEach((y) => {
+        const item = document.createElement("div");
+        item.className = "custom-option";
+        item.textContent = y;
+        item.onclick = () => selectYear(y);
+        list.appendChild(item);
+      });
+
+      // 2. Init ECharts
+      initChart(years);
+
+      // 3. Initial Selection
+      selectYear(years[years.length - 1]);
+
+      // Close dropdown on outside click
+      window.addEventListener("click", (e) => {
+        const wrapper = document.getElementById("lg-year-select");
+        if (!wrapper.contains(e.target)) wrapper.classList.remove("open");
+      });
+    }
+
+    function initChart(years) {
+      lg_chart = echarts.init(document.getElementById("lg-mainChart"));
+
+      // Pre-process data for Stacked Area
+      const seriesData = {};
+      LG_KEYS.forEach((k) => (seriesData[k] = []));
+
+      years.forEach((year) => {
+        const dyList = lg_data[year] || [];
+        const counts = {};
+        LG_KEYS.forEach((k) => (counts[k] = 0));
+        dyList.forEach((d) => {
+          if (counts.hasOwnProperty(d.regime)) counts[d.regime]++;
+        });
+        LG_KEYS.forEach((k) => seriesData[k].push(counts[k]));
+      });
+
+      const option = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "cross" },
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          textStyle: { color: "#1b202b" },
+          extraCssText:
+            "box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;",
+        },
+        grid: {
+          left: "2%",
+          right: "3%",
+          bottom: "3%",
+          top: "5%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: years,
+          axisLine: { lineStyle: { color: "#e2e8f0" } },
+          axisLabel: { color: "#64748b" },
+        },
+        yAxis: {
+          type: "value",
+          splitLine: { lineStyle: { type: "dashed", color: "#f1f5f9" } },
+        },
+        series: LG_KEYS.map((key) => ({
+          name: key.replace("_", " ").toLowerCase(), // Simplified name for tooltip
+          type: "line",
+          stack: "Total",
+          areaStyle: { opacity: 0.85 },
+          emphasis: { focus: "series" },
+          data: seriesData[key],
+          itemStyle: { color: LG_COLORS[key] },
+          smooth: true,
+          showSymbol: false,
+        })),
+      };
+
+      lg_chart.setOption(option);
+
+      // Click to sync
+      lg_chart.on("click", (params) => {
+        if (params.name) selectYear(parseInt(params.name));
+      });
+
+      window.addEventListener("resize", () => lg_chart.resize());
+    }
+
+    // --- UI LOGIC ---
+    window.lg_toggleSelect = function () {
+      document.getElementById("lg-year-select").classList.toggle("open");
+    };
+
+    function selectYear(year) {
+      lg_currYear = year;
+      document.getElementById("lg-year-display").textContent = year;
+      document.getElementById("lg-detail-year").textContent = year;
+      document.getElementById("lg-year-select").classList.remove("open");
+
+      // Highlight option
+      document
+        .querySelectorAll("#lg-year-options .custom-option")
+        .forEach((opt) => {
+          if (parseInt(opt.textContent) === year) opt.classList.add("selected");
+          else opt.classList.remove("selected");
+        });
+
+      renderDetail();
+    }
+
+    function renderDetail() {
+      const list = lg_data[lg_currYear] || [];
+
+      // 1. Update Header Stats
+      const stats = {};
+      LG_KEYS.forEach((k) => (stats[k] = 0));
+      list.forEach((d) => {
+        if (stats.hasOwnProperty(d.regime)) stats[d.regime]++;
+      });
+
+      document.getElementById("lg-count-true").textContent =
+        stats["TRUE_EMPEROR"];
+      document.getElementById("lg-count-strong").textContent =
+        stats["STRONG_EMPEROR"];
+      document.getElementById("lg-count-contested").textContent =
+        stats["CONTESTED_THRONE"];
+      document.getElementById("lg-count-oligarchy").textContent =
+        stats["OLIGARCHY"];
+
+      // 2. Render Cards
+      const container = document.getElementById("lg-cards-container");
+      if (list.length === 0) {
+        container.innerHTML =
+          '<div style="grid-column:1/-1; text-align:center; color:#999; padding:20px;">No Data</div>';
+        return;
+      }
+
+      let html = "";
+      // Sort by regime priority roughly? Or ID? Let's stick to ID or score.
+      list.forEach((d) => {
+        const color = LG_COLORS[d.regime];
+        const label = LG_LABELS[d.regime];
+        const scorePct = ((d.emperor_score || 0) * 100).toFixed(0);
+        const gap = ((d.score_gap_pct || 0) * 100).toFixed(0);
+
+        html += `
+                <div class="mini-card" style="border-left-color: ${color}">
+                    <div class="mc-header">
+                        <div class="mc-title">Dynasty ${d.dynasty_id}</div>
+                        <div class="mc-badge" style="color:${color}; background:${color}15">${label}</div>
+                    </div>
+
+                    <div class="podium-mini">
+                        <div class="pm-item">
+                            <span class="pm-rank">1ST</span>
+                            <span class="pm-tick">${d.emperor || "-"}</span>
+                        </div>
+                        <div class="pm-item">
+                            <span class="pm-rank">2ND</span>
+                            <span class="pm-tick">${d.runner_up || "-"}</span>
+                        </div>
+                        <div class="pm-item">
+                            <span class="pm-rank">3RD</span>
+                            <span class="pm-tick">${d.third || "-"}</span>
+                        </div>
+                    </div>
+
+                    <div class="mc-metrics">
+                        <span>Score Gap: <span class="mc-val">${gap}%</span></span>
+                        <span>Corr: <span class="mc-val">${
+                          d.top3_correlation
+                            ? (d.top3_correlation * 100).toFixed(0) + "%"
+                            : "-"
+                        }</span></span>
+                    </div>
+
+                    <div class="mc-bar">
+                        <div class="mc-fill" style="width:${scorePct}%; background:${color}"></div>
+                    </div>
+                </div>
+                `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    init();
+  })();
+</script>

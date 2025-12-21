@@ -1,0 +1,125 @@
+<style>
+  .methodology-wrapper {
+    /* Design Tokens */
+    --lg-bg: #f8fafc;
+    --lg-text-main: #1b202b;
+    --lg-text-muted: #64748b;
+    --lg-border: #e2e8f0;
+    --lg-radius: 12px;
+    --lg-hover-border: #cbd5e1;
+
+    font-family: "Inter", -apple-system, sans-serif;
+    width: 100%;
+    margin: 20px 0;
+    box-sizing: border-box;
+  }
+
+  /* The clickable card */
+  .methodology-trigger {
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--lg-border);
+    border-radius: var(--lg-radius);
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    text-decoration: none;
+  }
+
+  /* Hover state to indicate clickability */
+  .methodology-trigger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: var(--lg-hover-border);
+  }
+
+  .mt-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mt-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--lg-text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mt-desc {
+    font-size: 13px;
+    color: var(--lg-text-muted);
+    max-width: 600px;
+    line-height: 1.5;
+  }
+
+  /* The visual "button" inside the card */
+  .mt-action {
+    background: #f1f5f9;
+    color: var(--lg-text-main);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid transparent; /* Prevents layout shift on hover */
+  }
+
+  .methodology-trigger:hover .mt-action {
+    background: #e2e8f0;
+    color: #0f172a;
+    border-color: #cbd5e1;
+  }
+
+  @media (max-width: 600px) {
+    .methodology-trigger {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    .mt-action {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<div class="methodology-wrapper">
+  <div
+    class="methodology-trigger"
+    data-toggle="modal"
+    data-target="#compScoreModal"
+    role="button"
+    tabindex="0"
+    aria-label="Read about the Composite Score Methodology"
+  >
+    <div class="mt-content">
+      <div class="mt-title">
+        <i class="fa-solid fa-scale-balanced" style="color: #5470c6"></i>
+        Methodology: The Composite Score
+      </div>
+      <div class="mt-desc">
+        Click here to view the weighted multi-factor formula used to calculate
+        absolute economic power, stability, and dynasty regime classification.
+      </div>
+    </div>
+    <div class="mt-action">
+      Read Methodology <i class="fa-solid fa-arrow-right"></i>
+    </div>
+  </div>
+</div>
+
+{% include book-modal.html id="compScore" title="Composite Score Methodology"
+content_file="book-content/comp-score.md" %}

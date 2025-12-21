@@ -1,0 +1,478 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="assets/data/emperor_tracking_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div id="track-viz-wrapper">
+  <style>
+    #track-viz-wrapper {
+      --trk-bg: #ffffff;
+      --trk-text: #1b202b;
+      --trk-muted: #6b7280;
+      --trk-border: #e2e8f0;
+      --trk-accent: #66101f;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      color: var(--trk-text);
+      margin: 0;
+      max-width: 100%;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    #track-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* --- MAIN FRAME --- */
+    #track-viz-wrapper .main-frame {
+      margin: 0;
+      width: 100%;
+    }
+
+    /* --- HEADER --- */
+    #track-viz-wrapper .viz-header {
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #track-viz-wrapper .title-group {
+      display: flex;
+      flex-direction: column;
+    }
+    #track-viz-wrapper .title-group h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--trk-text);
+    }
+    #track-viz-wrapper .title-group span {
+      font-size: 11px;
+      color: var(--trk-muted);
+    }
+
+    /* --- CUSTOM DROPDOWN --- */
+    #track-viz-wrapper .custom-select-wrapper {
+      position: relative;
+      width: 260px;
+      user-select: none;
+      z-index: 50;
+    }
+    #track-viz-wrapper .custom-select-trigger {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--trk-text);
+      background: #fff;
+      border: 1px solid var(--trk-border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #track-viz-wrapper .custom-select-trigger:hover {
+      border-color: #9ca3af;
+    }
+
+    #track-viz-wrapper .custom-options {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid var(--trk-border);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-height: 250px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-5px);
+      transition: all 0.2s ease;
+    }
+    #track-viz-wrapper .custom-select-wrapper.open .custom-options {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+    #track-viz-wrapper .custom-option {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--trk-text);
+      cursor: pointer;
+      border-bottom: 1px solid #f8fafc;
+    }
+    #track-viz-wrapper .custom-option:hover {
+      background-color: #f9fafb;
+    }
+    #track-viz-wrapper .custom-option.selected {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+
+    /* --- CHART AREA --- */
+    #track-viz-wrapper .chart-container {
+      height: 500px;
+      width: 100%;
+      position: relative;
+      background: #f8fafc;
+    }
+
+    /* --- LEGEND --- */
+    #track-viz-wrapper .legend-footer {
+      padding: 12px 20px;
+      background: #f8fafc;
+    }
+    #track-viz-wrapper .legend-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+    #track-viz-wrapper .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--trk-muted);
+      font-weight: 500;
+    }
+    #track-viz-wrapper .color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 600px) {
+      #track-viz-wrapper .viz-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #track-viz-wrapper .custom-select-wrapper {
+        width: 100%;
+      }
+      #track-viz-wrapper .chart-container {
+        height: 400px;
+      }
+    }
+  </style>
+
+  <div class="main-frame">
+    <div class="viz-header">
+      <div class="title-group"></div>
+
+      <div class="custom-select-wrapper" id="track-dynasty-select">
+        <div class="custom-select-trigger" onclick="trk_toggleSelect()">
+          <span id="track-dynasty-display">Select Dynasty</span>
+          <i
+            class="fa-solid fa-chevron-down"
+            style="font-size: 10px; color: #6b7280"
+          ></i>
+        </div>
+        <div class="custom-options" id="track-dynasty-options"></div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <div id="track-main" style="width: 100%; height: 100%"></div>
+    </div>
+
+    <div class="legend-footer">
+      <div id="track-legend" class="legend-grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // Scoped State
+    let trk_data =
+      typeof emperor_tracking_data !== "undefined"
+        ? emperor_tracking_data
+        : null;
+    let trk_chart = null;
+    let trk_dynasties = [];
+    let trk_selected = null;
+
+    const SECTOR_COLORS = {
+      "Information Technology": "#1f77b4",
+      "Health Care": "#ff7f0e",
+      "Consumer Discretionary": "#2ca02c",
+      Financials: "#d62728",
+      Industrials: "#9467bd",
+      "Consumer Staples": "#8c564b",
+      Energy: "#e377c2",
+      Materials: "#7f7f7f",
+      "Real Estate": "#bcbd22",
+      "Communication Services": "#17becf",
+      Utilities: "#aec7e8",
+      Unknown: "#999999",
+    };
+
+    function init() {
+      if (!trk_data) {
+        setTimeout(() => {
+          trk_data =
+            typeof emperor_tracking_data !== "undefined"
+              ? emperor_tracking_data
+              : null;
+          init();
+        }, 200);
+        return;
+      }
+
+      // 1. Transform Data
+      transformData();
+
+      // 2. Init UI
+      populateSelector();
+      buildLegend();
+
+      // 3. Init Chart
+      trk_chart = echarts.init(document.getElementById("track-main"));
+
+      // 4. Resize Listener
+      window.addEventListener("resize", () => trk_chart.resize());
+
+      // 5. Click outside listener
+      window.addEventListener("click", (e) => {
+        const wrapper = document.getElementById("track-dynasty-select");
+        if (!wrapper.contains(e.target)) wrapper.classList.remove("open");
+      });
+
+      // 6. Initial Render
+      if (trk_dynasties.length > 0) {
+        trk_selectDynasty(trk_dynasties[0].dynasty_id);
+      }
+    }
+
+    function transformData() {
+      const map = {};
+      Object.entries(trk_data).forEach(([year, records]) => {
+        records.forEach((rec) => {
+          const id = rec.dynasty_id;
+          if (!map[id]) {
+            map[id] = {
+              dynasty_id: id,
+              name: `Dynasty ${id}`,
+              timeline: [],
+              active: true,
+              emperors: new Set(),
+            };
+          }
+          map[id].timeline.push({
+            year: parseInt(rec.year),
+            ticker: rec.emperor,
+            market_cap: rec.market_cap_bn,
+            // NEW: Dominance Score logic
+            dominance_pct: (rec.dominance || 0) * 100,
+            sector: rec.sector || "Unknown",
+            will_delist: rec.will_eventually_delist || false,
+            delist_year: rec.delisting_year || null,
+            status: rec.current_status || "unknown",
+          });
+          if (rec.emperor) map[id].emperors.add(rec.emperor);
+        });
+      });
+
+      const allYears = Object.keys(trk_data).map((y) => parseInt(y));
+      const maxYear = Math.max(...allYears);
+
+      trk_dynasties = Object.values(map)
+        .map((d) => {
+          d.timeline.sort((a, b) => a.year - b.year);
+          const lastRec = d.timeline[d.timeline.length - 1];
+          d.active = lastRec.year === maxYear;
+          d.total_members = d.emperors.size;
+          return d;
+        })
+        .sort((a, b) => a.dynasty_id - b.dynasty_id);
+    }
+
+    function populateSelector() {
+      const container = document.getElementById("track-dynasty-options");
+      trk_dynasties.forEach((d) => {
+        const item = document.createElement("div");
+        item.className = "custom-option";
+        const status = d.active ? "Active" : "Ended";
+        item.textContent = `${d.name} (${status})`;
+        item.onclick = () => trk_selectDynasty(d.dynasty_id);
+        container.appendChild(item);
+      });
+    }
+
+    // --- UI LOGIC ---
+    window.trk_toggleSelect = function () {
+      document.getElementById("track-dynasty-select").classList.toggle("open");
+    };
+
+    function trk_selectDynasty(id) {
+      trk_selected = parseInt(id);
+
+      // Update Display
+      const dyn = trk_dynasties.find((d) => d.dynasty_id === trk_selected);
+      if (dyn) {
+        document.getElementById("track-dynasty-display").textContent = dyn.name;
+      }
+
+      // Highlight Option
+      document
+        .querySelectorAll("#track-dynasty-options .custom-option")
+        .forEach((opt) => {
+          if (opt.textContent.includes(`Dynasty ${id}`))
+            opt.classList.add("selected");
+          else opt.classList.remove("selected");
+        });
+
+      document.getElementById("track-dynasty-select").classList.remove("open");
+      updateChart();
+    }
+
+    function buildLegend() {
+      const container = document.getElementById("track-legend");
+      Object.entries(SECTOR_COLORS).forEach(([sec, col]) => {
+        if (sec !== "Unknown") {
+          const item = document.createElement("div");
+          item.className = "legend-item";
+          item.innerHTML = `<div class="color-dot" style="background:${col}"></div>${sec}`;
+          container.appendChild(item);
+        }
+      });
+    }
+
+    function updateChart() {
+      if (!trk_chart || trk_selected === null) return;
+
+      const dynasty = trk_dynasties.find((d) => d.dynasty_id === trk_selected);
+      if (!dynasty) return;
+
+      const timeline = dynasty.timeline;
+      const years = timeline.map((t) => t.year);
+      // NEW: Mapping Dominance % instead of MC
+      const values = timeline.map((t) => t.dominance_pct);
+
+      const pieces = [];
+      timeline.forEach((t, idx) => {
+        const color = SECTOR_COLORS[t.sector] || SECTOR_COLORS["Unknown"];
+        if (idx < timeline.length - 1) {
+          pieces.push({ gte: idx, lt: idx + 1, color: color });
+        }
+      });
+      if (timeline.length > 0) {
+        const lastIdx = timeline.length - 1;
+        const lastColor =
+          SECTOR_COLORS[timeline[lastIdx].sector] || SECTOR_COLORS["Unknown"];
+        pieces.push({ gte: lastIdx, lte: lastIdx, color: lastColor });
+      }
+
+      const option = {
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "#fff",
+          borderColor: "#E2E8F0",
+          textStyle: { color: "#1B202B" },
+          extraCssText:
+            "box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;",
+          formatter: function (params) {
+            const p = params[0];
+            if (!p) return "";
+            const d = timeline[p.dataIndex];
+
+            let statusHtml = "";
+            if (d.will_delist) {
+              statusHtml = `<div style="color:#DC2626; font-size:11px; margin-top:4px;">⚠ Delists in ${d.delist_year}</div>`;
+            } else if (d.status === "delisted") {
+              statusHtml = `<div style="color:#DC2626; font-size:11px; margin-top:4px;">✗ Delisted</div>`;
+            } else {
+              statusHtml = `<div style="color:#16A34A; font-size:11px; margin-top:4px;">✓ Listed</div>`;
+            }
+
+            const color = SECTOR_COLORS[d.sector] || "#999";
+
+            return (
+              `<div style="margin-bottom:2px; font-weight:600;">${d.year}</div>` +
+              `<div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">` +
+              `<div style="width:8px; height:8px; border-radius:50%; background:${color}"></div>` +
+              `<b>${d.ticker}</b> <span style="font-size:11px; color:#666">(${d.sector})</span>` +
+              `</div>` +
+              `<div>Dominance: <b>${d.dominance_pct.toFixed(2)}%</b></div>` +
+              `<div>MC: $${d.market_cap.toFixed(2)}B</div>` +
+              statusHtml
+            );
+          },
+        },
+        grid: {
+          left: 60,
+          right: 30,
+          top: 40,
+          bottom: 30,
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: years,
+          axisLine: { lineStyle: { color: "#E2E8F0" } },
+          axisLabel: { color: "#6B7280" },
+        },
+        yAxis: {
+          type: "value",
+          name: "Dominance (%)",
+          nameTextStyle: {
+            align: "right",
+            padding: [0, 10, 0, 0],
+            color: "#6B7280",
+          },
+          splitLine: { lineStyle: { type: "dashed", color: "#F1F5F9" } },
+          axisLabel: { color: "#6B7280", formatter: "{value}%" },
+        },
+        visualMap: {
+          show: false,
+          dimension: 0,
+          pieces: pieces,
+          outOfRange: { color: "#ccc" },
+        },
+        series: [
+          {
+            type: "line",
+            data: values,
+            smooth: true,
+            symbol: "circle",
+            symbolSize: 8,
+            lineStyle: { width: 3 },
+            areaStyle: { opacity: 0.15 },
+            label: {
+              show: true,
+              position: "top",
+              formatter: (p) => timeline[p.dataIndex].ticker,
+              color: "#1B202B",
+              fontSize: 10,
+              backgroundColor: "rgba(255,255,255,0.8)",
+              padding: [2, 4],
+              borderRadius: 3,
+            },
+          },
+        ],
+      };
+
+      trk_chart.setOption(option, true);
+    }
+
+    init();
+  })();
+</script>
