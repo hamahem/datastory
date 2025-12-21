@@ -1,0 +1,402 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
+<script src="assets/data/yearly_listing_status_eventual.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+
+<div id="ls-viz-wrapper">
+  <style>
+    #ls-viz-wrapper {
+      --ls-bg: #ffffff;
+      --ls-text: #1b202b;
+      --ls-muted: #6b7280;
+      --ls-border: #e2e8f0;
+      --ls-accent: #66101f;
+      --ls-green: #10b981;
+      --ls-red: #ef4444;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      max-width: 900px;
+      margin: 2rem auto;
+      background: var(--ls-bg);
+      border: 1px solid var(--ls-border);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    #ls-viz-wrapper .viz-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--ls-border);
+      background: #f8fafc;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #ls-viz-wrapper .header-title h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ls-text);
+    }
+    #ls-viz-wrapper .header-title span {
+      font-size: 12px;
+      color: var(--ls-muted);
+    }
+
+    #ls-viz-wrapper select {
+      padding: 8px 32px 8px 12px;
+      font-size: 13px;
+      border: 1px solid var(--ls-border);
+      border-radius: 6px;
+      background-color: #fff;
+      color: var(--ls-text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      min-width: 240px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    #ls-viz-wrapper select:hover {
+      border-color: #9ca3af;
+    }
+    #ls-viz-wrapper select:focus {
+      outline: none;
+      border-color: var(--ls-accent);
+    }
+
+    /* Stats Bar */
+    #ls-viz-wrapper .stats-container {
+      padding: 12px 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      border-bottom: 1px dashed var(--ls-border);
+      background: #fff;
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    #ls-viz-wrapper .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ls-text);
+      font-weight: 500;
+    }
+
+    #ls-viz-wrapper .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    #ls-viz-wrapper .dot.green {
+      background-color: var(--ls-green);
+    }
+    #ls-viz-wrapper .dot.red {
+      background-color: var(--ls-red);
+    }
+
+    /* Chart */
+    #ls-viz-wrapper .chart-area {
+      width: 100%;
+      height: 550px;
+      position: relative;
+      background: #fff;
+    }
+
+    @media (max-width: 600px) {
+      #ls-viz-wrapper .viz-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #ls-viz-wrapper select {
+        width: 100%;
+      }
+      #ls-viz-wrapper .chart-area {
+        height: 500px;
+      }
+    }
+  </style>
+
+  <div class="viz-header">
+    <div class="header-title">
+      <h3>📊 Listing Survival Rates</h3>
+      <span>Listed vs. Delisted over time</span>
+    </div>
+    <select id="ls-dynastySelect"></select>
+  </div>
+
+  <div class="stats-container" id="ls-stats">
+    <div class="stat-badge" style="color: var(--ls-muted)">
+      Select a dynasty to view stats
+    </div>
+  </div>
+
+  <div class="chart-area">
+    <div id="ls-main" style="width: 100%; height: 100%"></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // Scoped State
+    let ls_data =
+      typeof listing_status_data !== "undefined" ? listing_status_data : null;
+    let ls_meta = {};
+    let ls_chart = null;
+
+    function init() {
+      if (!ls_data) {
+        document.getElementById("ls-main").innerHTML =
+          '<div style="padding:20px; text-align:center; color:#888;">Data file not found.</div>';
+        return;
+      }
+
+      buildMeta();
+      populateSelector();
+
+      ls_chart = echarts.init(document.getElementById("ls-main"));
+
+      // Attach Events
+      const select = document.getElementById("ls-dynastySelect");
+      select.addEventListener("change", () => updateChart(select.value));
+      window.addEventListener("resize", () => ls_chart.resize());
+
+      // Initial Load
+      if (select.options.length > 0) {
+        updateChart(select.value);
+      }
+    }
+
+    function buildMeta() {
+      // Pre-calculate meta info for the dropdown and stats
+      Object.values(ls_data).forEach((yearData) => {
+        Object.entries(yearData.dynasties).forEach(([id, data]) => {
+          if (!ls_meta[id]) {
+            ls_meta[id] = {
+              id: parseInt(id),
+              sector: data.primary_sector,
+              totalUnique: data.total_unique_members,
+              totalListed: data.total_listed,
+              totalDelisted: data.total_delisted,
+            };
+          }
+        });
+      });
+    }
+
+    function populateSelector() {
+      const select = document.getElementById("ls-dynastySelect");
+      const sortedIds = Object.keys(ls_meta)
+        .map((id) => parseInt(id))
+        .sort((a, b) => a - b);
+
+      sortedIds.forEach((id) => {
+        const meta = ls_meta[id];
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = `Dynasty ${id} (${meta.sector})`;
+        select.appendChild(option);
+      });
+    }
+
+    function updateChart(dynastyId) {
+      if (!dynastyId || !ls_data) return;
+
+      const meta = ls_meta[dynastyId];
+      const years = [];
+      const listedPcts = [];
+      const delistedPcts = [];
+
+      // Extract Time Series Data
+      Object.keys(ls_data)
+        .sort()
+        .forEach((year) => {
+          const dynastyData = ls_data[year].dynasties[dynastyId];
+          if (dynastyData) {
+            years.push(year);
+            listedPcts.push(dynastyData.listed_pct);
+            delistedPcts.push(dynastyData.delisted_pct);
+          }
+        });
+
+      if (years.length === 0) return;
+
+      // Update Stats Bar
+      document.getElementById("ls-stats").innerHTML = `
+                <div class="stat-badge">
+                    <strong>Dynasty ${dynastyId}</strong>
+                </div>
+                <div class="stat-badge" style="color: var(--ls-muted);">
+                    Unique Members: <strong>${meta.totalUnique}</strong>
+                </div>
+                <div class="stat-badge">
+                    <div class="dot green"></div> Listed: ${meta.totalListed}
+                </div>
+                <div class="stat-badge">
+                    <div class="dot red"></div> Delisted: ${meta.totalDelisted}
+                </div>
+            `;
+
+      // Setup ECharts Option
+      const lastIdx = years.length - 1;
+
+      const option = {
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "#fff",
+          borderColor: "#E2E8F0",
+          textStyle: { color: "#1B202B" },
+          extraCssText:
+            "box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;",
+          formatter: function (params) {
+            // Custom tooltip to show year + breakdown
+            const year = params[0].axisValue;
+            const listed = params.find((p) => p.seriesName === "Listed %");
+            const delisted = params.find((p) => p.seriesName === "Delisted %");
+            return (
+              `<div style="font-weight:600; margin-bottom:4px;">${year}</div>` +
+              (listed
+                ? `<span style="color:#10B981">●</span> Listed: <b>${listed.value.toFixed(
+                    1
+                  )}%</b><br/>`
+                : "") +
+              (delisted
+                ? `<span style="color:#EF4444">●</span> Delisted: <b>${delisted.value.toFixed(
+                    1
+                  )}%</b>`
+                : "")
+            );
+          },
+        },
+        legend: {
+          show: false, // We use the custom stats bar/dots instead
+        },
+        grid: {
+          top: "55%", // Leave top half for Pie Chart
+          left: 50,
+          right: 30,
+          bottom: 40,
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          data: years,
+          axisLine: { lineStyle: { color: "#E2E8F0" } },
+          axisLabel: {
+            color: "#6B7280",
+            interval: Math.floor(years.length / 8),
+            rotate: 0,
+          },
+        },
+        yAxis: {
+          type: "value",
+          name: "Percentage",
+          max: 100,
+          nameTextStyle: { align: "right", color: "#6B7280" },
+          splitLine: { lineStyle: { type: "dashed", color: "#F1F5F9" } },
+          axisLabel: {
+            formatter: "{value}%",
+            color: "#6B7280",
+          },
+        },
+        series: [
+          // --- Line Charts (Timeline) ---
+          {
+            name: "Listed %",
+            type: "line",
+            smooth: true,
+            data: listedPcts,
+            showSymbol: false,
+            itemStyle: { color: "#10B981" },
+            areaStyle: { opacity: 0.15 },
+          },
+          {
+            name: "Delisted %",
+            type: "line",
+            smooth: true,
+            data: delistedPcts,
+            showSymbol: false,
+            itemStyle: { color: "#EF4444" },
+            areaStyle: { opacity: 0.15 },
+          },
+          // --- Pie Chart (Snapshot) ---
+          {
+            name: "Status Distribution",
+            type: "pie",
+            id: "status-pie",
+            radius: ["25%", "40%"], // Donut style
+            center: ["50%", "28%"], // Positioned in top half
+            label: {
+              formatter: "{b}\n{c}%",
+              color: "#1B202B",
+            },
+            data: [
+              {
+                name: "Listed",
+                value: listedPcts[lastIdx],
+                itemStyle: { color: "#10B981" },
+              },
+              {
+                name: "Delisted",
+                value: delistedPcts[lastIdx],
+                itemStyle: { color: "#EF4444" },
+              },
+            ],
+          },
+        ],
+      };
+
+      ls_chart.setOption(option, true);
+
+      // --- Interaction: Hover Sync ---
+      // Update Pie Chart when hovering over Line Chart
+      ls_chart.off("updateAxisPointer");
+      ls_chart.on("updateAxisPointer", function (event) {
+        const xAxisInfo = event.axesInfo[0];
+        if (
+          xAxisInfo &&
+          xAxisInfo.value >= 0 &&
+          xAxisInfo.value < years.length
+        ) {
+          const idx = xAxisInfo.value;
+          ls_chart.setOption({
+            series: [
+              {},
+              {},
+              {
+                id: "status-pie", // Target the pie chart
+                data: [
+                  {
+                    name: "Listed",
+                    value: listedPcts[idx],
+                    itemStyle: { color: "#10B981" },
+                  },
+                  {
+                    name: "Delisted",
+                    value: delistedPcts[idx],
+                    itemStyle: { color: "#EF4444" },
+                  },
+                ],
+              },
+            ],
+          });
+        }
+      });
+    }
+
+    init();
+  })();
+</script>

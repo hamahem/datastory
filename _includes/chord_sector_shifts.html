@@ -1,0 +1,328 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
+<script src="assets/data/power_shift_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+
+<div id="chord-viz-wrapper">
+  <style>
+    #chord-viz-wrapper {
+      /* --- DESIGN TOKENS --- */
+      --ch-bg: #f8fafc;
+      --ch-text-main: #1b202b;
+      --ch-text-muted: #6b7280;
+      --ch-border: #e2e8f0;
+      --ch-radius: 12px;
+      --ch-accent: #66101f;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--ch-text-main);
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    #chord-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* --- MAIN FRAME --- */
+    #chord-viz-wrapper .main-frame {
+      background-color: var(--ch-bg);
+      overflow: hidden;
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- HEADER --- */
+    #chord-viz-wrapper .top-bar {
+      padding: 0 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    #chord-viz-wrapper .title-group h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      color: var(--ch-text-main);
+    }
+    #chord-viz-wrapper .title-group span {
+      font-size: 13px;
+      color: var(--ch-text-muted);
+    }
+
+    /* --- STATS HUD --- */
+    #chord-viz-wrapper .stats-hud {
+      display: flex;
+      gap: 24px;
+    }
+
+    #chord-viz-wrapper .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    #chord-viz-wrapper .stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      color: var(--ch-text-muted);
+      margin-bottom: 2px;
+    }
+
+    #chord-viz-wrapper .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ch-text-main);
+      line-height: 1;
+    }
+
+    #chord-viz-wrapper .stat-sub {
+      font-size: 10px;
+      color: var(--ch-accent);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* --- CHART AREA --- */
+    #chord-viz-wrapper #chord-main {
+      width: 100%;
+      height: 600px;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 600px) {
+      #chord-viz-wrapper .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #chord-viz-wrapper #chord-main {
+        height: 450px;
+      }
+    }
+  </style>
+
+  <div class="main-frame">
+    <div class="top-bar">
+      <div class="title-group"></div>
+
+      <div class="stats-hud">
+        <div class="stat-item">
+          <span class="stat-label">Total Shifts</span>
+          <span class="stat-value" id="val-total-shifts">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Sector Changes</span>
+          <span class="stat-value" id="val-sector-changes">0</span>
+          <span class="stat-sub">Cross-Industry</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="chord-main"></div>
+  </div>
+</div>
+
+<script>
+  // Prefix 'ch_' to avoid global conflict
+  let ch_data =
+    typeof power_shift_data !== "undefined" ? power_shift_data : null;
+  let ch_chart = null;
+
+  // Colors
+  const ch_dynastyColors = [
+    "#1f77b4",
+    "#ff7f0e",
+    "#2ca02c",
+    "#d62728",
+    "#9467bd",
+    "#8c564b",
+    "#e377c2",
+    "#7f7f7f",
+    "#bcbd22",
+    "#17becf",
+    "#aec7e8",
+    "#ffbb78",
+    "#98df8a",
+    "#ff9896",
+    "#c5b0d5",
+  ];
+
+  // Helper: Format cause text
+  function ch_formatCause(cause) {
+    return cause.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  function ch_init() {
+    // Wait for data if not loaded
+    if (!ch_data) {
+      setTimeout(() => {
+        ch_data =
+          typeof power_shift_data !== "undefined" ? power_shift_data : null;
+        ch_init();
+      }, 200);
+      return;
+    }
+
+    const shifts = ch_data.shifts;
+
+    // 1. Calculate Summary Stats
+    const total = shifts.length;
+    const crossSector = shifts.filter(
+      (s) => s.from_sector !== s.to_sector
+    ).length;
+
+    const elTotal = document.getElementById("val-total-shifts");
+    const elSector = document.getElementById("val-sector-changes");
+    if (elTotal) elTotal.innerText = total;
+    if (elSector) elSector.innerText = crossSector;
+
+    // 2. Process Data for Chord Diagram
+    const allDynasties = new Set();
+    const transitions = {};
+
+    shifts.forEach((s) => {
+      const fromDynasty = "Dynasty " + s.from_dynasty_id;
+      const toDynasty = "Dynasty " + s.to_dynasty_id;
+
+      allDynasties.add(fromDynasty);
+      allDynasties.add(toDynasty);
+
+      const key = fromDynasty + "→" + toDynasty;
+      if (!transitions[key]) {
+        transitions[key] = {
+          from: fromDynasty,
+          to: toDynasty,
+          fromId: s.from_dynasty_id,
+          toId: s.to_dynasty_id,
+          count: 0,
+          years: [],
+          causes: [],
+          sectors: [],
+        };
+      }
+      transitions[key].count++;
+      transitions[key].years.push(s.year);
+      transitions[key].causes.push(ch_formatCause(s.main_cause));
+      transitions[key].sectors.push(s.from_sector + " → " + s.to_sector);
+    });
+
+    // Data nodes for chord diagram (dynasties)
+    const chordData = Array.from(allDynasties).map((d, i) => {
+      const color = ch_dynastyColors[i % ch_dynastyColors.length];
+      return {
+        name: d,
+        itemStyle: {
+          color: color,
+        },
+        label: {
+          color: color, // Color the label to match the dynasty
+          fontWeight: "bold",
+        },
+      };
+    });
+
+    // Links for chord diagram
+    const chordLinks = Object.values(transitions).map((t) => ({
+      source: t.from,
+      target: t.to,
+      value: t.count,
+      years: t.years.join(", "),
+      causes: t.causes.join(", "),
+      sectors: t.sectors.join("; "),
+    }));
+
+    // 3. Render Chart
+    const container = document.getElementById("chord-main");
+    if (!container) return; // safety check
+
+    ch_chart = echarts.init(container);
+
+    const option = {
+      backgroundColor: "transparent",
+      tooltip: {
+        backgroundColor: "rgba(255, 255, 255, 0.95)",
+        borderColor: "#E2E8F0",
+        textStyle: { color: "#1B202B" },
+        extraCssText:
+          "box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;",
+        formatter: function (params) {
+          if (params.data.source && params.data.target) {
+            return `<div style="font-family:Inter, sans-serif; padding:6px; max-width: 300px;">
+                      <div style="font-size:14px; font-weight:700; color:#1B202B; margin-bottom: 6px;">
+                        ${
+                          params.data.source
+                        } <span style="color:#9CA3AF">➝</span> ${
+              params.data.target
+            }
+                      </div>
+                      <div style="font-size:12px; color:#4B5563; line-height: 1.5;">
+                        <hr style="margin:5px 0; border:0; border-top:1px solid #E2E8F0"/>
+                        <div><span style="font-weight:600; color:#6B7280;">Shifts:</span> ${
+                          params.data.value
+                        }</div>
+                        <div><span style="font-weight:600; color:#6B7280;">Years:</span> ${
+                          params.data.years || ""
+                        }</div>
+                        <div style="margin-top:4px;"><span style="font-weight:600; color:#6B7280;">Sectors:</span><br/>${
+                          params.data.sectors || ""
+                        }</div>
+                        <div style="margin-top:4px;"><span style="font-weight:600; color:#6B7280;">Primary Drivers:</span><br/>${
+                          params.data.causes || ""
+                        }</div>
+                      </div>
+                    </div>`;
+          }
+          return `<div style="font-family:Inter; font-weight:600; padding: 4px;">${params.name}</div>`;
+        },
+      },
+      legend: {
+        show: true,
+        bottom: 10,
+        textStyle: { color: "#1B202B" },
+      },
+      series: [
+        {
+          type: "chord",
+          label: { show: true },
+          minAngle: 15,
+          sort: "descending",
+          sortSub: "descending",
+          data: chordData,
+          links: chordLinks,
+          itemStyle: {
+            opacity: 1,
+          },
+          lineStyle: {
+            opacity: 0.5,
+            curveness: 0.3,
+          },
+        },
+      ],
+    };
+
+    ch_chart.setOption(option);
+  }
+
+  // Responsive Resize
+  const ch_observer = new ResizeObserver(() => {
+    if (ch_chart) ch_chart.resize();
+  });
+
+  const ch_wrapper = document.getElementById("chord-viz-wrapper");
+  if (ch_wrapper) ch_observer.observe(ch_wrapper);
+
+  ch_init();
+</script>

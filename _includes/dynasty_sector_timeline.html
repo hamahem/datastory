@@ -1,0 +1,348 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
+<script src="assets/data/dynasty_sector_timeline_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+
+<div id="timeline-viz-wrapper">
+  <style>
+    #timeline-viz-wrapper {
+      --tl-bg: #ffffff;
+      --tl-text: #1b202b;
+      --tl-muted: #6b7280;
+      --tl-border: #e2e8f0;
+      --tl-accent: #66101f;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      color: var(--tl-text);
+      margin: 2rem auto;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      background: var(--tl-bg);
+      border: 1px solid var(--tl-border);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    /* Header */
+    #timeline-viz-wrapper .viz-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--tl-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: #f8fafc;
+    }
+
+    #timeline-viz-wrapper .title-area h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--tl-text);
+    }
+    #timeline-viz-wrapper .title-area span {
+      font-size: 12px;
+      color: var(--tl-muted);
+    }
+
+    /* Controls */
+    #timeline-viz-wrapper select {
+      padding: 6px 28px 6px 12px;
+      font-size: 13px;
+      border: 1px solid var(--tl-border);
+      border-radius: 6px;
+      background-color: #fff;
+      color: var(--tl-text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 14px;
+      min-width: 200px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    #timeline-viz-wrapper select:hover {
+      border-color: #9ca3af;
+    }
+    #timeline-viz-wrapper select:focus {
+      outline: none;
+      border-color: var(--tl-accent);
+    }
+
+    /* Chart Area */
+    #timeline-viz-wrapper .chart-container {
+      height: 450px;
+      width: 100%;
+      position: relative;
+      padding: 10px 0;
+    }
+
+    /* Legend Footer */
+    #timeline-viz-wrapper .viz-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--tl-border);
+      background: #fff;
+    }
+
+    #timeline-viz-wrapper .legend-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    #timeline-viz-wrapper .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--tl-muted);
+      font-weight: 500;
+    }
+
+    #timeline-viz-wrapper .color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      #timeline-viz-wrapper .viz-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #timeline-viz-wrapper select {
+        width: 100%;
+      }
+      #timeline-viz-wrapper .chart-container {
+        height: 350px;
+      }
+    }
+  </style>
+
+  <div class="viz-header">
+    <div class="title-area">
+      <h3>📈 Dynasty Evolution</h3>
+      <span id="tl-stats-text">Market Cap & Primary Sector</span>
+    </div>
+    <select id="tl-dynastySelect"></select>
+  </div>
+
+  <div class="chart-container">
+    <div id="tl-main" style="width: 100%; height: 100%"></div>
+  </div>
+
+  <div class="viz-footer">
+    <div id="tl-legend" class="legend-grid"></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // Scoped variables
+    let tl_data = typeof timeline_data !== "undefined" ? timeline_data : null;
+    let tl_chart = null;
+
+    function init() {
+      if (!tl_data) {
+        document.getElementById("tl-main").innerHTML =
+          '<div style="text-align:center; padding:20px; color:#999;">Data not found</div>';
+        return;
+      }
+
+      // 1. Populate Dropdown
+      const select = document.getElementById("tl-dynastySelect");
+      // Sort numeric IDs naturally
+      const ids = Object.keys(tl_data.dynasties).sort(
+        (a, b) => parseInt(a) - parseInt(b)
+      );
+
+      ids.forEach((id) => {
+        const d = tl_data.dynasties[id];
+        const option = document.createElement("option");
+        option.value = id;
+        const status = d.death
+          ? `(${d.birth}-${d.death})`
+          : `(${d.birth}-Active)`;
+        option.textContent = `Dynasty ${id} ${status}`;
+        select.appendChild(option);
+      });
+
+      // 2. Build Legend (Static based on all available sectors)
+      const legendContainer = document.getElementById("tl-legend");
+      if (tl_data.sector_colors) {
+        Object.entries(tl_data.sector_colors).forEach(([sector, color]) => {
+          const item = document.createElement("div");
+          item.className = "legend-item";
+          item.innerHTML = `<div class="color-dot" style="background:${color}"></div>${sector}`;
+          legendContainer.appendChild(item);
+        });
+      }
+
+      // 3. Init Chart
+      tl_chart = echarts.init(document.getElementById("tl-main"));
+
+      // Event Listeners
+      select.addEventListener("change", () => updateChart(select.value));
+      window.addEventListener("resize", () => tl_chart.resize());
+
+      // Initial Render
+      if (ids.length > 0) updateChart(ids[0]);
+    }
+
+    function updateChart(dynastyId) {
+      if (!tl_data || !tl_chart) return;
+
+      const dynasty = tl_data.dynasties[dynastyId];
+      const years = dynasty.years;
+      const marketCaps = dynasty.market_caps;
+      const sectors = dynasty.sectors;
+      const colors = dynasty.colors; // Array of colors per year
+
+      // Update Header Stats
+      const lastMC = marketCaps[marketCaps.length - 1];
+      document.getElementById(
+        "tl-stats-text"
+      ).innerHTML = `Max MC: <b style="color:#1B202B">$${(
+        Math.max(...marketCaps) / 1e9
+      ).toFixed(1)}B</b> &bull; Lifespan: ${dynasty.lifespan_years} yrs`;
+
+      // Build VisualMap Pieces
+      // This tells ECharts: "From index X to Y, use Color Z"
+      const pieces = [];
+      years.forEach((year, idx) => {
+        if (idx < years.length - 1) {
+          pieces.push({
+            gte: idx,
+            lt: idx + 1,
+            color: colors[idx],
+          });
+        }
+      });
+      // Handle the very last point
+      if (years.length > 0) {
+        pieces.push({
+          gte: years.length - 1,
+          lte: years.length - 1,
+          color: colors[years.length - 1],
+        });
+      }
+
+      const option = {
+        grid: {
+          left: 60,
+          right: 30,
+          top: 40,
+          bottom: 30,
+          containLabel: true,
+        },
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "#fff",
+          borderColor: "#E2E8F0",
+          textStyle: { color: "#1B202B" },
+          extraCssText:
+            "box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;",
+          formatter: function (params) {
+            const p = params[0];
+            const idx = p.dataIndex;
+            const mc = marketCaps[idx];
+            const sector = sectors[idx];
+            const color = colors[idx];
+
+            return (
+              `<div style="margin-bottom:4px; font-weight:600; color:#666">${years[idx]}</div>` +
+              `<div style="display:flex; align-items:center; gap:6px;">` +
+              `<div style="width:10px; height:10px; border-radius:50%; background:${color}"></div>` +
+              `<span>${sector}</span>` +
+              `</div>` +
+              `<div style="margin-top:4px; font-weight:700;">$${(
+                mc / 1e9
+              ).toFixed(2)}B</div>`
+            );
+          },
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: years,
+          axisLine: { lineStyle: { color: "#E2E8F0" } },
+          axisLabel: { color: "#6B7280", fontSize: 11 },
+        },
+        yAxis: {
+          type: "value",
+          name: "Market Cap ($)",
+          nameTextStyle: {
+            align: "right",
+            padding: [0, 10, 0, 0],
+            color: "#6B7280",
+          },
+          splitLine: { lineStyle: { type: "dashed", color: "#F1F5F9" } },
+          axisLabel: {
+            color: "#6B7280",
+            formatter: (val) => "$" + (val / 1e9).toFixed(0) + "B",
+          },
+        },
+        // The Magic: Visual Map maps data index to colors
+        visualMap: {
+          show: false,
+          dimension: 0,
+          pieces: pieces,
+          outOfRange: { color: "#ccc" },
+        },
+        series: [
+          {
+            name: "Market Cap",
+            type: "line",
+            data: marketCaps,
+            smooth: true,
+            symbol: "circle",
+            symbolSize: 8,
+            lineStyle: { width: 3 },
+            areaStyle: { opacity: 0.15 }, // Subtle fill
+            emphasis: {
+              focus: "series",
+              itemStyle: {
+                borderColor: "#fff",
+                borderWidth: 2,
+                shadowBlur: 5,
+                shadowColor: "rgba(0,0,0,0.2)",
+              },
+            },
+            // Label shows sector name on the chart line (optional, kept sparse)
+            label: {
+              show: true,
+              position: "top",
+              formatter: function (params) {
+                // Only show label if sector changed from previous year, or it's a peak
+                const idx = params.dataIndex;
+                if (idx === 0) return sectors[idx];
+                if (sectors[idx] !== sectors[idx - 1]) return sectors[idx];
+                return "";
+              },
+              color: "#1B202B",
+              fontSize: 10,
+              backgroundColor: "rgba(255,255,255,0.9)",
+              padding: [2, 4],
+              borderRadius: 4,
+            },
+          },
+        ],
+      };
+
+      tl_chart.setOption(option, true);
+    }
+
+    // Run Init
+    init();
+  })();
+</script>

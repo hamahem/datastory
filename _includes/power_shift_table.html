@@ -1,0 +1,411 @@
+<script src="assets/data/power_shift_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+
+<div id="ps-viz-wrapper">
+  <style>
+    #ps-viz-wrapper {
+      /* --- DESIGN TOKENS --- */
+      --ps-bg: #ffffff;
+      --ps-text-main: #111827;
+      --ps-text-muted: #6b7280;
+      --ps-border: #e5e7eb;
+      --ps-table-border: #e5e7eb;
+      --ps-radius: 8px;
+
+      --ps-success: #10b981;
+      --ps-danger: #ef4444;
+      --ps-highlight-bg: #ecfdf5;
+      --ps-highlight-text: #047857;
+
+      --ps-tooltip-bg: #09090b;
+      --ps-tooltip-text: #fafafa;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--ps-text-main);
+      background: transparent;
+
+      /* CENTERING LOGIC */
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    #ps-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* --- WRAPPER FOR ENTIRE COMPONENT --- */
+    #ps-viz-wrapper .main-frame {
+      width: fit-content;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* --- HEADER (Outside border) --- */
+    #ps-viz-wrapper .top-bar {
+      padding: 0;
+      background: transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 30px;
+    }
+
+    /* --- TABLE CONTAINER (With border) --- */
+    #ps-viz-wrapper .table-wrapper {
+      border-radius: var(--ps-radius);
+      background-color: var(--ps-bg);
+      overflow: hidden;
+      border: 1px solid var(--ps-border);
+    }
+
+    #ps-viz-wrapper .title-group h2 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--ps-text-main);
+      white-space: nowrap;
+    }
+    #ps-viz-wrapper .title-group span {
+      font-size: 12px;
+      color: var(--ps-text-muted);
+      white-space: nowrap;
+    }
+
+    /* --- LEGEND --- */
+    #ps-viz-wrapper .legend {
+      display: flex;
+      gap: 15px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ps-text-muted);
+      background: #f9fafb;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    #ps-viz-wrapper .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    #ps-viz-wrapper .legend-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+    }
+
+    /* --- TABLE CONTAINER --- */
+    #ps-viz-wrapper .table-container {
+      overflow-x: auto;
+      /* HIDE SCROLLBAR */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      /* Allow tooltip space */
+      padding-bottom: 50px;
+      margin-bottom: -50px;
+    }
+    #ps-viz-wrapper .table-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    #ps-viz-wrapper table {
+      border-collapse: collapse;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    #ps-viz-wrapper th {
+      background: #f9fafb;
+      color: var(--ps-text-muted);
+      font-weight: 800;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 10px 16px;
+      text-align: left;
+      border: none;
+      border-right: 1px solid var(--ps-table-border);
+      border-bottom: 1px solid var(--ps-table-border);
+    }
+
+    #ps-viz-wrapper th:last-child {
+      border-right: none;
+    }
+
+    #ps-viz-wrapper td {
+      padding: 12px 16px;
+      border: none;
+      border-right: 1px solid var(--ps-table-border);
+      border-bottom: 1px solid var(--ps-table-border);
+      color: var(--ps-text-main);
+    }
+
+    #ps-viz-wrapper td:last-child {
+      border-right: none;
+    }
+
+    #ps-viz-wrapper tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* --- BADGES & VALS --- */
+    #ps-viz-wrapper .d-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 11px;
+      min-width: 30px;
+    }
+    #ps-viz-wrapper .badge-from {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    #ps-viz-wrapper .badge-to {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+    }
+
+    #ps-viz-wrapper .val-pos {
+      color: var(--ps-success);
+      font-weight: 500;
+    }
+    #ps-viz-wrapper .val-neg {
+      color: var(--ps-danger);
+      font-weight: 500;
+    }
+    #ps-viz-wrapper .val-neutral {
+      color: #d1d5db;
+    }
+
+    #ps-viz-wrapper .main-cause {
+      background-color: var(--ps-highlight-bg);
+      color: var(--ps-highlight-text);
+      font-weight: 600;
+      border-radius: 4px;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.2);
+    }
+
+    /* --- TOOLTIPS (Shadcn Style) --- */
+    #ps-viz-wrapper .tooltip-trigger {
+      position: relative;
+      cursor: pointer;
+      border-bottom: 1px dotted #d1d5db;
+      color: var(--ps-text-muted);
+      font-size: 12px;
+    }
+    #ps-viz-wrapper .tooltip-trigger:hover {
+      color: var(--ps-text-main);
+      border-bottom-color: var(--ps-text-main);
+    }
+
+    #ps-viz-wrapper .tooltip-content {
+      visibility: hidden;
+      background-color: var(--ps-tooltip-bg);
+      color: var(--ps-tooltip-text);
+      text-align: center;
+      border-radius: 6px;
+      padding: 6px 10px;
+      position: absolute;
+      z-index: 100;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+      pointer-events: none;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    #ps-viz-wrapper .tooltip-content::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -4px;
+      border-width: 4px;
+      border-style: solid;
+      border-color: var(--ps-tooltip-bg) transparent transparent transparent;
+    }
+
+    #ps-viz-wrapper .tooltip-trigger:hover .tooltip-content {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+  </style>
+
+  <div class="main-frame">
+    <div class="top-bar">
+      <div class="title-group">
+        <h2>Power Shift Transitions</h2>
+        <span>Gap changes in dominance components</span>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div
+            class="legend-dot"
+            style="
+              background: var(--ps-highlight-bg);
+              border: 1px solid var(--ps-success);
+            "
+          ></div>
+          <span>Primary Driver</span>
+        </div>
+        <div class="legend-item">
+          <span style="color: var(--ps-success); font-weight: 700">+</span>
+          <span>Gain</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>From</th>
+              <th>To</th>
+              <th>From Sector</th>
+              <th>To Sector</th>
+              <th style="text-align: right">Market Share</th>
+              <th style="text-align: right">Purity</th>
+              <th style="text-align: right">Maturity</th>
+              <th style="text-align: right">Breadth</th>
+              <th style="text-align: right">Returns</th>
+              <th style="text-align: right">Survival</th>
+            </tr>
+          </thead>
+          <tbody id="ps-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let ps_data =
+    typeof power_shift_data !== "undefined" ? power_shift_data : null;
+
+  function ps_init() {
+    if (!ps_data) {
+      setTimeout(() => {
+        ps_data =
+          typeof power_shift_data !== "undefined" ? power_shift_data : null;
+        ps_init();
+      }, 200);
+      return;
+    }
+
+    ps_renderTable(ps_data.shifts);
+  }
+
+  function getShortSector(fullSector) {
+    if (!fullSector) return "Unknown";
+    const sectorMap = {
+      "Basic Materials": "Materials",
+      "Communication Services": "Comm.",
+      "Consumer Cyclical": "Cons. Cyc",
+      "Consumer Defensive": "Cons. Def",
+      "Consumer Staples": "Cons. Stap",
+      "Consumer Discretionary": "Cons. Disc",
+      Energy: "Energy",
+      "Financial Services": "Financials",
+      Healthcare: "Health",
+      Industrials: "Ind.",
+      "Real Estate": "Real Est.",
+      "Information Technology": "Tech",
+      Unknown: "Unknown",
+      Utilities: "Util.",
+    };
+    return sectorMap[fullSector] || fullSector;
+  }
+
+  function ps_formatDelta(value, isMainCause) {
+    if (value === null || value === undefined)
+      return '<td style="text-align:right"><span class="val-neutral">-</span></td>';
+
+    let cssClass =
+      value > 0 ? "val-pos" : value < 0 ? "val-neg" : "val-neutral";
+    let cellClass = isMainCause ? "main-cause" : "";
+    const formatted = (value > 0 ? "+" : "") + value.toFixed(3);
+
+    return `<td class="${cellClass}" style="text-align:right"><span class="${cssClass}">${formatted}</span></td>`;
+  }
+
+  function ps_renderTable(shifts) {
+    const tbody = document.getElementById("ps-table-body");
+    let html = "";
+
+    shifts.forEach((s) => {
+      const gap = s.gap_changes;
+      const main = s.main_cause;
+
+      const fromShort = getShortSector(s.from_sector);
+      const toShort = getShortSector(s.to_sector);
+
+      html += `
+                    <tr>
+                        <td style="font-weight:600;">${s.year}</td>
+                        <td><span class="d-badge badge-from">D${
+                          s.from_dynasty_id
+                        }</span></td>
+                        <td><span class="d-badge badge-to">D${
+                          s.to_dynasty_id
+                        }</span></td>
+
+                        <td>
+                            <span class="tooltip-trigger">
+                                ${fromShort}
+                                <span class="tooltip-content">${
+                                  s.from_sector
+                                }</span>
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="tooltip-trigger">
+                                ${toShort}
+                                <span class="tooltip-content">${
+                                  s.to_sector
+                                }</span>
+                            </span>
+                        </td>
+
+                        ${ps_formatDelta(
+                          gap.market_share,
+                          main === "market_share"
+                        )}
+                        ${ps_formatDelta(gap.purity, main === "purity")}
+                        ${ps_formatDelta(gap.maturity, main === "maturity")}
+                        ${ps_formatDelta(gap.breadth, main === "breadth")}
+                        ${ps_formatDelta(gap.returns, main === "returns")}
+                        ${ps_formatDelta(gap.survival, main === "survival")}
+                    </tr>
+                `;
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  ps_init();
+</script>

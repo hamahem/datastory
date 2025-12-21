@@ -1,0 +1,887 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<script src="assets/data/dynasty_nightingale_data.js"></script>
+<script src="assets/data/dynasty_sector_timeline_data.js"></script>
+<script src="assets/data/yearly_listing_status_eventual.js"></script>
+<script src="assets/data/dynasty_descriptions.js"></script>
+
+<div id="dynasty-dashboard-v2">
+  <style>
+    #dynasty-dashboard-v2 {
+      --col-text: #1b202b;
+      --col-muted: #64748b;
+      --col-border: #e2e8f0;
+      --col-bg: #f8fafc;
+      --col-sidebar-bg: #f8fafc;
+      --col-accent: #66101f;
+      --radius-lg: 12px;
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+      font-family: "Inter", sans-serif;
+      color: var(--col-text);
+      width: 100%;
+      margin: 40px 0;
+      position: relative; /* For sidebar positioning context */
+    }
+
+    /* STEP 2: LAYOUT WITH SIDEBAR */
+    .dashboard-layout {
+      display: flex;
+      gap: 20px;
+      position: relative;
+      margin-right: -140px; /* Allow sidebar to break out to the right */
+    }
+
+    /* STEP 1: CHARTS */
+    .charts-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      /* No max-width - let charts use all available space */
+      margin-right: 0; /* Remove margin - let flex handle spacing */
+      position: relative; /* For timeline controls positioning */
+    }
+
+    .chart-box {
+      background: var(--col-bg);
+    }
+
+    .chart-row {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .chart-row .chart-box {
+      flex: 1;
+    }
+
+    .chart-row .chart-box:nth-child(2) {
+      flex: 1.5; /* Dynasty Evolution Timeline gets 1.5x more space */
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--col-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .year-badge {
+      font-size: 14px;
+      color: var(--col-muted);
+      font-weight: 500;
+    }
+
+    /* Chart containers - let ECharts handle sizing */
+    .echart-container {
+      width: 100%;
+      height: 400px; /* Fixed height for ECharts */
+    }
+
+    .chart-row .echart-container {
+      height: 450px; /* Slightly taller for side-by-side charts */
+    }
+
+    /* STEP 2: SIDEBAR - Always visible, sticky within section */
+    .dynasty-sidebar {
+      position: sticky;
+      top: 75px;
+      width: 240px;
+      align-self: flex-start; /* Important: prevents stretching */
+      background: var(--col-sidebar-bg);
+      border: 1px solid var(--col-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      max-height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-list {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--col-bg);
+    }
+
+    .dynasty-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .dynasty-item:hover {
+      background: #f8fafc;
+    }
+
+    .dynasty-item.active {
+      background: #f1f5f9;
+      border-left: 4px solid var(--col-accent);
+    }
+
+    .dynasty-name {
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--col-text);
+    }
+
+    .dynasty-meta {
+      font-size: 10px;
+      color: var(--col-muted);
+    }
+
+    .dynasty-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #64748b;
+      align-self: flex-start;
+      margin-top: 2px;
+    }
+
+    .dynasty-badge.alive {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .dynasty-badge.dead {
+      background: #f1f5f9;
+      color: #94a3b8;
+    }
+
+    /* Dynasty Description Text - Markdown style */
+    .dynasty-description-box {
+      margin: 20px 0;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--col-text);
+      text-align: justify;
+    }
+
+    /* STEP 3: TIMELINE CONTROLS */
+    .timeline-controls {
+      position: sticky;
+      top: 150px;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      z-index: 100;
+      margin-right: 10px;
+      margin-left: -70px; /* Push controls to the left */
+      align-self: flex-start;
+    }
+
+    .timeline-button {
+      border: 1px solid #eee;
+      background: rgba(255, 255, 255, 0.95);
+      cursor: pointer;
+      color: var(--col-text);
+      font-size: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.2s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .timeline-button:hover {
+      color: var(--col-accent);
+      border-color: var(--col-accent);
+      transform: translateY(-2px);
+    }
+
+    .timeline-button.play {
+      width: 44px;
+      height: 44px;
+      background: var(--col-accent);
+      color: white;
+      border: none;
+    }
+
+    .timeline-button.play:hover {
+      background: #4a0c17;
+      color: white;
+    }
+
+    .timeline-button.play.playing {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .year-slider-container {
+      height: 300px;
+      width: 40px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .year-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 4px;
+      height: 100%;
+      background: transparent;
+      cursor: pointer;
+      writing-mode: vertical-lr;
+      margin: 0;
+      z-index: 2;
+      outline: none;
+    }
+
+    .year-slider::-webkit-slider-runnable-track {
+      width: 4px;
+      height: 100%;
+      cursor: pointer;
+      background: #cbd5e0;
+      border-radius: 2px;
+      border: none;
+    }
+
+    .year-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid var(--col-accent);
+      cursor: pointer;
+      margin-left: -6px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: transform 0.1s;
+    }
+
+    .year-slider::-moz-range-track {
+      width: 4px;
+      height: 100%;
+      cursor: pointer;
+      background: #cbd5e0;
+      border-radius: 2px;
+      border: none;
+    }
+
+    .year-slider::-moz-range-thumb {
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid var(--col-accent);
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    #thumb-label {
+      position: absolute;
+      left: -55px;
+      top: 0;
+      background: var(--col-text);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      pointer-events: none;
+      transition: top 0.1s linear;
+      white-space: nowrap;
+      z-index: 3;
+    }
+
+    #thumb-label::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -6px;
+      transform: translateY(-50%);
+      border-width: 4px;
+      border-style: solid;
+      border-color: transparent transparent transparent var(--col-text);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 900px) {
+      .dashboard-layout {
+        flex-direction: column;
+        margin-right: 0; /* Reset margin on mobile */
+      }
+
+      .charts-container {
+        margin-right: 0; /* Reset margin on mobile */
+        padding-left: 0;
+      }
+
+      .chart-row {
+        flex-direction: column;
+      }
+
+      .dynasty-sidebar {
+        position: relative;
+        width: 100%;
+        max-height: 300px;
+        order: -1;
+      }
+
+      .timeline-controls {
+        display: none; /* Hide complex slider on mobile */
+      }
+    }
+  </style>
+
+  <div class="dashboard-layout">
+    <!-- STEP 3: TIMELINE CONTROLS -->
+    <div class="timeline-controls">
+      <button class="timeline-button" id="year-minus" title="Previous Year">
+        <i class="fas fa-minus"></i>
+      </button>
+
+      <button class="timeline-button play" id="play-pause" title="Play/Pause">
+        <i class="fas fa-play"></i>
+      </button>
+
+      <div class="year-slider-container">
+        <div id="thumb-label">1980</div>
+        <input
+          type="range"
+          class="year-slider"
+          id="year-slider"
+          min="1980"
+          max="2024"
+          value="1980"
+          step="1"
+        />
+      </div>
+
+      <button class="timeline-button" id="year-minus" title="Previous Year">
+        <i class="fas fa-minus"></i>
+      </button>
+
+      <button class="timeline-button" id="year-plus" title="Next Year">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+
+    <div class="charts-container">
+      <!-- Row 1: Sector Distribution and Dynasty Evolution Timeline -->
+      <div class="chart-row">
+        <!-- Chart 1: Sector Distribution -->
+        <div class="chart-box">
+          <span id="rose-year-display" class="year-badge">1980</span>
+          <div id="rose-chart-v2" class="echart-container"></div>
+        </div>
+
+        <!-- Chart 2: Dynasty Evolution Timeline -->
+        <div class="chart-box">
+          <div id="timeline-chart-v2" class="echart-container"></div>
+        </div>
+      </div>
+
+      <!-- Dynasty Description Text -->
+      <div class="dynasty-description-box" id="dynasty-description-v2">
+        <p id="dynasty-text-content-v2">Select a dynasty to see its story...</p>
+      </div>
+
+      <!-- Chart 3: Listing Survival -->
+      <div class="chart-box">
+        <div id="listing-chart-v2" class="echart-container"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: SIDEBAR -->
+    <div class="dynasty-sidebar">
+      <div id="sidebar-list-v2" class="sidebar-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // STEP 1: Initialize charts only
+
+    const state = {
+      year: 1980,
+      dynastyId: 1, // Start with dynasty 1
+      isPlaying: false,
+      playInterval: null,
+    };
+
+    const dataRefs = {
+      rose: typeof nightingale_data !== "undefined" ? nightingale_data : null,
+      timeline: typeof timeline_data !== "undefined" ? timeline_data : null,
+      listing:
+        typeof listing_status_data !== "undefined" ? listing_status_data : null,
+      descriptions:
+        typeof dynasty_descriptions !== "undefined"
+          ? dynasty_descriptions
+          : null,
+    };
+
+    const charts = {
+      rose: null,
+      timeline: null,
+      listing: null,
+    };
+
+    function initCharts() {
+      if (!dataRefs.rose || !dataRefs.timeline || !dataRefs.listing) {
+        console.error("Missing data files");
+        return;
+      }
+
+      // Initialize ECharts instances
+      charts.rose = echarts.init(document.getElementById("rose-chart-v2"));
+      charts.timeline = echarts.init(
+        document.getElementById("timeline-chart-v2")
+      );
+      charts.listing = echarts.init(
+        document.getElementById("listing-chart-v2")
+      );
+
+      // STEP 2: Build sidebar
+      buildSidebar();
+
+      // STEP 3: Setup timeline controls
+      setupTimelineControls();
+
+      // Update all charts
+      updateAllCharts();
+
+      // Update dynasty description
+      updateDynastyDescription();
+
+      // Resize handler
+      window.addEventListener("resize", () => {
+        Object.values(charts).forEach((chart) => chart && chart.resize());
+      });
+    }
+
+    // STEP 2: Build sidebar with dynasty list
+    function buildSidebar() {
+      const listEl = document.getElementById("sidebar-list-v2");
+      listEl.innerHTML = "";
+
+      const dynasties = dataRefs.timeline.dynasties;
+      const sortedIds = Object.keys(dynasties).sort(
+        (a, b) => parseInt(a) - parseInt(b)
+      );
+
+      sortedIds.forEach((id) => {
+        const d = dynasties[id];
+        const isActive = !d.death || d.death > state.year;
+
+        const item = document.createElement("div");
+        item.className = "dynasty-item";
+        if (parseInt(id) === state.dynastyId) {
+          item.classList.add("active");
+        }
+        item.onclick = () => selectDynasty(id);
+
+        item.innerHTML = `
+        <div class="dynasty-name">Dynasty ${id}</div>
+        <div class="dynasty-meta">Born: ${d.birth}</div>
+        <div class="dynasty-badge ${isActive ? "alive" : "dead"}">
+          ${isActive ? "Active" : "Ended " + d.death}
+        </div>
+      `;
+
+        listEl.appendChild(item);
+      });
+    }
+
+    function selectDynasty(id) {
+      state.dynastyId = parseInt(id);
+
+      // Update UI
+      document
+        .querySelectorAll(".dynasty-item")
+        .forEach((el) => el.classList.remove("active"));
+      const items = document.querySelectorAll(".dynasty-item");
+      const selectedIndex = Object.keys(dataRefs.timeline.dynasties)
+        .sort((a, b) => parseInt(a) - parseInt(b))
+        .indexOf(id);
+      if (items[selectedIndex]) {
+        items[selectedIndex].classList.add("active");
+      }
+
+      updateAllCharts();
+      updateDynastyDescription();
+    }
+
+    // STEP 3: Setup timeline controls
+    function setupTimelineControls() {
+      const slider = document.getElementById("year-slider");
+      const playBtn = document.getElementById("play-pause");
+      const minusBtn = document.getElementById("year-minus");
+      const plusBtn = document.getElementById("year-plus");
+      const yearDisplayControls = document.getElementById(
+        "year-display-controls"
+      );
+
+      // Slider change
+      slider.addEventListener("input", (e) => {
+        setYear(parseInt(e.target.value));
+      });
+
+      // Plus/Minus buttons
+      minusBtn.addEventListener("click", () => {
+        if (state.year > 1980) {
+          setYear(state.year - 1);
+        }
+      });
+
+      plusBtn.addEventListener("click", () => {
+        if (state.year < 2024) {
+          setYear(state.year + 1);
+        }
+      });
+
+      // Play/Pause button
+      playBtn.addEventListener("click", () => {
+        if (state.isPlaying) {
+          stopPlaying();
+        } else {
+          startPlaying();
+        }
+      });
+    }
+
+    function setYear(year) {
+      state.year = year;
+      const slider = document.getElementById("year-slider");
+      const label = document.getElementById("thumb-label");
+
+      slider.value = year;
+      label.innerText = year;
+
+      // Calculate label position for vertical slider
+      const range = 2024 - 1980;
+      const pct = (year - 1980) / range;
+      const height = slider.offsetHeight - 16; // minus thumb height
+      const topPos = pct * height;
+      label.style.top = topPos + "px";
+
+      updateAllCharts();
+      buildSidebar(); // Rebuild sidebar to update active/dead badges
+    }
+
+    function startPlaying() {
+      state.isPlaying = true;
+      const playBtn = document.getElementById("play-pause");
+      playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+      playBtn.classList.add("playing");
+
+      state.playInterval = setInterval(() => {
+        if (state.year < 2024) {
+          setYear(state.year + 1);
+        } else {
+          stopPlaying();
+        }
+      }, 1000); // Change year every 1 second (like original)
+    }
+
+    function stopPlaying() {
+      state.isPlaying = false;
+      const playBtn = document.getElementById("play-pause");
+      playBtn.innerHTML = '<i class="fas fa-play"></i>';
+      playBtn.classList.remove("playing");
+
+      if (state.playInterval) {
+        clearInterval(state.playInterval);
+        state.playInterval = null;
+      }
+    }
+
+    function updateAllCharts() {
+      updateRoseChart();
+      updateTimelineChart();
+      updateListingChart();
+    }
+
+    function updateDynastyDescription() {
+      const descEl = document.getElementById("dynasty-text-content-v2");
+
+      if (!dataRefs.descriptions) {
+        descEl.innerText = "Dynasty descriptions not loaded.";
+        return;
+      }
+
+      const desc = dataRefs.descriptions[state.dynastyId];
+
+      if (desc) {
+        descEl.innerText = desc;
+      } else {
+        descEl.innerText = "No description available for this dynasty.";
+      }
+    }
+
+    function updateRoseChart() {
+      const yearData = dataRefs.rose[state.year];
+      if (!yearData) return;
+
+      const dynastyData = yearData.find(
+        (d) => d.dynasty_id === state.dynastyId
+      );
+      document.getElementById("rose-year-display").innerText = state.year;
+
+      if (dynastyData) {
+        const sectors = dynastyData.sectors.map((s) => ({
+          name: s.name,
+          value: s.value,
+        }));
+
+        const totalMc = dynastyData.total_mc;
+
+        charts.rose.setOption({
+          title: { show: false }, // Clear the title
+          tooltip: {
+            trigger: "item",
+            formatter: function (params) {
+              if (params.value === 0) return null;
+              const pct = ((params.value / totalMc) * 100).toFixed(1);
+              return (
+                `<b>${params.name}</b><br/>` +
+                `Market Cap: <b>$${params.value.toFixed(2)}B</b><br/>` +
+                `Share: <b>${pct}%</b>`
+              );
+            },
+          },
+          series: [
+            {
+              type: "pie",
+              radius: ["20%", "50%"],
+              center: ["50%", "50%"],
+              roseType: "area",
+              itemStyle: { borderRadius: 5 },
+              data: sectors,
+            },
+          ],
+        });
+      } else {
+        charts.rose.setOption({
+          title: {
+            show: true,
+            text: "Dynasty not active in " + state.year,
+            left: "center",
+            top: "center",
+            textStyle: { color: "#ccc", fontSize: 16 },
+          },
+          series: [{ data: [] }],
+        });
+      }
+    }
+
+    function updateTimelineChart() {
+      const dynastyData = dataRefs.timeline.dynasties[state.dynastyId];
+      if (!dynastyData) return;
+
+      const pieces = [];
+      dynastyData.years.forEach((yr, idx) => {
+        if (idx < dynastyData.years.length - 1) {
+          pieces.push({
+            gte: idx,
+            lt: idx + 1,
+            color: dynastyData.colors[idx],
+          });
+        }
+      });
+      pieces.push({
+        gte: dynastyData.years.length - 1,
+        lte: dynastyData.years.length - 1,
+        color: dynastyData.colors[dynastyData.years.length - 1],
+      });
+
+      charts.timeline.setOption({
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "#fff",
+          borderColor: "#e2e8f0",
+          textStyle: { color: "#1b202b" },
+          extraCssText:
+            "box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;",
+          formatter: function (params) {
+            const p = params[0];
+            const idx = p.dataIndex;
+            const mc = dynastyData.market_caps[idx];
+            const sector = dynastyData.sectors[idx];
+            const color = dynastyData.colors[idx];
+
+            return (
+              `<div style="margin-bottom:4px; font-weight:600; color:#666">${dynastyData.years[idx]}</div>` +
+              `<div style="display:flex; align-items:center; gap:6px;">` +
+              `<div style="width:10px; height:10px; border-radius:50%; background:${color}"></div>` +
+              `<span>${sector}</span>` +
+              `</div>` +
+              `<div style="margin-top:4px; font-weight:700;">$${(
+                mc / 1e9
+              ).toFixed(2)}B</div>`
+            );
+          },
+        },
+        grid: { left: 60, right: 40, top: 40, bottom: 40 },
+        xAxis: {
+          type: "category",
+          data: dynastyData.years,
+        },
+        yAxis: {
+          type: "value",
+          axisLabel: { formatter: (val) => "$" + (val / 1e9).toFixed(0) + "B" },
+        },
+        visualMap: {
+          show: false,
+          dimension: 0,
+          pieces: pieces,
+          outOfRange: { color: "#ccc" },
+        },
+        series: [
+          {
+            type: "line",
+            data: dynastyData.market_caps,
+            smooth: true,
+            showSymbol: false,
+            lineStyle: { width: 3 },
+            areaStyle: { opacity: 0.3 },
+            markLine: {
+              symbol: "none",
+              label: { show: false },
+              lineStyle: { color: "#333", type: "dashed", width: 1 },
+              data: [{ xAxis: String(state.year) }],
+            },
+          },
+        ],
+      });
+    }
+
+    function updateListingChart() {
+      const years = [];
+      const listed = [];
+      const delisted = [];
+
+      Object.keys(dataRefs.listing)
+        .sort()
+        .forEach((y) => {
+          const dyData = dataRefs.listing[y].dynasties[state.dynastyId];
+          if (dyData) {
+            years.push(y);
+            listed.push(dyData.listed_pct);
+            delisted.push(dyData.delisted_pct);
+          }
+        });
+
+      if (years.length === 0) {
+        charts.listing.clear();
+        return;
+      }
+
+      const currIdx = years.indexOf(String(state.year));
+      const currListed = currIdx > -1 ? listed[currIdx] : 0;
+      const currDelisted = currIdx > -1 ? delisted[currIdx] : 0;
+      const hasDataNow = currIdx > -1;
+
+      charts.listing.setOption({
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "#fff",
+          borderColor: "#e2e8f0",
+          textStyle: { color: "#1b202b" },
+          extraCssText:
+            "box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;",
+          formatter: function (params) {
+            const year = params[0].axisValue;
+            const listedParam = params.find((p) => p.seriesName === "Listed %");
+            const delistedParam = params.find(
+              (p) => p.seriesName === "Delisted %"
+            );
+            return (
+              `<div style="font-weight:600; margin-bottom:4px;">${year}</div>` +
+              (listedParam
+                ? `<span style="color:#10B981">●</span> Listed: <b>${listedParam.value.toFixed(
+                    1
+                  )}%</b><br/>`
+                : "") +
+              (delistedParam
+                ? `<span style="color:#EF4444">●</span> Delisted: <b>${delistedParam.value.toFixed(
+                    1
+                  )}%</b>`
+                : "")
+            );
+          },
+        },
+        legend: { show: true, top: 0 },
+        grid: { top: "55%", left: 50, right: 40, bottom: 40 },
+        xAxis: { type: "category", data: years },
+        yAxis: { type: "value", max: 100 },
+        series: [
+          {
+            name: "Listed %",
+            type: "line",
+            data: listed,
+            itemStyle: { color: "#10B981" },
+            areaStyle: { opacity: 0.1 },
+            markLine: {
+              symbol: "none",
+              lineStyle: { color: "#333", width: 1, type: "dashed" },
+              label: { show: false },
+              data: [{ xAxis: String(state.year) }],
+            },
+          },
+          {
+            name: "Delisted %",
+            type: "line",
+            data: delisted,
+            itemStyle: { color: "#EF4444" },
+            areaStyle: { opacity: 0.1 },
+          },
+          {
+            type: "pie",
+            radius: ["25%", "40%"],
+            center: ["50%", "29%"],
+            data: hasDataNow
+              ? [
+                  {
+                    value: currListed,
+                    name: "Listed",
+                    itemStyle: { color: "#10B981" },
+                  },
+                  {
+                    value: currDelisted,
+                    name: "Delisted",
+                    itemStyle: { color: "#EF4444" },
+                  },
+                ]
+              : [],
+            label: { show: true, formatter: "{b}\n{c}%" },
+          },
+        ],
+      });
+    }
+
+    // Initialize
+    initCharts();
+  })();
+</script>

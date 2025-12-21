@@ -1,0 +1,580 @@
+<script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
+<script src="assets/data/dynasty_nightingale_data.js"></script>
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<div id="night-viz-wrapper">
+  <style>
+    #night-viz-wrapper {
+      /* --- DESIGN TOKENS --- */
+      --ng-bg: #ffffff;
+      --ng-text: #1b202b;
+      --ng-muted: #6b7280;
+      --ng-border: #e2e8f0;
+      --ng-accent: #66101f;
+      --ng-radius: 12px;
+
+      font-family: "Inter", -apple-system, sans-serif;
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--ng-text);
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    #night-viz-wrapper * {
+      box-sizing: border-box;
+    }
+
+    /* --- MAIN CARD --- */
+    #night-viz-wrapper .main-frame {
+      border: 1px solid var(--ng-border);
+      border-radius: var(--ng-radius);
+      background-color: var(--ng-bg);
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- HEADER & CONTROLS --- */
+    #night-viz-wrapper .top-bar {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--ng-border);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Top Row: Title + Stats */
+    #night-viz-wrapper .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    #night-viz-wrapper .title-group h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      color: var(--ng-text);
+    }
+    #night-viz-wrapper .title-group span {
+      font-size: 13px;
+      color: var(--ng-muted);
+    }
+
+    /* Stats Badge */
+    #night-viz-wrapper .stats-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+    }
+    #night-viz-wrapper .stats-main {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ng-text);
+    }
+    #night-viz-wrapper .stats-sub {
+      font-size: 11px;
+      color: var(--ng-muted);
+      margin-top: 2px;
+    }
+
+    /* Controls Row */
+    #night-viz-wrapper .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--ng-border);
+    }
+
+    /* Select Inputs */
+    #night-viz-wrapper select.modern-select {
+      padding: 6px 28px 6px 10px;
+      font-size: 13px;
+      border: 1px solid var(--ng-border);
+      border-radius: 6px;
+      background-color: #f9fafb;
+      color: var(--ng-text);
+      font-family: inherit;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 14px;
+      transition: border-color 0.2s;
+    }
+    #night-viz-wrapper select.modern-select:hover {
+      border-color: #9ca3af;
+    }
+    #night-viz-wrapper select.modern-select:focus {
+      outline: none;
+      border-color: var(--ng-text);
+    }
+
+    /* Slider Group */
+    #night-viz-wrapper .slider-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-grow: 1;
+      max-width: 400px;
+    }
+
+    #night-viz-wrapper .btn-icon {
+      background: #fff;
+      border: 1px solid var(--ng-border);
+      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--ng-muted);
+      transition: all 0.2s;
+    }
+    #night-viz-wrapper .btn-icon:hover {
+      background: #f9fafb;
+      color: var(--ng-text);
+      border-color: #9ca3af;
+    }
+
+    #night-viz-wrapper input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 2px;
+      outline: none;
+    }
+    #night-viz-wrapper input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid var(--ng-accent);
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: transform 0.1s;
+    }
+    #night-viz-wrapper input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    /* Play Button */
+    #night-viz-wrapper .btn-play {
+      padding: 6px 14px;
+      background: var(--ng-text);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    #night-viz-wrapper .btn-play:hover {
+      background: #000;
+    }
+    #night-viz-wrapper .btn-play.playing {
+      background: #ef4444; /* Red for stop */
+    }
+
+    #night-viz-wrapper .year-display {
+      font-size: 16px;
+      font-weight: 700;
+      font-feature-settings: "tnum";
+      color: var(--ng-accent);
+      min-width: 45px;
+    }
+
+    /* --- CHART AREA --- */
+    #night-viz-wrapper #night-main {
+      width: 100%;
+      height: 600px;
+      background: #fff;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 600px) {
+      #night-viz-wrapper .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      #night-viz-wrapper .stats-badge {
+        align-items: flex-start;
+        text-align: left;
+      }
+      #night-viz-wrapper .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      #night-viz-wrapper .slider-group {
+        max-width: 100%;
+      }
+      #night-viz-wrapper #night-main {
+        height: 450px;
+      }
+    }
+  </style>
+
+  <div class="main-frame">
+    <div class="top-bar">
+      <div class="header-row">
+        <div class="title-group">
+          <h2>Sector Dominance</h2>
+          <span>Market cap distribution over time</span>
+        </div>
+        <div class="stats-badge" id="dynasty-stats">
+          <div class="stats-main">-</div>
+          <div class="stats-sub">Select a Dynasty</div>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div style="display: flex; gap: 10px">
+          <select id="ng-dynastySelect" class="modern-select"></select>
+          <select
+            id="ng-speedSelect"
+            class="modern-select"
+            onchange="ng_updateSpeed()"
+          >
+            <option value="2500">Slow</option>
+            <option value="1000" selected>Normal</option>
+            <option value="500">Fast</option>
+          </select>
+        </div>
+
+        <div class="slider-group">
+          <button class="btn-icon" onclick="ng_changeYear(-1)">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <input
+            type="range"
+            id="ng-yearSlider"
+            min="1980"
+            max="2024"
+            value="1980"
+            oninput="ng_updateYear(this.value)"
+          />
+          <button class="btn-icon" onclick="ng_changeYear(1)">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <span id="ng-year-display" class="year-display">1980</span>
+        </div>
+
+        <button id="ng-play-btn" class="btn-play" onclick="ng_togglePlay()">
+          <i class="fa-solid fa-play"></i> Play
+        </button>
+      </div>
+    </div>
+
+    <div id="night-main"></div>
+  </div>
+</div>
+
+<script>
+  // Prefix 'ng_' to avoid global conflict
+  let ng_db = typeof nightingale_data !== "undefined" ? nightingale_data : {};
+  const NG_START = 1980;
+  const NG_END = 2024;
+
+  let ng_currentYear = NG_START;
+  let ng_selectedDynasty = null;
+  let ng_chart = null;
+  let ng_playInterval = null;
+  let ng_isPlaying = false;
+  let ng_playSpeed = 1000;
+
+  let ng_lifespans = {};
+
+  // Fixed Sector Order
+  const NG_SECTORS = [
+    "Communication Services",
+    "Consumer Discretionary",
+    "Consumer Staples",
+    "Energy",
+    "Financials",
+    "Health Care",
+    "Industrials",
+    "Information Technology",
+    "Materials",
+    "Real Estate",
+    "Utilities",
+  ];
+
+  const NG_COLORS = {
+    "Information Technology": "#1f77b4",
+    "Health Care": "#ff7f0e",
+    "Consumer Discretionary": "#2ca02c",
+    Financials: "#d62728",
+    Industrials: "#9467bd",
+    "Consumer Staples": "#8c564b",
+    Energy: "#e377c2",
+    Materials: "#7f7f7f",
+    "Real Estate": "#bcbd22",
+    "Communication Services": "#17becf",
+    Utilities: "#aec7e8",
+  };
+
+  function ng_init() {
+    if (Object.keys(ng_db).length === 0) {
+      setTimeout(() => {
+        ng_db = typeof nightingale_data !== "undefined" ? nightingale_data : {};
+        if (Object.keys(ng_db).length > 0) ng_init();
+      }, 200);
+      return;
+    }
+
+    ng_buildLifespans();
+    ng_updateSelector();
+
+    const container = document.getElementById("night-main");
+    ng_chart = echarts.init(container);
+
+    ng_updateYear(NG_START);
+  }
+
+  function ng_buildLifespans() {
+    Object.keys(ng_db).forEach((year) => {
+      ng_db[year].forEach((dynasty) => {
+        const id = dynasty.dynasty_id;
+        if (!ng_lifespans.hasOwnProperty(id)) {
+          ng_lifespans[id] = {
+            birth: dynasty.birth,
+            death: null,
+            name: dynasty.name,
+          };
+        }
+      });
+    });
+
+    Object.keys(ng_lifespans).forEach((id) => {
+      let lastSeen = NG_START;
+      Object.keys(ng_db).forEach((year) => {
+        const found = ng_db[year].find((d) => d.dynasty_id === parseInt(id));
+        if (found) lastSeen = Math.max(lastSeen, parseInt(year));
+      });
+      ng_lifespans[id].death = lastSeen;
+    });
+  }
+
+  function ng_updateSelector() {
+    const selector = document.getElementById("ng-dynastySelect");
+    const currentVal = selector.value;
+
+    const yearData = ng_db[ng_currentYear] || [];
+    const activeIds = yearData.map((d) => d.dynasty_id).sort((a, b) => a - b);
+
+    selector.innerHTML = "";
+
+    activeIds.forEach((id) => {
+      const option = document.createElement("option");
+      option.value = id;
+      const life = ng_lifespans[id];
+      const status = life.death < NG_END ? "(Ended)" : "";
+      option.textContent = `Dynasty ${id} ${status}`;
+      selector.appendChild(option);
+    });
+
+    // Maintain selection or pick first
+    const valInt = currentVal !== "" ? parseInt(currentVal) : null;
+    if (valInt !== null && activeIds.includes(valInt)) {
+      selector.value = valInt;
+      ng_selectedDynasty = valInt;
+    } else if (activeIds.length > 0) {
+      ng_selectedDynasty = activeIds[0];
+      selector.value = ng_selectedDynasty;
+    } else {
+      ng_selectedDynasty = null;
+    }
+
+    selector.onchange = (e) => {
+      ng_selectedDynasty = parseInt(e.target.value);
+      ng_updateChart();
+    };
+  }
+
+  function ng_updateChart() {
+    if (!ng_chart || ng_selectedDynasty === null) return;
+
+    const yearData = ng_db[ng_currentYear] || [];
+    const dynasty = yearData.find((d) => d.dynasty_id === ng_selectedDynasty);
+    const statsDiv = document.getElementById("dynasty-stats");
+
+    if (dynasty && dynasty.sectors.length > 0) {
+      // Update Stats Badge
+      statsDiv.innerHTML = `
+                    <div class="stats-main">${dynasty.name}</div>
+                    <div class="stats-sub">
+                        MC: <b style="color:#1B202B">$${dynasty.total_mc.toFixed(
+                          1
+                        )}B</b> &bull; 
+                        Age: ${dynasty.age} yr
+                    </div>
+                `;
+
+      // Map Data (Fixed Order)
+      const sectorMap = {};
+      dynasty.sectors.forEach((s) => (sectorMap[s.name] = s.value));
+
+      const orderedData = NG_SECTORS.map((name) => ({
+        name: name,
+        value: sectorMap[name] || 0,
+        itemStyle: { color: NG_COLORS[name] || "#cccccc" },
+      }));
+
+      const activeSectors = orderedData
+        .filter((s) => s.value > 0)
+        .map((s) => s.name);
+
+      const option = {
+        tooltip: {
+          trigger: "item",
+          backgroundColor: "#fff",
+          borderColor: "#E2E8F0",
+          textStyle: { color: "#1B202B" },
+          extraCssText:
+            "box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;",
+          formatter: (params) => {
+            if (params.value === 0) return null;
+            const pct = ((params.value / dynasty.total_mc) * 100).toFixed(1);
+            return `<b>${params.name}</b><br/>$${params.value.toFixed(
+              1
+            )}B (${pct}%)`;
+          },
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+          top: "middle",
+          data: activeSectors,
+          textStyle: { color: "#1B202B" },
+        },
+        series: [
+          {
+            type: "pie",
+            radius: ["30%", "70%"],
+            center: ["60%", "50%"],
+            roseType: "area",
+            itemStyle: {
+              borderRadius: 6,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: true,
+              color: "#1B202B",
+              formatter: (p) =>
+                p.value > 0
+                  ? `${p.name.split(" ")[0]}\n${(
+                      (p.value / dynasty.total_mc) *
+                      100
+                    ).toFixed(0)}%`
+                  : "",
+            },
+            data: orderedData,
+            sort: null, // Maintain fixed order
+          },
+        ],
+      };
+
+      ng_chart.setOption(option, true); // true = not merge (clear old)
+    } else {
+      statsDiv.innerHTML = `<div class="stats-main" style="color:#6B7280">Not Active</div><div class="stats-sub">Year ${ng_currentYear}</div>`;
+      ng_chart.setOption({ series: [] }, true);
+      if (ng_isPlaying) ng_stopPlaying();
+    }
+  }
+
+  function ng_updateYear(year) {
+    ng_currentYear = parseInt(year);
+    document.getElementById("ng-year-display").innerText = ng_currentYear;
+    document.getElementById("ng-yearSlider").value = ng_currentYear;
+    ng_updateSelector();
+    ng_updateChart();
+  }
+
+  function ng_changeYear(delta) {
+    let newYear = ng_currentYear + delta;
+
+    if (ng_selectedDynasty !== null) {
+      const death = ng_lifespans[ng_selectedDynasty].death;
+      if (ng_isPlaying && delta > 0 && ng_currentYear >= death) {
+        ng_stopPlaying();
+        return;
+      }
+    }
+
+    if (newYear >= NG_START && newYear <= NG_END) {
+      ng_updateYear(newYear);
+    }
+  }
+
+  function ng_stopPlaying() {
+    clearInterval(ng_playInterval);
+    ng_isPlaying = false;
+    const btn = document.getElementById("ng-play-btn");
+    btn.innerHTML = '<i class="fa-solid fa-play"></i> Play';
+    btn.classList.remove("playing");
+  }
+
+  function ng_togglePlay() {
+    const btn = document.getElementById("ng-play-btn");
+
+    if (ng_isPlaying) {
+      ng_stopPlaying();
+    } else {
+      ng_isPlaying = true;
+      btn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
+      btn.classList.add("playing");
+
+      ng_playInterval = setInterval(() => {
+        ng_changeYear(1);
+      }, ng_playSpeed);
+    }
+  }
+
+  function ng_updateSpeed() {
+    ng_playSpeed = parseInt(document.getElementById("ng-speedSelect").value);
+    if (ng_isPlaying) {
+      clearInterval(ng_playInterval);
+      ng_playInterval = setInterval(() => {
+        ng_changeYear(1);
+      }, ng_playSpeed);
+    }
+  }
+
+  const ng_observer = new ResizeObserver(() => {
+    if (ng_chart) ng_chart.resize();
+  });
+  const ng_wrapper = document.getElementById("night-viz-wrapper");
+  if (ng_wrapper) ng_observer.observe(ng_wrapper);
+
+  ng_init();
+</script>
