@@ -132,7 +132,7 @@ $, as defined in the dynasty chronicles. It looks like if almost every dynasty h
 
 {% include power_shift_table.html %}
 
-<p style="text-align: justify;">This table above decomposes the dominance score to identify exactly which structural factors caused the shift in power regime. Changes are often relative: an outgoing dynasty is frequently overtaken by a faster-rising rival rather than suffering a total collapse. Read as a story, this table reveals both prolonged rivalries and sudden collapses. In the early 2000s and again at the start of the 2010s, dominance is contested between two dynasties before one ultimately prevails and secures a lasting reign. At the same time, the record shows that some dynasties fall abruptly at the height of their power, a fragility we will return to later. Finally, despite the weighting of multiple structural dimensions, market share consistently emerges as the decisive factor in most transitions, acting as the final arbiter of dynastic change.</p>
+<p style="text-align: justify;">This table above decomposes the dynasty dominance score to identify exactly which structural factors caused the shift in power regime. Changes are often relative: an outgoing dynasty is frequently overtaken by a faster-rising rival rather than suffering a total collapse. Read as a story, this table reveals both prolonged rivalries and sudden collapses. In the early 2000s and again at the start of the 2010s, dominance is contested between two dynasties before one ultimately prevails and secures a lasting reign. At the same time, the record shows that some dynasties fall abruptly at the height of their power, a fragility we will return to later. Finally, despite the weighting of multiple structural dimensions, market share consistently emerges as the decisive factor in most transitions, acting as the final arbiter of dynastic change.</p>
 
 <p style="text-align: justify;">Changes in leadership often happen at the same time as changes in the top industry. This suggests that dynasties don't just fall because they fail internally, but because the market itself shifts its focus to value something new. We have mapped these transitions to visualize how power flows continuously from one group to another, rather than simply disappearing.</p>
 
@@ -236,7 +236,7 @@ $, as defined in the dynasty chronicles. It looks like if almost every dynasty h
   <img src="{{ '/assets/img/laurel_R.png' | relative_url }}" alt="Right laurel">
 </div>
 
-<p style="text-align: justify;">Observation reveals patterns. Construction reveals understanding.</p>
+<p style="text-align: justify;">Observation reveals patterns. Construction reveals understanding. Now that you understand the dynamics of the NASDAQ market, let us play a game to see if you can build a dynasty of your own.</p>
 
 <p style="text-align: justify;">You are given a fixed budget of <span class="hl" style="--hl-bg: #D93B3B;"><strong>$25.0M</strong></span> and asked to build a dynasty of <strong>8 stocks</strong>. Your objective is simple in form but difficult in execution: allocate your capital across these 8 choices in a way that produces the strongest and most resilient portfolio.</p>
 

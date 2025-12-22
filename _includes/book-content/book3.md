@@ -16,7 +16,7 @@ The algorithm focuses on the tickers contained in each cluster, it looks at the 
 
 •⁠ ⁠*Rise*: If a new cluster appears that has no "ancestors" from the previous window, it is marked as a new rising dynasty. A new power enters history.
 
-## Dominance Score Definition
+## Dynasty Dominance Score Definition
 
 For each dynasty $ d $ at year $ t $, dominance is defined as a weighted composite score:
 
@@ -46,6 +46,10 @@ where each component captures a distinct structural dimension of market power:
 •⁠ ⁠*Survival Rate ($S$)* — the proportion of firms still listed, capturing resilience and continuity.
 
 Together, these components define dominance not as size alone, but as a balance between scale, coherence, performance, and persistence.
+
+## Growth Chart
+
+Before descending further into the analysis, we pause to present the first graph of the data story. This view captures the evolution of the market across time, focusing on dynasties rather than individual stocks. It reveals how dynasties grow in scale as the NASDAQ itself expands, illustrating the gradual elevation of market power across successive eras.
 
 {% include growth_chart.html %}
 
