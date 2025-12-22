@@ -104,7 +104,13 @@ A finer view of the market is provided by the status table.
 
 <p style="text-align: justify;">Great! Let us take a break from the digging. I've collected some artifacts which might show how power was precisely distributed on a decadal scale.</p>
 
-<p style="text-align: justify;">What are these ancient manuscripts you have uncovered? It seems that they tell us who was the most dominant dynasty throughout the NASDAQ history based on a given score **(Expliquer brièvement le score????)** It looks like if almost every dynasty had at least one turn in reigning the majority of the NASDAQ territory. And check out these dips in power! They surely must be a cause of major events that happened in the past. If we refer to the records, we can probably find the events that have caused these dips:</p>
+<p style="text-align: justify;">What are these ancient manuscripts you have uncovered? It seems that they tell us who was the most dominant dynasty throughout the NASDAQ history based on a given score $0.35 \cdot MS_{d,t}
++ 0.20 \cdot SP_{d,t}
++ 0.15 \cdot M_{d,t}
++ 0.10 \cdot B_{d,t}
++ 0.10 \cdot R_{d,t}
++ 0.10 \cdot S_{d,t}
+$, as defined in the dynasty chronicles. It looks like if almost every dynasty had at least one turn in reigning the majority of the NASDAQ territory. And check out these dips in power! They surely must be a cause of major events that happened in the past. If we refer to the records, we can probably find the events that have caused these dips:</p>
 
 <p style="text-align: justify;"><strong>—</strong> Ah! The Dot-com bubble was a speculative frenzy in the late 1990s where investors poured money into Internet-based startups, driving stock valuations to unsustainable heights. When the bubble burst in 2000, it triggered a massive market crash that wiped out trillions of dollars in wealth and caused the collapse of countless technology companies. We can for sure observe a dip in the year 2000</p>
 
@@ -114,7 +120,7 @@ A finer view of the market is provided by the status table.
 
 {% include yearly_embed_theme.html %}
 
-<p style="text-align: justify;">How interesting! Few dynasties have kept and even risen in dominance. Here below, I have aggregated all my findings to a decadal scale. This time window can show us the existence of a broader structure and maybe how often does each dynaysty dominate within a given decade.</p>
+<p style="text-align: justify;">How interesting! Few dynasties have kept and even risen in dominance. Here below, I have aggregated all my findings to a decadal scale. This time window can show us the existence of a broader structure and maybe how often does each dynasty dominate within a given decade.</p>
 
 {% include decade_embed.html %}
 
@@ -126,7 +132,7 @@ A finer view of the market is provided by the status table.
 
 {% include power_shift_table.html %}
 
-<p style="text-align: justify;">This table above decomposes the dominance score to identify exactly which structural factors caused the shift in power regime. Changes are often relative: an outgoing dynasty is frequently overtaken by a faster-rising rival rather than suffering a total collapse.  <strong>(Ahmed et Meumeu, vous pouvez mettre une analyse pour cette table, elle est assez technique)</strong></p>
+<p style="text-align: justify;">This table above decomposes the dominance score to identify exactly which structural factors caused the shift in power regime. Changes are often relative: an outgoing dynasty is frequently overtaken by a faster-rising rival rather than suffering a total collapse. Read as a story, this table reveals both prolonged rivalries and sudden collapses. In the early 2000s and again at the start of the 2010s, dominance is contested between two dynasties before one ultimately prevails and secures a lasting reign. At the same time, the record shows that some dynasties fall abruptly at the height of their power, a fragility we will return to later. Finally, despite the weighting of multiple structural dimensions, market share consistently emerges as the decisive factor in most transitions, acting as the final arbiter of dynastic change.</p>
 
 <p style="text-align: justify;">Changes in leadership often happen at the same time as changes in the top industry. This suggests that dynasties don't just fall because they fail internally, but because the market itself shifts its focus to value something new. We have mapped these transitions to visualize how power flows continuously from one group to another, rather than simply disappearing.</p>
 
@@ -179,7 +185,7 @@ A finer view of the market is provided by the status table.
 
 {% include dynasty_migration_sankey.html %}
 
-<p style="text-align: justify;">Woderful! Look at the dynamic of the migration! Many paths cross each other every year and no dynasty is left spared of icoming migration. We can observe in 2022, major stocks like AMZN, TSLA and META, all leave the D7 dynasty for the D5 dynasty. And we've seen previously a dip in wealth for the D7 dynasty at that same year.</p>
+<p style="text-align: justify;">Woderful! Look at the dynamic of the migration! Many paths cross each other every year and no dynasty is left spared of incoming migration. We can observe in 2022, major stocks like AMZN, TSLA and META, all leave the D7 dynasty for the D5 dynasty. And we've seen previously a dip in wealth for the D7 dynasty at that same year.</p>
 
 <p style="text-align: justify;">Does this migration have a an effect on the power of the dynasty? We must stop looking at static maps and start tracking movement. Dynasties are not isolated islands; firms and wealth constantly flow between them. By analyzing these migrations, we aim to uncover the hidden rules that decide how power is transferred.</p>
 
@@ -219,8 +225,10 @@ A finer view of the market is provided by the status table.
 
 <div class="laurel-title medium">
   <img src="{{ '/assets/img/plume.png' | relative_url }}" alt="Plume">
-  <h1><strong>Conclusion</strong></h1>
+  <h1><strong>After the Dig</strong></h1>
 </div>
+
+<p style="text-align: justify;">Undeniably, the NASDAQ market and its tickers seem to form structures which we can qualify as dynasties. We have undug much evidence which corroborates the fact that the NASDAQ timeline was complex and ever-changing. Internally, dominant stocks reigned over their subordinates but never obtained absolute power as stocks migrated or where delisted. Dynasties who thrived showed to have the best of stocks by having in their ranks only those destined to be listed in NASDAQ history. Surprisingly, the migration of tickers happens uniformly over time, resilient to any crisis…All this analysis suggesting that what we have uncovered is not a complete history, but only the uppermost layers of a far deeper and secret side of the NASDAQ jungle.</p>
 
 <div class="laurel-title small center">
   <img src="{{ '/assets/img/laurel_L.png' | relative_url }}" alt="Left laurel">

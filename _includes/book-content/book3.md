@@ -16,6 +16,37 @@ The algorithm focuses on the tickers contained in each cluster, it looks at the 
 
 •⁠ ⁠*Rise*: If a new cluster appears that has no "ancestors" from the previous window, it is marked as a new rising dynasty. A new power enters history.
 
+## Dominance Score Definition
+
+For each dynasty $ d $ at year $ t $, dominance is defined as a weighted composite score:
+
+$$
+\text{Dominance}_{d,t} =
+0.35 \cdot MS_{d,t}
+
+- 0.20 \cdot SP\_{d,t}
+- 0.15 \cdot M\_{d,t}
+- 0.10 \cdot B\_{d,t}
+- 0.10 \cdot R\_{d,t}
+- 0.10 \cdot S\_{d,t}
+$$
+
+where each component captures a distinct structural dimension of market power:
+
+•⁠ ⁠*Market Share ($MS$)* — the dynasty’s share of total market capitalization, capturing economic scale.
+
+•⁠ ⁠*Sector Purity ($SP$)* — the degree to which the dynasty is concentrated within a single sector, reflecting coherence and focus.
+
+•⁠ ⁠*Maturity ($M$)* — a logarithmic function of dynasty age, capturing institutional depth and historical embeddedness.
+
+•⁠ ⁠*Breadth ($B$)* — the number of constituent firms relative to the largest dynasty, measuring organizational reach.
+
+•⁠ ⁠*Returns ($R$)* — normalized annual return performance, reflecting short-term competitive success.
+
+•⁠ ⁠*Survival Rate ($S$)* — the proportion of firms still listed, capturing resilience and continuity.
+
+Together, these components define dominance not as size alone, but as a balance between scale, coherence, performance, and persistence.
+
 {% include growth_chart.html %}
 
 ## Reference
