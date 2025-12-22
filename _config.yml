@@ -7,7 +7,7 @@ baseurl: "/datastory"
 remove-ads: true
 # Navigation
 navbar-links:
-  Home: "index"
+  Dataset: "https://www.kaggle.com/datasets/jacksoncrow/stock-market-dataset"
 
 # Logo
 avatar: "/assets/img/hamahem_logo.png"
